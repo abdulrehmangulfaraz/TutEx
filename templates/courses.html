@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Student Portal{% endblock %}
+
+{% block content %}
+<style>
+  .course-category {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    perspective: 1000px;
+  }
+
+  .course-category:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #0056b3;
+    text-align: center;
+  }
+
+  .course-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .course-box {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    width: 220px;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+  }
+
+  .course-box:hover {
+    transform: scale(1.1) rotateY(5deg) rotateX(5deg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    background: #f1f9ff;
+    color: #007bff;
+  }
+</style>
+
+<div class="container py-5">
+  <h1 class="text-center mb-5 fw-bold text-primary">Explore Our Top Courses</h1>
+
+  <!-- Skill Courses -->
+  <div class="course-category">
+    <div class="category-title">Skill Courses</div>
+    <div class="course-list">
+      <div class="course-box">Graphic Designing</div>
+      <div class="course-box">Photography</div>
+      <div class="course-box">Video Editing</div>
+      <div class="course-box">Content Writing</div>
+      <div class="course-box">Freelancing</div>
+    </div>
+  </div>
+
+  <!-- Language Courses -->
+  <div class="course-category">
+    <div class="category-title">Language Courses</div>
+    <div class="course-list">
+      <div class="course-box">English Spoken</div>
+      <div class="course-box">IELTS Preparation</div>
+      <div class="course-box">Arabic</div>
+      <div class="course-box">Chinese</div>
+      <div class="course-box">German</div>
+    </div>
+  </div>
+
+  <!-- IT Courses -->
+  <div class="course-category">
+    <div class="category-title">IT Courses</div>
+    <div class="course-list">
+      <div class="course-box">Web Development</div>
+      <div class="course-box">Python Programming</div>
+      <div class="course-box">Cybersecurity Basics</div>
+      <div class="course-box">Data Science</div>
+      <div class="course-box">Mobile App Dev</div>
+    </div>
+  </div>
+
+  <!-- Academic Courses -->
+  <div class="course-category">
+    <div class="category-title">Academic Courses</div>
+    <div class="course-list">
+      <div class="course-box">Mathematics</div>
+      <div class="course-box">Physics</div>
+      <div class="course-box">Chemistry</div>
+      <div class="course-box">Biology</div>
+      <div class="course-box">English Literature</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

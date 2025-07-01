@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+
+# Local databases
+*.db
+instance/
+
+# Uploaded media
+uploads/
+
+# Jupyter Notebook checkpoints (just in case)
+.ipynb_checkpoints
+
+# VS Code settings (optional, if you use VSCode)
+.vscode/
+
+# MacOS/Windows/Linux system files
+.DS_Store
+Thumbs.db
+
+# Python cache
+*.pyc
+*.pyo

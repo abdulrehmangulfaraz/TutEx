@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="contact-section py-5">
+    <div class="container">
+        <h1 class="contact-header text-white text-center py-3 mb-5">Contact Us</h1>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8">
+                <form action="{{ url_for('contact') }}" method="POST" class="p-4 bg-white rounded shadow animate-form">
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">Full Name</label>
+                        <input type="text" class="form-control form-control-lg" id="name" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="contact" class="form-label fw-bold">Contact Number</label>
+                        <input type="tel" class="form-control form-control-lg" id="contact" name="contact" placeholder="Enter your contact number" pattern="[0-9]{10,12}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="form-label fw-bold">Address</label>
+                        <input type="text" class="form-control form-control-lg" id="address" name="address" placeholder="Enter your address" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="complaint" class="form-label fw-bold">Your Complaint</label>
+                        <textarea class="form-control form-control-lg" id="complaint" name="complaint" rows="5" placeholder="Describe your complaint" required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3">Submit Complaint</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Helpline Section -->
+<section class="helpline-section bg-dark text-white text-center py-4">
+    <div class="container">
+        <h5 class="mb-3">Need Assistance?</h5>
+        <p class="mb-2">
+            <strong>Helpline:</strong> +92-300-22TUTEX<br>
+            <strong>Email:</strong> <a href="mailto:support@tutex.com" class="text-white text-decoration-none">support@tutex.com</a>
+        </p>
+    </div>
+</section>
+
+<style>
+    .contact-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+    }
+    .contact-header {
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+        border-radius: 10px;
+        font-size: 2rem;
+        font-weight: 700;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: #0d6efd;
+        border-radius: 2px;
+    }
+    .contact-header, .animate-form {
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .form-control {
+        border-radius: 8px;
+        transition: box-shadow 0.3s;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+        border-color: #0d6efd;
+    }
+    .btn-primary {
+        border-radius: 50px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 15px rgba(13, 110, 253, 0.5);
+    }
+    .helpline-section a:hover {
+        color: #0d6efd !important;
+    }
+    @media (max-width: 767px) {
+        .contact-section {
+            min-height: 500px;
+            padding: 3rem 0;
+        }
+        .contact-header {
+            font-size: 1.5rem;
+            padding: 0.75rem;
+        }
+        .form-control-lg {
+            font-size: 1rem;
+        }
+        .btn-lg {
+            padding: 0.75rem 2rem;
+        }
+    }
+</style>
+{% endblock %}

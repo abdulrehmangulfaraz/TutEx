@@ -1,0 +1,23 @@
+body {
+    padding-top: 70px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+/* Add these styles to the existing ones */
+.card-img-top {
+  transition: transform 0.5s ease, filter 0.5s ease;
+  filter: grayscale(100%);
+  opacity: 0.9;
+}
+
+
+.course-item:hover .card-img-top {
+  transform: scale(1.1);
+  filter: grayscale(0%);
+  opacity: 1;
+}
+.course-item {
+  cursor: pointer;
+}

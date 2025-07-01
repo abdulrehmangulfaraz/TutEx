@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}Tutor Dashboard{% endblock %}
+
+{% block content %}
+<h2>Tutor Dashboard</h2>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Area, Board, and Subject Selection Form -->
+<form method="POST" action="{{ url_for('tutor_dashboard') }}" class="mb-4">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <label for="area">Select Area:</label>
+            <select name="area" id="area" class="form-control">
+                <option value="">--Select Area--</option>
+                <option value="DHA" {% if selected_area == 'DHA' %}selected{% endif %}>DHA</option>
+                <option value="GULSHAN-E-IQBAL" {% if selected_area == 'GULSHAN-E-IQBAL' %}selected{% endif %}>GULSHAN-E-IQBAL</option>
+                <option value="PECHS" {% if selected_area == 'PECHS' %}selected{% endif %}>PECHS</option>
+                <option value="Gulistan-e-Johar" {% if selected_area == 'Gulistan-e-Johar' %}selected{% endif %}>Gulistan-e-Johar</option>
+                <option value="Gulberg" {% if selected_area == 'Gulberg' %}selected{% endif %}>Gulberg</option>
+                <option value="North Nazimabad" {% if selected_area == 'North Nazimabad' %}selected{% endif %}>North Nazimabad</option>
+                <option value="North Karachi" {% if selected_area == 'North Karachi' %}selected{% endif %}>North Karachi</option>
+                <option value="Saddar" {% if selected_area == 'Saddar' %}selected{% endif %}>Saddar</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="board">Select Board:</label>
+            <select name="board" id="board" class="form-control">
+                <option value="">--Select Board--</option>
+                <option value="Cambridge O'Levels" {% if selected_board == "Cambridge O'Levels" %}selected{% endif %}>Cambridge O'Levels</option>
+                <option value="Cambridge A'Levels" {% if selected_board == "Cambridge A'Levels" %}selected{% endif %}>Cambridge A'Levels</option>
+                <option value="Karachi Matric Board" {% if selected_board == "Karachi Matric Board" %}selected{% endif %}>Karachi Matric Board</option>
+                <option value="Karachi Inter board" {% if selected_board == "Karachi Inter board" %}selected{% endif %}>Karachi Inter board</option>
+                <option value="Fedral Board" {% if selected_board == "Fedral Board" %}selected{% endif %}>Fedral Board</option>
+                <option value="Aga Khan Board" {% if selected_board == "Aga Khan Board" %}selected{% endif %}>Aga Khan Board</option>
+                <option value="ICAP" {% if selected_board == "ICAP" %}selected{% endif %}>ICAP</option>
+                <option value="ACCA" {% if selected_board == "ACCA" %}selected{% endif %}>ACCA</option>
+                <option value="ICMA" {% if selected_board == "ICMA" %}selected{% endif %}>ICMA</option>
+                <option value="Sindh Technical Board" {% if selected_board == "Sindh Technical Board" %}selected{% endif %}>Sindh Technical Board</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="subject">Select Subject:</label>
+            <select name="subject" id="boardSubjects" class="form-control">
+                <option value="">--Select Subject--</option>
+                <option value='Accounting' {% if selected_subject == 'Accounting' %}selected{% endif %}>Accounting</option>
+                <option value='Advanced Audit & Assurance' {% if selected_subject == 'Advanced Audit & Assurance' %}selected{% endif %}>Advanced Audit & Assurance</option>
+                <option value='Advanced Financial Management' {% if selected_subject == 'Advanced Financial Management' %}selected{% endif %}>Advanced Financial Management</option>
+                <option value='Advanced Management Accounting' {% if selected_subject == 'Advanced Management Accounting' %}selected{% endif %}>Advanced Management Accounting</option>
+                <option value='Advanced Performance Management' {% if selected_subject == 'Advanced Performance Management' %}selected{% endif %}>Advanced Performance Management</option>
+                <option value='Advanced Taxation' {% if selected_subject == 'Advanced Taxation' %}selected{% endif %}>Advanced Taxation</option>
+                <option value='Agriculture' {% if selected_subject == 'Agriculture' %}selected{% endif %}>Agriculture</option>
+                <option value='Analytical Reasoning' {% if selected_subject == 'Analytical Reasoning' %}selected{% endif %}>Analytical Reasoning</option>
+                <option value='Arabic' {% if selected_subject == 'Arabic' %}selected{% endif %}>Arabic</option>
+                <option value='Art & Design' {% if selected_subject == 'Art & Design' %}selected{% endif %}>Art & Design</option>
+                <option value='Audit & Assurance' {% if selected_subject == 'Audit & Assurance' %}selected{% endif %}>Audit & Assurance</option>
+                <option value='Biology & Marine Science' {% if selected_subject == 'Biology & Marine Science' %}selected{% endif %}>Biology & Marine Science</option>
+                <option value='Business' {% if selected_subject == 'Business' %}selected{% endif %}>Business</option>
+                <option value='Business & Corporate Law' {% if selected_subject == 'Business & Corporate Law' %}selected{% endif %}>Business & Corporate Law</option>
+                <option value='Business Communication & Report Writing' {% if selected_subject == 'Business Communication & Report Writing' %}selected{% endif %}>Business Communication & Report Writing</option>
+                <option value='Business Economics' {% if selected_subject == 'Business Economics' %}selected{% endif %}>Business Economics</option>
+                <option value='Business Mathematics' {% if selected_subject == 'Business Mathematics' %}selected{% endif %}>Business Mathematics</option>
+                <option value='Business Writing & Comprehension Skills' {% if selected_subject == 'Business Writing & Comprehension Skills' %}selected{% endif %}>Business Writing & Comprehension Skills</option>
+                <option value='Chemistry' {% if selected_subject == 'Chemistry' %}selected{% endif %}>Chemistry</option>
+                <option value='Chinese' {% if selected_subject == 'Chinese' %}selected{% endif %}>Chinese</option>
+                <option value='Civics' {% if selected_subject == 'Civics' %}selected{% endif %}>Civics</option>
+                <option value='Classical Studies' {% if selected_subject == 'Classical Studies' %}selected{% endif %}>Classical Studies</option>
+                <option value='Commerce' {% if selected_subject == 'Commerce' %}selected{% endif %}>Commerce</option>
+                <option value='Computer Science & IT' {% if selected_subject == 'Computer Science & IT' %}selected{% endif %}>Computer Science & IT</option>
+                <option value='Data Management & Fin-Tech' {% if selected_subject == 'Data Management & Fin-Tech' %}selected{% endif %}>Data Management & Fin-Tech</option>
+                <option value='Design & Technology' {% if selected_subject == 'Design & Technology' %}selected{% endif %}>Design & Technology</option>
+                <option value='Drama' {% if selected_subject == 'Drama' %}selected{% endif %}>Drama</option>
+                <option value='Economics' {% if selected_subject == 'Economics' %}selected{% endif %}>Economics</option>
+                <option value='Education' {% if selected_subject == 'Education' %}selected{% endif %}>Education</option>
+                <option value='English' {% if selected_subject == 'English' %}selected{% endif %}>English</option>
+                <option value='Environmental Management' {% if selected_subject == 'Environmental Management' %}selected{% endif %}>Environmental Management</option>
+                <option value='ERP Solutions' {% if selected_subject == 'ERP Solutions' %}selected{% endif %}>ERP Solutions</option>
+                <option value='Ethics' {% if selected_subject == 'Ethics' %}selected{% endif %}>Ethics</option>
+                <option value='Food & Nutrition' {% if selected_subject == 'Food & Nutrition' %}selected{% endif %}>Food & Nutrition</option>
+                <option value='Fundamentals of Management' {% if selected_subject == 'Fundamentals of Management' %}selected{% endif %}>Fundamentals of Management</option>
+                <option value='Geography' {% if selected_subject == 'Geography' %}selected{% endif %}>Geography</option>
+                <option value='Global Perspectives' {% if selected_subject == 'Global Perspectives' %}selected{% endif %}>Global Perspectives</option>
+                <option value='Home Economics & Textiles' {% if selected_subject == 'Home Economics & Textiles' %}selected{% endif %}>Home Economics & Textiles</option>
+                <option value='Humanitarian' {% if selected_subject == 'Humanitarian' %}selected{% endif %}>Humanitarian</option>
+                <option value='History' {% if selected_subject == 'History' %}selected{% endif %}>History</option>
+                <option value='Introduction to Business' {% if selected_subject == 'Introduction to Business' %}selected{% endif %}>Introduction to Business</option>
+                <option value='Islamic Studies' {% if selected_subject == 'Islamic Studies' %}selected{% endif %}>Islamic Studies</option>
+                <option value='Management Information Systems' {% if selected_subject == 'Management Information Systems' %}selected{% endif %}>Management Information Systems</option>
+                <option value='Management Professional Competence' {% if selected_subject == 'Management Professional Competence' %}selected{% endif %}>Management Professional Competence</option>
+                <option value='Mathematics' {% if selected_subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                <option value='Media Studies' {% if selected_subject == 'Media Studies' %}selected{% endif %}>Media Studies</option>
+                <option value='Music' {% if selected_subject == 'Music' %}selected{% endif %}>Music</option>
+                <option value='Pakistan Studies & Culture' {% if selected_subject == 'Pakistan Studies & Culture' %}selected{% endif %}>Pakistan Studies & Culture</option>
+                <option value='Physical Education' {% if selected_subject == 'Physical Education' %}selected{% endif %}>Physical Education</option>
+                <option value='Physics' {% if selected_subject == 'Physics' %}selected{% endif %}>Physics</option>
+                <option value='Presentation & Personal Effectiveness' {% if selected_subject == 'Presentation & Personal Effectiveness' %}selected{% endif %}>Presentation & Personal Effectiveness</option>
+                <option value='Psychology' {% if selected_subject == 'Psychology' %}selected{% endif %}>Psychology</option>
+                <option value='Quantitative Methods' {% if selected_subject == 'Quantitative Methods' %}selected{% endif %}>Quantitative Methods</option>
+                <option value='Religious Studies' {% if selected_subject == 'Religious Studies' %}selected{% endif %}>Religious Studies</option>
+                <option value='Science' {% if selected_subject == 'Science' %}selected{% endif %}>Science</option>
+                <option value='Sindhi' {% if selected_subject == 'Sindhi' %}selected{% endif %}>Sindhi</option>
+                <option value='Sociology' {% if selected_subject == 'Sociology' %}selected{% endif %}>Sociology</option>
+                <option value='Statistics' {% if selected_subject == 'Statistics' %}selected{% endif %}>Statistics</option>
+                <option value='Strategic Business Leader' {% if selected_subject == 'Strategic Business Leader' %}selected{% endif %}>Strategic Business Leader</option>
+                <option value='Strategic Business Reporting' {% if selected_subject == 'Strategic Business Reporting' %}selected{% endif %}>Strategic Business Reporting</option>
+                <option value='Strategic Financial Management' {% if selected_subject == 'Strategic Financial Management' %}selected{% endif %}>Strategic Financial Management</option>
+                <option value='Strategic Management' {% if selected_subject == 'Strategic Management' %}selected{% endif %}>Strategic Management</option>
+                <option value='Taxation' {% if selected_subject == 'Taxation' %}selected{% endif %}>Taxation</option>
+                <option value='Thinking Skills' {% if selected_subject == 'Thinking Skills' %}selected{% endif %}>Thinking Skills</option>
+                <option value='Travel & Tourism' {% if selected_subject == 'Travel & Tourism' %}selected{% endif %}>Travel & Tourism</option>
+                <option value='Urdu' {% if selected_subject == 'Urdu' %}selected{% endif %}>Urdu</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Filter Leads</button>
+    </div>
+</form>
+
+<!-- Display Matching Leads -->
+{% if leads is defined %}
+    {% if leads %}
+        <h3 class="mt-4">Matching Student Leads</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Area</th>
+                    <th>Board</th>
+                    <th>Subjects</th>
+                    <th>Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.username }}</td>
+                    <td>{{ lead.area }}</td>
+                    <td>{{ lead.board }}</td>
+                    <td>{{ lead.subjects }}</td>
+                    <td>Rs. {{ lead.fee }}</td>
+                    <td>
+                        <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}" data-lead-id="{{ lead.id }}">
+                            <button type="submit" class="btn btn-success accept-lead-btn">Accept Lead</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="mt-4">No verified leads found for the selected filters.</p>
+    {% endif %}
+{% endif %}
+
+<!-- JavaScript for Handling Lead Acceptance -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all forms with class 'accept-lead-form'
+    const forms = document.querySelectorAll('.accept-lead-form');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const button = form.querySelector('.accept-lead-btn');
+            const leadId = form.dataset.leadId;
+            const actionUrl = form.action;
+
+            try {
+                // Send AJAX POST request to accept the lead
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add CSRF token if required by your backend
+                        // 'X-CSRF-Token': 'your-csrf-token'
+                    },
+                    body: JSON.stringify({ lead_id: leadId })
+                });
+
+                if (response.ok) {
+                    // On success, update button text and disable it
+                    button.textContent = 'Request Sent';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-secondary');
+                    button.disabled = true;
+
+                    // Optionally show a success message (can use flash or custom alert)
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success mt-2';
+                    alertDiv.textContent = 'Lead accepted successfully!';
+                    form.parentElement.appendChild(alertDiv);
+                } else {
+                    // Handle error response
+                    const errorData = await response.json();
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger mt-2';
+                    alertDiv.textContent = errorData.message || 'Failed to accept lead. Please try again.';
+                    form.parentElement.appendChild(alertDiv);
+                }
+            } catch (error) {
+                // Handle network or other errors
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger mt-2';
+                alertDiv.textContent = 'An error occurred. Please check your connection and try again.';
+                form.parentElement.appendChild(alertDiv);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
