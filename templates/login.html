@@ -76,33 +76,178 @@
         transform: scale(0.98);
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
-        .login-container {
-            margin: 1.5rem;
-            padding: 1.5rem;
-        }
 
-        .login-title {
+    /* Form container enhancements */
+    .registration-container {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .registration-container:hover {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Form header improvements */
+    .form-header h2 {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .form-header h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        border-radius: 3px;
+    }
+
+    .form-header p {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+    }
+
+    /* Form input enhancements */
+    .form-control {
+        border: 1px solid #dfe6e9;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .form-control:focus {
+        border-color: #6a11cb;
+        box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
+        background-color: #fff;
+    }
+
+    /* Label styling */
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Required field indicators */
+    .form-label.required:after {
+        content: " *";
+        color: #e74c3c;
+    }
+
+    /* File upload improvements */
+    .file-upload-btn {
+        border: 1px dashed #bdc3c7;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .file-upload-btn:hover {
+        border-color: #6a11cb;
+        background-color: #f1f1f1;
+    }
+
+    /* Radio button styling */
+    .form-check-input {
+        margin-top: 0.2rem;
+    }
+
+    .form-check-label {
+        margin-left: 0.3rem;
+        color: #34495e;
+    }
+
+    /* Button enhancements */
+    .btn-outline-secondary {
+        border-color: #bdc3c7;
+        color: #7f8c8d;
+        padding: 10px 25px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: #95a5a6;
+        color: #2c3e50;
+    }
+
+    /* Tab navigation improvements */
+    .nav-tabs {
+        border-bottom: 2px solid #f1f1f1;
+    }
+
+    .nav-tabs .nav-link {
+        color: #7f8c8d;
+        font-weight: 600;
+        border: none;
+        padding: 12px 20px;
+        position: relative;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #6a11cb;
+        background: transparent;
+    }
+
+    .nav-tabs .nav-link.active:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .registration-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+        
+        .form-header h2 {
             font-size: 1.5rem;
         }
-
-        .form-control {
-            font-size: 0.95rem;
-            padding: 0.65rem;
-        }
-
-        .login-btn {
-            font-size: 1rem;
-            padding: 0.65rem;
+        
+        .nav-tabs .nav-link {
+            padding: 10px 15px;
+            font-size: 0.85rem;
         }
     }
+
+    /* Form section spacing */
+    .tab-pane {
+        padding: 1.5rem 0 0 0;
+    }
+
+    /* Input group spacing */
+    .mb-3 {
+        margin-bottom: 1.25rem !important;
+}
+
 </style>
 
 <div class="login-container">
     <h2 class="login-title">Login</h2>
+        {% if error %}
+         <p style="color: red;">{{ error }}</p>
+        {% endif %}
     <form method="post">
-        <div class="form-group">
+        <div class="form-group"> 
             <label for="username">Username</label>
             <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
         </div>
@@ -113,7 +258,6 @@
         <div class="form-group">
             <label for="user_type">I am a</label>
             <select name="user_type" id="user_type" class="form-control">
-                <option value="student">Student</option>
                 <option value="tutor">Tutor</option>
                 <option value="admin">Admin</option>
             </select>
@@ -354,9 +498,6 @@
                     <button class="nav-link" id="tutor-tab" data-bs-toggle="tab" data-bs-target="#tutor" type="button" role="tab" aria-controls="tutor" aria-selected="false">Tutor Registration</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="student-tab" data-bs-toggle="tab" data-bs-target="#student" type="button" role="tab" aria-controls="student" aria-selected="false">Student Registration</button>
-                </li>
-                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="verification-tab" data-bs-toggle="tab" data-bs-target="#verification" type="button" role="tab" aria-controls="verification" aria-selected="false">Verification</button>
                 </li>
             </ul>
@@ -366,13 +507,9 @@
                 <div class="tab-pane fade show active" id="select-type" role="tabpanel" aria-labelledby="select-type-tab">
                     <form id="typeSelectionForm">
                         <div class="mb-4 text-center">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="registrationType" id="tutorType" value="tutor" onclick="selectType('tutor')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="registrationType" id="tutorType" value="tutor" onclick="selectType('tutor')" checked>
                                 <label class="form-check-label" for="tutorType">I am a Tutor</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="registrationType" id="studentType" value="student" onclick="selectType('student')">
-                                <label class="form-check-label" for="studentType">I am a Student</label>
                             </div>
                         </div>
                         <div class="d-grid">
@@ -381,106 +518,82 @@
                     </form>
                 </div>
                 
-                <!-- Step 2: Tutor Registration Form -->
+                <!-- Tutor Registration Form -->
                 <div class="tab-pane fade" id="tutor" role="tabpanel" aria-labelledby="tutor-tab">
                     <form id="tutorForm">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="tutorName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="tutorName" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tutorFatherName" class="form-label">Father's Name</label>
-                                <input type="text" class="form-control" id="tutorFatherName" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorCnicFront" class="form-label">CNIC Front Image</label>
-                            <div class="file-upload">
-                                <div class="file-upload-btn">
-                                    <i class="fas fa-upload file-upload-icon"></i>
-                                    <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tutorUsername" class="form-label">Username*</label>
+                                    <input type="text" class="form-control" id="tutorUsername" name="username" required>
                                 </div>
-                                <input type="file" class="file-upload-input" id="tutorCnicFront" accept="image/*" onchange="updateFileName('tutorCnicFront')">
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorCnicBack" class="form-label">CNIC Back Image</label>
-                            <div class="file-upload">
-                                <div class="file-upload-btn">
-                                    <i class="fas fa-upload file-upload-icon"></i>
-                                    <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
+                                <div class="mb-3">
+                                    <label for="tutorPassword" class="form-label">Password*</label>
+                                    <input type="password" class="form-control" id="tutorPassword" name="password" required>
                                 </div>
-                                <input type="file" class="file-upload-input" id="tutorCnicBack" accept="image/*" onchange="updateFileName('tutorCnicBack')">
+                                <div class="mb-3">
+                                    <label for="tutorName" class="form-label">Full Name*</label>
+                                    <input type="text" class="form-control" id="tutorName" name="full_name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorFatherName" class="form-label">Father's Name*</label>
+                                    <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tutorPhone" class="form-label">Phone Number*</label>
+                                    <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorEmail" class="form-label">Email Address*</label>
+                                    <input type="email" class="form-control" id="tutorEmail" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorQualification" class="form-label">Last Qualification*</label>
+                                    <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorCnicFront" class="form-label">CNIC Front Image*</label>
+                                    <div class="file-upload">
+                                        <div class="file-upload-btn">
+                                            <i class="fas fa-upload file-upload-icon"></i>
+                                            <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+                                        </div>
+                                        <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorCnicBack" class="form-label">CNIC Back Image*</label>
+                                    <div class="file-upload">
+                                        <div class="file-upload-btn">
+                                            <i class="fas fa-upload file-upload-icon"></i>
+                                            <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
+                                        </div>
+                                        <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="tutorPhone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="tutorPhone" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tutorEmail" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="tutorEmail" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorQualification" class="form-label">Last Qualification</label>
-                            <input type="text" class="form-control" id="tutorQualification" required>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
+
+                        <input type="hidden" name="user_type" value="Tutor">
+                        <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-outline-secondary" onclick="goBackToTypeSelection()">Back</button>
                             <button type="button" class="btn btn-primary" onclick="proceedToVerification('tutor')">Next</button>
                         </div>
                     </form>
                 </div>
                 
-                <!-- Step 2: Student Registration Form -->
-                <div class="tab-pane fade" id="student" role="tabpanel" aria-labelledby="student-tab">
-                    <form id="studentForm">
-                        <div class="mb-3">
-                            <label for="studentName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="studentName" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="studentOrParent" id="studentOption" value="student" checked>
-                                <label class="form-check-label" for="studentOption">
-                                    I am registering as a Student
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="studentOrParent" id="parentOption" value="parent">
-                                <label class="form-check-label" for="parentOption">
-                                    I am registering as a Parent
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="studentPhone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="studentPhone" required>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary" onclick="goBackToTypeSelection()">Back</button>
-                            <button type="button" class="btn btn-primary" onclick="proceedToVerification('student')">Next</button>
-                        </div>
-                    </form>
-                </div>
-                
                 <!-- Step 3: Verification -->
                 <div class="tab-pane fade" id="verification" role="tabpanel" aria-labelledby="verification-tab">
+                    <p id="registrationError" class="text-danger" style="display: none;"></p>
                     <div class="text-center mb-4">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            Please enter the OTP sent to your phone number and email address.
+                            Please enter the OTP sent to your email address.
                         </div>
                     </div>
                     
@@ -536,9 +649,8 @@
     <script>
         // Global variables to store form data
         let registrationData = {
-            type: '',
+            type: 'tutor',
             tutor: {},
-            student: {},
             verification: {}
         };
         
@@ -556,68 +668,57 @@
         
         // Proceed to registration form based on selected type
         function proceedToRegistration() {
-            const type = registrationData.type;
-            if (!type) {
-                showToast('error', 'Please select a registration type');
-                return;
-            }
-            
-            // Hide all tabs except the selected type
-            const tutorTab = document.getElementById('tutor-tab');
-            const studentTab = document.getElementById('student-tab');
-            
-            if (type === 'tutor') {
-                tutorTab.click();
-            } else {
-                studentTab.click();
-            }
+            // Programmatically switch to the tutor tab
+            const tutorTab = new bootstrap.Tab(document.getElementById('tutor-tab'));
+            tutorTab.show();
         }
         
         // Go back to type selection
         function goBackToTypeSelection() {
-            const selectTypeTab = document.getElementById('select-type-tab');
-            selectTypeTab.click();
+            const selectTypeTab = new bootstrap.Tab(document.getElementById('select-type-tab'));
+            selectTypeTab.show();
         }
         
         // Proceed to verification
         function proceedToVerification(type) {
-            // Validate form based on type
-            if (type === 'tutor') {
-                const tutorForm = document.getElementById('tutorForm');
-                if (!tutorForm.checkValidity()) {
-                    tutorForm.reportValidity();
-                    return;
-                }
-                
-                // Store tutor data
-                registrationData.tutor = {
-                    name: document.getElementById('tutorName').value,
-                    fatherName: document.getElementById('tutorFatherName').value,
-                    cnicFront: document.getElementById('tutorCnicFront').files[0]?.name || '',
-                    cnicBack: document.getElementById('tutorCnicBack').files[0]?.name || '',
-                    phone: document.getElementById('tutorPhone').value,
-                    email: document.getElementById('tutorEmail').value,
-                    qualification: document.getElementById('tutorQualification').value
-                };
-            } else {
-                const studentForm = document.getElementById('studentForm');
-                if (!studentForm.checkValidity()) {
-                    studentForm.reportValidity();
-                    return;
-                }
-                
-                // Store student data
-                registrationData.student = {
-                    name: document.getElementById('studentName').value,
-                    type: document.querySelector('input[name="studentOrParent"]:checked').value,
-                    phone: document.getElementById('studentPhone').value
-                };
+            const formId = 'tutorForm';
+            const form = document.getElementById(formId);
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
             }
-            
-            // Move to verification tab
-            const verificationTab = document.getElementById('verification-tab');
-            verificationTab.click();
-        }
+        
+            const formData = new FormData(form);
+            fetch('/signup', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('registrationError').style.display = 'none';
+                if (data.error) {
+                    showToast('error', data.error);
+                    document.getElementById('registrationError').innerText = data.error;
+                    document.getElementById('registrationError').style.display = 'block';
+                } else {
+                    // Store email for verification
+                    registrationData.email = data.email;
+
+                    // Only proceed to verification if backend indicates to
+                    if (data.next_step === 'verify') {
+                        showToast('success', 'OTP sent to ' + data.email);
+                        // Programmatically switch to verification tab
+                        const verificationTab = new bootstrap.Tab(document.getElementById('verification-tab'));
+                        verificationTab.show();
+                    }
+                }
+            })
+            .catch(error => {
+                showToast('error', 'An error occurred: ' + error.message);
+                document.getElementById('registrationError').innerText = 'An error occurred: ' + error.message;
+                document.getElementById('registrationError').style.display = 'block';
+            });
+        }     
         
         // Update file name display
         function updateFileName(inputId) {
@@ -627,7 +728,7 @@
             if (input.files && input.files[0]) {
                 label.textContent = input.files[0].name;
             } else {
-                label.textContent = 'Upload ' + inputId.replace('tutor', '').replace('student', '').replace(/([A-Z])/g, ' $1').trim();
+                label.textContent = 'Upload ' + inputId.replace('tutor', '').replace(/([A-Z])/g, ' $1').trim();
             }
         }
         
@@ -648,62 +749,88 @@
         // Resend OTP
         function resendOTP(event) {
             event.preventDefault();
-            showToast('success', 'OTP has been resent to your phone and email');
+            fetch('/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(registrationData.email)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast('success', data.message);
+                } else {
+                    showToast('error', data.detail || 'Failed to resend OTP');
+                }
+            })
+            .catch(error => {
+                showToast('error', 'Failed to resend OTP');
+            });
         }
         
         // Submit registration
         function submitRegistration() {
-            // Get OTP
             let otp = '';
             for (let i = 1; i <= 6; i++) {
                 otp += document.getElementById('otp' + i).value;
             }
-            
+
             if (otp.length !== 6) {
                 showToast('error', 'Please enter the complete OTP');
                 return;
             }
-            
-            // Store verification data
-            registrationData.verification = {
-                otp: otp
-            };
-            
-            // Simulate API call to submit data
-            setTimeout(() => {
-                console.log('Registration data:', registrationData);
-                showToast('success', 'Registration submitted successfully! Admin will review your request.');
-                
-                // Reset form after successful submission
+
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(registrationData.email)}&otp=${otp}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', data.message);
                 setTimeout(() => {
-                    document.getElementById('registrationForm').style.display = 'none';
-                    document.getElementById('typeSelectionForm').reset();
-                    document.getElementById('tutorForm').reset();
-                    document.getElementById('studentForm').reset();
-                    document.getElementById('verificationForm').reset();
-                    
-                    // Reset file upload labels
-                    updateFileName('tutorCnicFront');
-                    updateFileName('tutorCnicBack');
-                    
-                    // Reset OTP inputs
-                    for (let i = 1; i <= 6; i++) {
-                        document.getElementById('otp' + i).value = '';
-                    }
-                    
-                    // Reset to first tab
-                    const selectTypeTab = document.getElementById('select-type-tab');
-                    selectTypeTab.click();
-                    
-                    // Reset registration data
-                    registrationData = {
-                        type: '',
-                        tutor: {},
-                        student: {},
-                        verification: {}
-                    };
+                    resetRegistrationForm();
+                    window.location.href = '/login';
                 }, 2000);
-            }, 1500);
+            })
+            .catch(error => {
+                showToast('error', error.detail || 'Verification failed');
+            });
+        }
+        // Helper function to reset form
+        function resetRegistrationForm() {
+            document.getElementById('typeSelectionForm').reset();
+            document.getElementById('tutorForm').reset();
+            document.getElementById('verificationForm').reset();
+
+            // Reset file upload labels
+            updateFileName('tutorCnicFront');
+            updateFileName('tutorCnicBack');
+
+            // Reset OTP inputs
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('otp' + i).value = '';
+            }
+
+            // Reset to first tab
+            const selectTypeTab = new bootstrap.Tab(document.getElementById('select-type-tab'));
+            selectTypeTab.show();
+
+            // Reset registration data
+            registrationData = {
+                type: 'tutor',
+                tutor: {},
+                verification: {},
+                email: ''
+            };
         }
         
         // Show toast notification
@@ -720,6 +847,30 @@
             
             toast.show();
         }
+        // Add this script to handle tab navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Disable all tab links completely
+            const tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+            tabLinks.forEach(link => {
+                link.style.pointerEvents = 'none';
+                link.style.cursor = 'default';
+
+                // Remove the data-bs-toggle attribute to prevent Bootstrap from handling clicks
+                link.removeAttribute('data-bs-toggle');
+
+                // Add visual indication that tabs aren't clickable
+                if (!link.classList.contains('active')) {
+                    link.style.opacity = '0.7';
+                }
+            });
+
+            // Only allow the currently active tab to be clickable (for visual feedback)
+            const activeTab = document.querySelector('.nav-link.active');
+            if (activeTab) {
+                activeTab.style.pointerEvents = 'auto';
+                activeTab.style.cursor = 'pointer';
+            }
+        });
     </script>
 </body>
 </html>
