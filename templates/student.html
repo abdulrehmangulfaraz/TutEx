@@ -5,6 +5,7 @@
 {% block content %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
  body {
@@ -70,10 +71,97 @@
  font-size: 1rem;
  }
  }
+
+ /* OTP Verification Styles */
+ .otp-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 1rem 0;
+ }
+ 
+ .otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+ }
+ 
+ .otp-input:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+ }
+
+ /* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.toast {
+    border-radius: 8px;
+}
+
+/* Personal Info Step Styles */
+.personal-info-form {
+    padding: 20px;
+}
+
+.personal-info-form .form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.personal-info-form .form-control:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+}
+
+.personal-info-form .form-label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
 </style>
+
 <section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  // Define premium subjects
+  const premiumSubjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Audit"];
+
+  // Define area base fees
+  const areaBaseFees = {
+    "DHA": 5000,
+    "Gulshan-e-Iqbal": 4000,
+    "PECHS": 4000,
+    "Saddar": 4000,
+    "Gulistan-e-Johar": 3000,
+    "Gulberg": 4000,
+    "North Nazimabad": 3000,
+    "North Karachi": 3000
+  };
+
+  // Define board additional fees
+  const boardAdditionalFees = {
+    "Cambridge O'Levels": 4000,
+    "Cambridge A'Levels": 4000,
+    "ACCA": 4000,
+    "ICAP": 4000,
+    "Karachi Matric Board": 2000,
+    "Karachi Inter board": 2000,
+    "Federal Board": 2000,
+    "Aga Khan Board": 2000,
+    "ICMA": 3000,
+    "Sindh Technical Board": 2000
+  };
+
   // Define subjects for each board
   const boardSubjects = {
     "Cambridge O'Levels": [
@@ -185,8 +273,45 @@
   }
 
   function calculateFee() {
-    const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked').length;
-    const totalFee = selectedSubjects * 5000; // Example fee per subject
+    // Get selected area and board
+    const selectedArea = document.getElementById('area').value;
+    const selectedBoard = document.getElementById('board').value;
+    
+    // Calculate base fees
+    let areaFee = 2000; // Default for other areas
+    if (areaBaseFees[selectedArea]) {
+      areaFee = areaBaseFees[selectedArea];
+    }
+    
+    let boardFee = 2000; // Default for other boards
+    if (boardAdditionalFees[selectedBoard]) {
+      boardFee = boardAdditionalFees[selectedBoard];
+    }
+    
+    // Calculate per subject cap
+    const perSubjectCap = areaFee + boardFee;
+    
+    // Calculate total fee
+    let totalFee = areaFee + boardFee; // Start with base fees
+    
+    // Add subject fees
+    const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
+    selectedSubjects.forEach(subject => {
+      const subjectName = subject.value.split(' - ')[0]; // Get subject name without code
+      let subjectFee = 5000; // Default for other subjects
+      
+      if (premiumSubjects.includes(subjectName)) {
+        subjectFee = 6000;
+      }
+      
+      // Apply cap per subject
+      if (subjectFee > perSubjectCap) {
+        subjectFee = perSubjectCap;
+      }
+      
+      totalFee += subjectFee;
+    });
+    
     document.getElementById('totalFee').textContent = totalFee;
   }
 
@@ -214,6 +339,139 @@
     document.getElementById(`step${step - 1}`).style.display = 'block';
   }
 
+  // Global variables to store form data
+  let studentData = {
+    area: '',
+    board: '',
+    subjects: [],
+    personalInfo: {},
+    verification: {}
+  };
+
+  // Function to collect all data before proceeding to personal info
+  function proceedToPersonalInfo() {
+    // Collect area, board, and subjects
+    studentData.area = document.getElementById('area').value;
+    studentData.board = document.getElementById('board').value;
+    studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
+    
+    // Hide step3 and show step4
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'block';
+  }
+
+  // Dummy function for sending OTP (replace with actual implementation later)
+  function sendDummyOTP(email, phone) {
+    console.log("Dummy OTP sent to:", email, phone);
+    // In a real implementation, this would call your backend to send OTP
+    return Promise.resolve({ status: 'success', message: 'OTP sent successfully' });
+  }
+
+  // Dummy function for verifying OTP (replace with actual implementation later)
+  function verifyDummyOTP(email, otp) {
+    console.log("Dummy OTP verification for:", email, otp);
+    // In a real implementation, this would call your backend to verify OTP
+    return Promise.resolve({ status: 'success', message: 'OTP verified successfully' });
+  }
+
+  // Function to proceed to OTP verification
+  function proceedToOTPVerification() {
+    // Collect personal info
+    studentData.personalInfo = {
+      name: document.getElementById('studentName').value,
+      phone: document.getElementById('studentPhone').value,
+      email: document.getElementById('studentEmail').value
+    };
+
+    // Validate personal info
+    if (!studentData.personalInfo.name || !studentData.personalInfo.phone || !studentData.personalInfo.email) {
+      showToast('error', 'Please fill all personal information fields');
+      return;
+    }
+
+    // Dummy OTP sending (replace with actual implementation later)
+    sendDummyOTP(studentData.personalInfo.email, studentData.personalInfo.phone)
+      .then(response => {
+        showToast('success', 'OTP sent to ' + studentData.personalInfo.email);
+        document.getElementById('step4').style.display = 'none';
+        document.getElementById('step5').style.display = 'block';
+      })
+      .catch(error => {
+        showToast('error', 'Failed to send OTP: ' + error.message);
+      });
+  }
+
+  // Function to resend OTP
+  function resendStudentOTP(event) {
+    event.preventDefault();
+    // Dummy OTP resend (replace with actual implementation later)
+    sendDummyOTP(studentData.personalInfo.email, studentData.personalInfo.phone)
+      .then(response => {
+        showToast('success', 'OTP resent successfully');
+      })
+      .catch(error => {
+        showToast('error', 'Failed to resend OTP');
+      });
+  }
+
+  // Function to verify OTP and submit registration
+  function verifyStudentOTP() {
+    let otp = '';
+    for (let i = 1; i <= 6; i++) {
+      otp += document.getElementById('studentOtp' + i).value;
+    }
+
+    if (otp.length !== 6) {
+      showToast('error', 'Please enter the complete OTP');
+      return;
+    }
+
+    // Dummy OTP verification (replace with actual implementation later)
+    verifyDummyOTP(studentData.personalInfo.email, otp)
+      .then(response => {
+        showToast('success', 'Registration successful!');
+        setTimeout(() => {
+          // Here you would submit the complete form data to your backend
+          console.log("Submitting student data:", studentData);
+          // Redirect to thank you page
+          window.location.href = '/thank-you';
+        }, 2000);
+      })
+      .catch(error => {
+        showToast('error', 'Invalid OTP. Please try again.');
+      });
+  }
+
+  // OTP input navigation functions
+  function moveToNext(currentInput, nextInputId) {
+    if (currentInput.value.length === 1) {
+      document.getElementById(nextInputId).focus();
+    }
+  }
+  
+  function moveToPrev(currentInput, prevInputId, event) {
+    if (event.key === 'Backspace' && currentInput.value.length === 0) {
+      document.getElementById(prevInputId).focus();
+    }
+  }
+
+  // Show toast notification
+  function showToast(type, message) {
+    const toastElement = type === 'success' 
+      ? document.getElementById('successToast')
+      : document.getElementById('errorToast');
+      
+    const toast = new bootstrap.Toast(toastElement);
+    
+    if (type === 'success') {
+      document.getElementById('successToastMessage').textContent = message;
+    } else {
+      document.getElementById('errorToastMessage').textContent = message;
+    }
+    
+    toast.show();
+  }
+
   // INITIAL SETUP: Event Listeners and Defaults
   document.addEventListener('DOMContentLoaded', function () {
     // Set initial board and area values
@@ -225,12 +483,14 @@
     document.getElementById('areaCarousel').addEventListener('slid.bs.carousel', function () {
       const activeArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
       document.getElementById('area').value = activeArea;
+      calculateFee(); // Recalculate fee when area changes
     });
     // Setup board carousel event
     document.getElementById('boardCarousel').addEventListener('slid.bs.carousel', function () {
       const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
       document.getElementById('board').value = activeBoard;
       updateSubjects(activeBoard);
+      calculateFee(); // Recalculate fee when board changes
     });
     // Initially load subjects for the active board on page load
     updateSubjects(initialBoard);
@@ -240,7 +500,7 @@
 <div class="form-container">
  <h2 class="text-center">Student Portal</h2>
  
- <form method="post" id="studentForm" onsubmit="return showSummary(event);">
+ <form method="post" id="studentForm">
   
  <div id="step1">
  <h3 class="text-center">Step 1: Select Your Area</h3>
@@ -253,73 +513,73 @@
  "Gulistan-e-Johar": "images/johar.png",
 "Gulberg": "images/gulberg.png",
  "North Nazimabad": "images/north_nazimabad.jpg",
-            "North Karachi": "images/north_karachi.jpg",
-            "Saddar": "images/sadar.jpg"
-          } %}
-          {% for area, img in area_images.items() %}
-          <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
-            <img src="{{ url_for('static', filename=img) }}" alt="{{ area }}">
-            <div class="carousel-caption">
-              <h5>{{ area }}</h5>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <input type="hidden" id="area" name="area">
-      <div class="text-center mt-3">
-        <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next</button>
-      </div>
-    </div>
+            "North Karachi": "images/north_karachi.jpg",
+            "Saddar": "images/sadar.jpg"
+          } %}
+          {% for area, img in area_images.items() %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
+            <img src="{{ url_for('static', filename=img) }}" alt="{{ area }}">
+            <div class="carousel-caption">
+              <h5>{{ area }}</h5>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <input type="hidden" id="area" name="area">
+      <div class="text-center mt-3">
+        <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next</button>
+      </div>
+    </div>
 
-    <div id="step2" style="display: none;">
-      <h3 class="text-center">Step 2: Select Your Board</h3>
-      <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {% set board_images = {
-            "Cambridge O'Levels": "images/ciae.png",
-            "Cambridge A'Levels": "images/ciae.png",
-            "Karachi Matric Board": "images/bsek.jpg",
-            "Karachi Inter board": "images/biek.png",
-            "Federal Board": "images/fbis.png",
-            "Aga Khan Board": "images/akub.png",
-            "ICAP": "images/icap.jpg",
-            "ACCA": "images/acca.png",
-            "ICMA": "images/icma.jpg",
-            "Sindh Technical Board": "images/stb.png"
-          } %}
-          {% for board, img in board_images.items() %}
-          <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
-            <img src="{{ url_for('static', filename=img) }}" alt="{{ board }}">
-            <div class="carousel-caption">
-              <h5>{{ board }}</h5>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <input type="hidden" id="board" name="board">
-      <div class="text-center mt-3">
-        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
-        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
-      </div>
-    </div>
+    <div id="step2" style="display: none;">
+      <h3 class="text-center">Step 2: Select Your Board</h3>
+      <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% set board_images = {
+            "Cambridge O'Levels": "images/ciae.png",
+            "Cambridge A'Levels": "images/ciae.png",
+            "Karachi Matric Board": "images/bsek.jpg",
+            "Karachi Inter board": "images/biek.png",
+            "Federal Board": "images/fbis.png",
+            "Aga Khan Board": "images/akub.png",
+            "ICAP": "images/icap.jpg",
+            "ACCA": "images/acca.png",
+            "ICMA": "images/icma.jpg",
+            "Sindh Technical Board": "images/stb.png"
+          } %}
+          {% for board, img in board_images.items() %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
+            <img src="{{ url_for('static', filename=img) }}" alt="{{ board }}">
+            <div class="carousel-caption">
+              <h5>{{ board }}</h5>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <input type="hidden" id="board" name="board">
+      <div class="text-center mt-3">
+        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
+      </div>
+    </div>
 
 <!-- Step 3: Subject Selection -->
 <div id="step3" style="display: none;">
@@ -338,31 +598,94 @@
   
   <div class="text-center mt-4">
     <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"> Previous </button>
-    <button type="submit" class="btn btn-success"> Submit </button>
+    <button type="button" class="btn btn-primary" onclick="proceedToPersonalInfo()"> Next </button>
   </div>
 </div>
-  
 
-<div id="summary" class="step" style="display: none;">
-    <h3 class="text-center">Summary</h3>
-    <table class="table table-bordered summary-table">
-        <thead>
-            <tr>
-                <th>Area</th>
-                <th>Board</th>
-                <th>Selected Subjects</th>
-                <th>Total Fee</th>
-            </tr>
-        </thead>
-        <tbody id="summaryTable">
-            </tbody>
-    </table>
-    <div class="text-center mt-3 edit-button">
-        <button type="button" class="btn btn-primary" onclick="document.getElementById('studentForm').style.display='block'; document.getElementById('summary').style.display='none';">Edit Information</button>
-        <button type="submit" class="btn btn-success">Submit</button>
+<!-- Step 4: Personal Information -->
+<div id="step4" style="display: none;">
+  <h3 class="text-center mb-4">Step 4: Your Information</h3>
+  
+  <div class="personal-info-form">
+    <div class="mb-3">
+      <label for="studentName" class="form-label">Full Name*</label>
+      <input type="text" class="form-control" id="studentName" required>
     </div>
+    
+    <div class="mb-3">
+      <label for="studentPhone" class="form-label">Phone Number*</label>
+      <input type="tel" class="form-control" id="studentPhone" required>
+    </div>
+    
+    <div class="mb-3">
+      <label for="studentEmail" class="form-label">Email Address*</label>
+      <input type="email" class="form-control" id="studentEmail" required>
+    </div>
+    
+    <div class="text-center mt-4">
+      <button type="button" class="btn btn-secondary me-2" onclick="document.getElementById('step4').style.display='none'; document.getElementById('step3').style.display='block';"> Previous </button>
+      <button type="button" class="btn btn-primary" onclick="proceedToOTPVerification()"> Send OTP </button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 5: OTP Verification -->
+<div id="step5" style="display: none;">
+  <h3 class="text-center mb-4">Step 5: Verify Your Email</h3>
+  
+  <div class="text-center mb-4">
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      Please enter the OTP sent to your email address.
+    </div>
+  </div>
+  
+  <div class="mb-4">
+    <label class="form-label text-center d-block">Enter OTP</label>
+    <div class="otp-container">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp1" onkeyup="moveToNext(this, 'studentOtp2')">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp2" onkeyup="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp3" onkeyup="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp4" onkeyup="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp5" onkeyup="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
+      <input type="text" class="otp-input" maxlength="1" id="studentOtp6" onkeydown="moveToPrev(this, 'studentOtp5', event)">
+    </div>
+    <div class="text-center">
+      <a href="#" onclick="resendStudentOTP(event)">Resend OTP</a>
+    </div>
+  </div>
+  
+  <div class="text-center">
+    <button type="button" class="btn btn-secondary me-2" onclick="document.getElementById('step5').style.display='none'; document.getElementById('step4').style.display='block';"> Previous </button>
+    <button type="button" class="btn btn-success" onclick="verifyStudentOTP()"> Verify & Submit </button>
+  </div>
+</div>
+  
   </form>
 </div>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<!-- Toast Notifications -->
+<div class="toast-container">
+    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="successToastMessage">Operation successful!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    
+    <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span id="errorToastMessage">An error occurred.</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 </section>
 {% endblock %}
