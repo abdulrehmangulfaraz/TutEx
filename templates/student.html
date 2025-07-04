@@ -435,6 +435,15 @@ h3::after {
     font-size: 0.7rem;
   }
 }
+/* Thank You Message Styles */
+#thankYouMessage {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 
 <section>
@@ -743,6 +752,7 @@ h3::after {
   }
 
   // Function to verify OTP and submit registration
+ 
   function verifyStudentOTP() {
     let otp = '';
     for (let i = 1; i <= 6; i++) {
@@ -757,13 +767,33 @@ h3::after {
     // Dummy OTP verification (replace with actual implementation later)
     verifyDummyOTP(studentData.personalInfo.email, otp)
       .then(response => {
-        showToast('success', 'Registration successful!');
+        showToast('success', 'Verification successful!');
         setTimeout(() => {
-          // Here you would submit the complete form data to your backend
-          console.log("Submitting student data:", studentData);
-          // Redirect to thank you page
-          window.location.href = '/thank-you';
-        }, 2000);
+          // Hide all steps
+          document.querySelectorAll('[id^="step"]').forEach(step => {
+            step.style.display = 'none';
+          });
+          
+          // Show thank you message with summary
+          document.getElementById('thankYouMessage').style.display = 'block';
+          document.getElementById('summaryArea').textContent = studentData.area;
+          document.getElementById('summaryBoard').textContent = studentData.board;
+          document.getElementById('summarySubjects').textContent = studentData.subjects.join(', ');
+          document.getElementById('summaryFee').textContent = document.getElementById('totalFee').textContent;
+          
+          if (studentData.personalInfo.email || studentData.personalInfo.phone) {
+            const contactInfo = [studentData.personalInfo.email, studentData.personalInfo.phone]
+              .filter(Boolean).join(' or ');
+            document.getElementById('summaryContact').textContent = contactInfo;
+          }
+          
+          // Update progress steps to show completion
+          const steps = document.querySelectorAll('.progress-step');
+          steps.forEach(step => {
+            step.classList.add('completed');
+            step.classList.remove('active');
+          });
+        }, 1000);
       })
       .catch(error => {
         showToast('error', 'Invalid OTP. Please try again.');
@@ -1032,6 +1062,50 @@ h3::after {
         </button>
       </div>
     </div>
+    <!-- Add this new div at the bottom of your form-container div, just before the closing </form> tag -->
+<div id="thankYouMessage" style="display: none;">
+  <div class="text-center py-5">
+    <div class="mb-4">
+      <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+    </div>
+    <h2 class="mb-3">Fee Calculation Complete!</h2>
+    <p class="lead mb-4">Thank you for using our fee calculator. Here's a summary of your information:</p>
+    
+    <div class="card mx-auto mb-4" style="max-width: 600px;">
+      <div class="card-body">
+        <h5 class="card-title">Fee Summary</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Area:</strong> <span id="summaryArea"></span></p>
+            <p><strong>Board:</strong> <span id="summaryBoard"></span></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Selected Subjects:</strong> <span id="summarySubjects"></span></p>
+            <p><strong>Total Fee:</strong> <span id="summaryFee" class="text-success fw-bold"></span> PKR</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="alert alert-info mx-auto" style="max-width: 600px;">
+      <h5 class="alert-heading">Next Steps:</h5>
+      <ul class="mb-0">
+        <li>This is an estimated fee calculation</li>
+        <li>Contact us for exact fee structure and enrollment</li>
+        <li>We'll reach out to you at <strong id="summaryContact"></strong> if you provided details</li>
+      </ul>
+    </div>
+    
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button class="btn btn-primary" onclick="window.location.reload()">
+        <i class="fas fa-calculator me-2"></i> New Calculation
+      </button>
+      <button class="btn btn-outline-secondary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i> Print Summary
+      </button>
+    </div>
+  </div>
+</div>
     
   </form>
 </div>
