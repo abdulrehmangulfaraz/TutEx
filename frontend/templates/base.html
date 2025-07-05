@@ -17,7 +17,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
     <div class="container">
-      <a class="navbar-brand fw-bold text-primary" href="{{ url_for('root') }}">
+      <a class="navbar-brand fw-bold text-primary" href="{{ url_for('home') }}">
         <i class="fas fa-chalkboard-teacher me-2"></i>TutEx Platform
       </a>
 
@@ -29,7 +29,7 @@
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
           <li class="nav-item">
-            <a class="nav-link {% if request.scope.get('route').name == 'root' %}active{% endif %}" href="{{ url_for('root') }}">Home</a>
+            <a class="nav-link {% if request.scope.get('route').name == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.scope.get('route').name == 'courses' %}active{% endif %}" href="{{ url_for('courses') }}">Courses</a>
