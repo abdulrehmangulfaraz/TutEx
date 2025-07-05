@@ -66,6 +66,16 @@ def get_db():
         yield db
     finally:
         db.close()
+def flash(request: Request, message: str, category: str = "message"):
+    if "_flash_messages" not in request.session:
+        request.session["_flash_messages"] = []
+    request.session["_flash_messages"].append({"message": message, "category": category})
+
+def get_flashed_messages(request: Request, with_categories=False):
+    messages = request.session.pop("_flash_messages", [])
+    if with_categories:
+        return [(msg["category"], msg["message"]) for msg in messages]
+    return [msg["message"] for msg in messages]
 
 # --- Login Dependency (only for protected routes) ---
 def require_login(request: Request):
@@ -339,49 +349,84 @@ async def resend_otp(
 @app.get("/login", name="login")
 async def get_login_page(request: Request, error: Optional[str] = None):
     return templates.TemplateResponse("login.html", {"request": request, "session": request.session, "error": error})
-
 @app.post("/login", name="login_post")
 async def login_post(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
-    user_type: str = Form(...),  # Added from frontend form
+    user_type: str = Form(...),
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == username).first()
+    
+    # Check credentials
     if not user or not pwd_context.verify(password, user.hashed_password):
-        return RedirectResponse(url="/login?error=Invalid username or password", status_code=status.HTTP_303_SEE_OTHER)
+        flash(request, "Invalid username or password", "error")
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
+    # Check verification status
     if not user.is_verified:
-        return RedirectResponse(url="/login?error=Please verify your account with OTP first.", status_code=status.HTTP_303_SEE_OTHER)
+        flash(request, "Please verify your account with OTP first", "error")
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
-    # Use user_type from form and validate against database
+    # Check user type
     if user.user_type.lower() != user_type.lower():
-        return RedirectResponse(url="/login?error=User type mismatch", status_code=status.HTTP_303_SEE_OTHER)
+        flash(request, "User type mismatch", "error")
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
-    request.session["user"] = {"username": user.username, "user_type": user_type.lower()}
-    if user_type.lower() == "tutor":
+    # Store user in session
+    request.session["user"] = {
+        "username": user.username,
+        "user_type": user.user_type.lower()  # Use the actual user type from DB
+    }
+
+    # Redirect based on user type
+    if user.user_type.lower() == "tutor":
         return RedirectResponse(url="/tutor_dashboard", status_code=status.HTTP_303_SEE_OTHER)
-    elif user_type.lower() == "admin":
+    elif user.user_type.lower() == "admin":
         return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
-    else:  # Default to student
+    else:  # Default to student dashboard
         return RedirectResponse(url="/student", status_code=status.HTTP_303_SEE_OTHER)
-
 @app.get("/logout", name="logout")
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
-# --- Page Routes with Login Requirement ---
-@app.get("/tutor_dashboard", name="tutor_dashboard", dependencies=[Depends(require_login)])
-async def get_tutor_dashboard_page(request: Request):
-    user = request.session["user"]
-    return templates.TemplateResponse("tutor_dashboard.html", {"request": request, "session": request.session, "user": user["username"], "role": user["user_type"]})
 
-@app.get("/admin", name="admin", dependencies=[Depends(require_login)])
-async def get_admin_page(request: Request):
+
+# --- Protected Page Routes ---
+@app.get("/tutor_dashboard", name="tutor_dashboard")
+async def get_tutor_dashboard_page(request: Request):
+    if 'user' not in request.session:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    
     user = request.session["user"]
-    return templates.TemplateResponse("admin.html", {"request": request, "session": request.session, "user": user["username"], "role": user["user_type"]})
+    context = {
+        "request": request,
+        "session": request.session,
+        "user": user["username"],
+        "role": user["user_type"],
+        "get_flashed_messages": lambda with_categories=False: get_flashed_messages(request, with_categories)
+    }
+    return templates.TemplateResponse("tutor_dashboard.html", context)
+
+@app.get("/admin", name="admin")
+async def get_admin_page(request: Request):
+    if 'user' not in request.session:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    
+    user = request.session["user"]
+    context = {
+        "request": request,
+        "session": request.session,
+        "user": user["username"],
+        "role": user["user_type"],
+        "get_flashed_messages": lambda **kwargs: get_flashed_messages(request, **kwargs)
+    }
+    return templates.TemplateResponse("admin.html", context)
+
+
+
 
 # --- Public Page Routes ---
 @app.get("/", name="home")
