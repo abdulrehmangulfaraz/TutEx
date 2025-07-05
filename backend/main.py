@@ -230,15 +230,22 @@ async def signup(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database error: {str(e)}"
         )
-
+    
 @app.post("/verify-otp")
 async def verify_otp(
     email: str = Form(...),
     otp: str = Form(...),
     db: Session = Depends(get_db)
 ):
+    # Print received data
+    print("\n=== Received OTP Verification Request ===")
+    print(f"Email: {email}")
+    print(f"OTP: {otp}")
+    print(f"Current time: {datetime.now(timezone.utc)}")
+
     # Input validation
     if not email or not otp or len(otp) != 6:
+        print("!!! Validation failed - Invalid OTP format")
         raise HTTPException(
             status_code=400,
             detail="Invalid OTP format"
@@ -246,24 +253,36 @@ async def verify_otp(
 
     user = db.query(User).filter(User.email == email).first()
     if not user:
+        print(f"!!! User not found for email: {email}")
         raise HTTPException(
             status_code=400,
             detail="Email not registered"
         )
 
+    print(f"User found: ID={user.id}, Verified={user.is_verified}")
+    print(f"Stored OTP: {user.otp}, OTP Created At: {user.otp_created_at}")
+
     if user.is_verified:
+        print("!!! Account already verified")
         raise HTTPException(
             status_code=400,
             detail="Account already verified"
         )
 
     if user.otp != otp:
+        print(f"!!! OTP mismatch. Expected: {user.otp}, Received: {otp}")
         raise HTTPException(
             status_code=400,
             detail="Invalid OTP"
         )
 
-    if datetime.now(timezone.utc) - user.otp_created_at > timedelta(minutes=5):
+    # Convert stored datetime to UTC before comparison
+    otp_created_at_utc = user.otp_created_at.replace(tzinfo=timezone.utc)
+    time_difference = datetime.now() - user.otp_created_at
+    print(f"OTP Age: {time_difference.total_seconds()} seconds")
+
+    if time_difference > timedelta(minutes=5):
+        print("!!! OTP expired")
         raise HTTPException(
             status_code=400,
             detail="OTP expired"
@@ -274,6 +293,9 @@ async def verify_otp(
     user.otp = None
     user.otp_created_at = None
     db.commit()
+
+    print("=== Verification successful ===")
+    print(f"User {user.id} marked as verified at {datetime.now(timezone.utc)}")
 
     return {"status": "verified", "message": "Account verified successfully"}
 
