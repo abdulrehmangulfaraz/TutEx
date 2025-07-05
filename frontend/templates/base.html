@@ -53,7 +53,7 @@
                 Welcome, {{ session.get('user').get('username') }}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('tutor_dashboard') }}">Dashboard</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
               </ul>

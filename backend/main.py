@@ -34,7 +34,6 @@ from slowapi.middleware import SlowAPIMiddleware
 # Load environment variables from .env file
 load_dotenv()
 
-
 # --- APPLICATION SETUP ---
 app = FastAPI()
 
@@ -60,7 +59,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-
 # --- DATABASE DEPENDENCY ---
 def get_db():
     db = SessionLocal()
@@ -69,6 +67,11 @@ def get_db():
     finally:
         db.close()
 
+# --- Login Dependency (only for protected routes) ---
+def require_login(request: Request):
+    if 'user' not in request.session:
+        return RedirectResponse(url="/login?error=Please log in to access this page.", status_code=status.HTTP_303_SEE_OTHER)
+    return True
 
 # --- Pydantic Models ---
 class LoginForm(BaseModel):
@@ -87,13 +90,11 @@ class RegisterForm(BaseModel):
     last_qualification: Optional[str] = None
     register_as_parent: Optional[bool] = False
 
-
 # --- EMAIL SENDING ---
 async def send_otp_email(to_email: str, otp: str):
     if not to_email:
         raise ValueError("Email address is required to send OTP")
 
-    # Get email credentials from environment variables
     email_user = os.getenv("EMAIL_USER")
     email_password = os.getenv("EMAIL_PASSWORD")
 
@@ -121,7 +122,6 @@ async def send_otp_email(to_email: str, otp: str):
         logger.error(f"Failed to send email: {str(e)}")
         return False
 
-
 # --- API ENDPOINTS ---
 @app.post("/verify-otp")
 async def verify_otp(
@@ -144,7 +144,6 @@ async def verify_otp(
     user.otp_created_at = None
     db.commit()
     return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Account verified successfully"})
-
 
 @app.post("/signup", name="signup")
 @limiter.limit("5/minute")
@@ -191,17 +190,16 @@ async def signup(
         content={"message": "Registration successful. Please check your email for the OTP."}
     )
 
-
 @app.get("/login", name="login")
 async def get_login_page(request: Request, error: Optional[str] = None):
     return templates.TemplateResponse("login.html", {"request": request, "session": request.session, "error": error})
-
 
 @app.post("/login", name="login_post")
 async def login_post(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
+    user_type: str = Form(...),  # Added from frontend form
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == username).first()
@@ -211,38 +209,47 @@ async def login_post(
     if not user.is_verified:
         return RedirectResponse(url="/login?error=Please verify your account with OTP first.", status_code=status.HTTP_303_SEE_OTHER)
 
-    request.session['user'] = {'username': user.username, 'user_type': user.user_type}
-    return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    # Use user_type from form and validate against database
+    if user.user_type.lower() != user_type.lower():
+        return RedirectResponse(url="/login?error=User type mismatch", status_code=status.HTTP_303_SEE_OTHER)
 
+    request.session["user"] = {"username": user.username, "user_type": user_type.lower()}
+    if user_type.lower() == "tutor":
+        return RedirectResponse(url="/tutor_dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    elif user_type.lower() == "admin":
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    else:  # Default to student
+        return RedirectResponse(url="/student", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/logout", name="logout")
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
+# --- Page Routes with Login Requirement ---
+@app.get("/tutor_dashboard", name="tutor_dashboard", dependencies=[Depends(require_login)])
+async def get_tutor_dashboard_page(request: Request):
+    user = request.session["user"]
+    return templates.TemplateResponse("tutor_dashboard.html", {"request": request, "session": request.session, "user": user["username"], "role": user["user_type"]})
 
-# --- Basic Page Routes ---
+@app.get("/admin", name="admin", dependencies=[Depends(require_login)])
+async def get_admin_page(request: Request):
+    user = request.session["user"]
+    return templates.TemplateResponse("admin.html", {"request": request, "session": request.session, "user": user["username"], "role": user["user_type"]})
+
+# --- Public Page Routes ---
 @app.get("/", name="home")
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request, "session": request.session})
 
-@app.get("/dashboard", name="dashboard")
-async def dashboard(request: Request):
-    if 'user' not in request.session:
-        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
-    return templates.TemplateResponse("dashboard.html", {"request": request, "session": request.session})
+@app.get("/student", name="student")
+async def get_student_page(request: Request):
+    user = request.session.get("user", {"username": "Guest", "user_type": "guest"})
+    return templates.TemplateResponse("student.html", {"request": request, "session": request.session, "user": user["username"], "role": user["user_type"]})
 
 @app.get("/courses", name="courses")
 async def get_courses_page(request: Request):
     return templates.TemplateResponse("courses.html", {"request": request, "session": request.session})
-
-@app.get("/student", name="student")
-async def get_student_page(request: Request):
-    return templates.TemplateResponse("student.html", {"request": request, "session": request.session})
-
-@app.get("/tutor_dashboard", name="tutor_dashboard")
-async def get_tutor_dashboard_page(request: Request):
-    return templates.TemplateResponse("tutor_dashboard.html", {"request": request, "session": request.session})
 
 @app.get("/how_it_works", name="how_it_works")
 async def get_how_it_works_page(request: Request):
