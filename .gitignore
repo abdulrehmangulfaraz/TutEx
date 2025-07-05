@@ -29,4 +29,6 @@ Thumbs.db
 # Python cache
 *.pyc
 *.pyoS
+
+# Environment variables
 .env
