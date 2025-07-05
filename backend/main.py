@@ -276,7 +276,7 @@ async def verify_otp(
         print("!!! Account already verified")
         raise HTTPException(
             status_code=400,
-            detail="Account already verified"
+            detail=" We found an existing account on this email, Kindly use another email or try to login into that account"
         )
 
     if user.otp != otp:
@@ -324,7 +324,7 @@ async def resend_otp(
     if user.is_verified:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account already verified"
+            detail=" We found an existing account on this email, Kindly use another email or try to login into that account"
         )
 
     # Generate new OTP
@@ -361,24 +361,31 @@ async def login_post(
     
     # Check credentials
     if not user or not pwd_context.verify(password, user.hashed_password):
-        flash(request, "Invalid username or password", "error")
-        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/login?error=Invalid username or password", 
+            status_code=status.HTTP_303_SEE_OTHER
+        )
 
     # Check verification status
     if not user.is_verified:
-        flash(request, "Please verify your account with OTP first", "error")
-        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/login?error=Please verify your account with OTP first", 
+            status_code=status.HTTP_303_SEE_OTHER
+        )
 
     # Check user type
     if user.user_type.lower() != user_type.lower():
-        flash(request, "User type mismatch", "error")
-        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/login?error=User type mismatch", 
+            status_code=status.HTTP_303_SEE_OTHER
+        )
 
     # Store user in session
     request.session["user"] = {
         "username": user.username,
-        "user_type": user.user_type.lower()  # Use the actual user type from DB
+        "user_type": user.user_type.lower()
     }
+
 
     # Redirect based on user type
     if user.user_type.lower() == "tutor":
