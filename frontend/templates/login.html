@@ -478,149 +478,272 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="text-center my-5">
-            <h7 class = "text-muted" data-aos="fade-up" data-aos-duration="2000" data-aos-delay="200" text="small"> Not a member? </h7>
-            <button class="registration-btn" onclick="showRegistrationForm()">Register Now</button>
+<div class="container">
+    <div class="text-center my-5">
+        <h7 class="text-muted">Want to become a tutor?</h7>
+        <button class="registration-btn" onclick="showRegistrationForm()">Register Now</button>
+    </div>
+    
+    <div class="registration-container" id="registrationForm" style="display: none;">
+        <div class="form-header">
+            <h2>Tutor Registration</h2>
+            <p>Fill in the details to register as a tutor</p>
         </div>
         
-        <div class="registration-container" id="registrationForm" style="display: none;">
-            <div class="form-header">
-                <h2>Create Your Account</h2>
-                <p>Fill in the details to get started</p>
+        <div id="registrationSteps">
+            <!-- Step 1: Tutor Registration Form -->
+            <div id="tutorFormStep" style="display: block;">
+                <form id="tutorForm">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tutorUsername" class="form-label required">Username</label>
+                                <input type="text" class="form-control" id="tutorUsername" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorPassword" class="form-label required">Password</label>
+                                <input type="password" class="form-control" id="tutorPassword" name="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorName" class="form-label required">Full Name</label>
+                                <input type="text" class="form-control" id="tutorName" name="full_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorFatherName" class="form-label required">Father's Name</label>
+                                <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tutorPhone" class="form-label required">Phone Number</label>
+                                <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorEmail" class="form-label required">Email Address</label>
+                                <input type="email" class="form-control" id="tutorEmail" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorQualification" class="form-label required">Last Qualification</label>
+                                <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorCnicFront" class="form-label required">CNIC Front Image</label>
+                                <div class="file-upload">
+                                    <div class="file-upload-btn">
+                                        <i class="fas fa-upload file-upload-icon"></i>
+                                        <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+                                    </div>
+                                    <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tutorCnicBack" class="form-label required">CNIC Back Image</label>
+                                <div class="file-upload">
+                                    <div class="file-upload-btn">
+                                        <i class="fas fa-upload file-upload-icon"></i>
+                                        <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
+                                    </div>
+                                    <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="user_type" value="Tutor">
+                    <div class="d-grid mt-4">
+                        <button type="button" class="btn btn-primary" onclick="submitTutorRegistration()">Register</button>
+                    </div>
+                </form>
             </div>
-            
-            <ul class="nav nav-tabs" id="registrationTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="select-type-tab" data-bs-toggle="tab" data-bs-target="#select-type" type="button" role="tab" aria-controls="select-type" aria-selected="true">Step 1: Select Type</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="tutor-tab" data-bs-toggle="tab" data-bs-target="#tutor" type="button" role="tab" aria-controls="tutor" aria-selected="false">Tutor Registration</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="verification-tab" data-bs-toggle="tab" data-bs-target="#verification" type="button" role="tab" aria-controls="verification" aria-selected="false">Verification</button>
-                </li>
-            </ul>
-            
-            <div class="tab-content" id="registrationTabContent">
-                <!-- Step 1: Select Type -->
-                <div class="tab-pane fade show active" id="select-type" role="tabpanel" aria-labelledby="select-type-tab">
-                    <form id="typeSelectionForm">
-                        <div class="mb-4 text-center">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="registrationType" id="tutorType" value="tutor" onclick="selectType('tutor')" checked>
-                                <label class="form-check-label" for="tutorType">I am a Tutor</label>
-                            </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="button" class="btn btn-primary" onclick="proceedToRegistration()">Next</button>
-                        </div>
-                    </form>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="otpVerificationStep" style="display: none;">
+                <div class="text-center mb-4">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Please enter the 6-digit OTP sent to your email address.
+                    </div>
                 </div>
                 
-                <!-- Tutor Registration Form -->
-                <div class="tab-pane fade" id="tutor" role="tabpanel" aria-labelledby="tutor-tab">
-                    <form id="tutorForm">
-                        <div class="row">
-                            <!-- Left Column -->
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tutorUsername" class="form-label">Username*</label>
-                                    <input type="text" class="form-control" id="tutorUsername" name="username" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorPassword" class="form-label">Password*</label>
-                                    <input type="password" class="form-control" id="tutorPassword" name="password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorName" class="form-label">Full Name*</label>
-                                    <input type="text" class="form-control" id="tutorName" name="full_name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorFatherName" class="form-label">Father's Name*</label>
-                                    <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
-                                </div>
-                            </div>
-
-                            <!-- Right Column -->
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tutorPhone" class="form-label">Phone Number*</label>
-                                    <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorEmail" class="form-label">Email Address*</label>
-                                    <input type="email" class="form-control" id="tutorEmail" name="email" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorQualification" class="form-label">Last Qualification*</label>
-                                    <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorCnicFront" class="form-label">CNIC Front Image*</label>
-                                    <div class="file-upload">
-                                        <div class="file-upload-btn">
-                                            <i class="fas fa-upload file-upload-icon"></i>
-                                            <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
-                                        </div>
-                                        <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tutorCnicBack" class="form-label">CNIC Back Image*</label>
-                                    <div class="file-upload">
-                                        <div class="file-upload-btn">
-                                            <i class="fas fa-upload file-upload-icon"></i>
-                                            <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
-                                        </div>
-                                        <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
-                                    </div>
-                                </div>
-                            </div>
+                <form id="verificationForm">
+                    <div class="mb-4">
+                        <label class="form-label text-center d-block">Enter OTP</label>
+                        <div class="otp-container">
+                            <input type="text" class="otp-input" maxlength="1" id="otp1" onkeyup="moveToNext(this, 'otp2')">
+                            <input type="text" class="otp-input" maxlength="1" id="otp2" onkeyup="moveToNext(this, 'otp3')" onkeydown="moveToPrev(this, 'otp1', event)">
+                            <input type="text" class="otp-input" maxlength="1" id="otp3" onkeyup="moveToNext(this, 'otp4')" onkeydown="moveToPrev(this, 'otp2', event)">
+                            <input type="text" class="otp-input" maxlength="1" id="otp4" onkeyup="moveToNext(this, 'otp5')" onkeydown="moveToPrev(this, 'otp3', event)">
+                            <input type="text" class="otp-input" maxlength="1" id="otp5" onkeyup="moveToNext(this, 'otp6')" onkeydown="moveToPrev(this, 'otp4', event)">
+                            <input type="text" class="otp-input" maxlength="1" id="otp6" onkeydown="moveToPrev(this, 'otp5', event)">
                         </div>
-
-                        <input type="hidden" name="user_type" value="Tutor">
-                        <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-outline-secondary" onclick="goBackToTypeSelection()">Back</button>
-                            <button type="button" class="btn btn-primary" onclick="proceedToVerification('tutor')">Next</button>
-                        </div>
-                    </form>
-                </div>
-                
-                <!-- Step 3: Verification -->
-                <div class="tab-pane fade" id="verification" role="tabpanel" aria-labelledby="verification-tab">
-                    <p id="registrationError" class="text-danger" style="display: none;"></p>
-                    <div class="text-center mb-4">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Please enter the OTP sent to your email address.
+                        <div class="text-center mt-3">
+                            <a href="#" onclick="resendOTP(event)">Resend OTP</a>
                         </div>
                     </div>
                     
-                    <form id="verificationForm">
-                        <div class="mb-4">
-                            <label class="form-label text-center d-block">Enter OTP</label>
-                            <div class="otp-container">
-                                <input type="text" class="otp-input" maxlength="1" id="otp1" onkeyup="moveToNext(this, 'otp2')">
-                                <input type="text" class="otp-input" maxlength="1" id="otp2" onkeyup="moveToNext(this, 'otp3')" onkeydown="moveToPrev(this, 'otp1', event)">
-                                <input type="text" class="otp-input" maxlength="1" id="otp3" onkeyup="moveToNext(this, 'otp4')" onkeydown="moveToPrev(this, 'otp2', event)">
-                                <input type="text" class="otp-input" maxlength="1" id="otp4" onkeyup="moveToNext(this, 'otp5')" onkeydown="moveToPrev(this, 'otp3', event)">
-                                <input type="text" class="otp-input" maxlength="1" id="otp5" onkeyup="moveToNext(this, 'otp6')" onkeydown="moveToPrev(this, 'otp4', event)">
-                                <input type="text" class="otp-input" maxlength="1" id="otp6" onkeydown="moveToPrev(this, 'otp5', event)">
-                            </div>
-                            <div class="text-center">
-                                <a href="#" onclick="resendOTP(event)">Resend OTP</a>
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button type="button" class="btn btn-primary" onclick="submitRegistration()">Submit Registration</button>
-                        </div>
-                    </form>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Success Message -->
+            <div id="successStep" class="text-center" style="display: none;">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <h4>Registration Successful!</h4>
+                    <p>Your account has been verified and created successfully.</p>
+                    <p>You can now login with your credentials.</p>
                 </div>
+                <a href="/login" class="btn btn-primary">Go to Login</a>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    let currentEmail = '';
+    
+    function showRegistrationForm() {
+        document.getElementById('registrationForm').style.display = 'block';
+        document.getElementById('registrationForm').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function updateFileName(inputId) {
+        const input = document.getElementById(inputId);
+        const label = document.getElementById(inputId + 'Label');
+        
+        if (input.files && input.files[0]) {
+            label.textContent = input.files[0].name;
+        } else {
+            label.textContent = 'Upload ' + inputId.replace('tutor', '').replace(/([A-Z])/g, ' $1').trim();
+        }
+    }
+    
+// Store email in sessionStorage when registration succeeds
+async function submitTutorRegistration() {
+    const form = document.getElementById('tutorForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            body: new FormData(form)
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+            // Store email for verification steps
+            currentEmail = data.email;
+            sessionStorage.setItem('otpEmail', currentEmail);
+            
+            // Show OTP step
+            document.getElementById('tutorFormStep').style.display = 'none';
+            document.getElementById('otpVerificationStep').style.display = 'block';
+            document.getElementById('otp1').focus();
+        } else {
+            throw new Error(data.detail || 'Registration failed');
+        }
+    } catch (error) {
+        showToast('error', error.message);
+    }
+}
+
+// Improved verifyOTP function
+async function verifyOTP() {
+    // Get all OTP digits
+    const otp = Array.from({length: 6}, (_, i) => 
+        document.getElementById(`otp${i+1}`).value
+    ).join('');
+
+    if (otp.length !== 6) {
+        showToast('error', 'Please enter complete 6-digit OTP');
+        return;
+    }
+
+    try {
+        const response = await fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                email: currentEmail || sessionStorage.getItem('otpEmail'),
+                otp: otp
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Verification failed');
+        }
+
+        const data = await response.json();
+        if (data.status === 'verified') {
+            document.getElementById('otpVerificationStep').style.display = 'none';
+            document.getElementById('successStep').style.display = 'block';
+            sessionStorage.removeItem('otpEmail');
+        }
+    } catch (error) {
+        showToast('error', error.message);
+        // Clear OTP fields
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById(`otp${i}`).value = '';
+        }
+        document.getElementById('otp1').focus();
+    }
+}
+
+// Improved resendOTP function
+async function resendOTP(event) {
+    event.preventDefault();
+    const email = currentEmail || sessionStorage.getItem('otpEmail');
+    
+    if (!email) {
+        showToast('error', 'No email address found');
+        return;
+    }
+
+    try {
+        const response = await fetch('/resend-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ email })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to resend OTP');
+        }
+
+        showToast('success', 'New OTP sent to your email');
+    } catch (error) {
+        showToast('error', error.message);
+    }
+}
+
+    function showToast(type, message) {
+        const toast = type === 'success' 
+            ? new bootstrap.Toast(document.getElementById('successToast'))
+            : new bootstrap.Toast(document.getElementById('errorToast'));
+            
+        if (type === 'success') {
+            document.getElementById('successToastMessage').textContent = message;
+        } else {
+            document.getElementById('errorToastMessage').textContent = message;
+        }
+        
+        toast.show();
+    }
+</script>
     
     <!-- Toast Notifications -->
     <div class="toast-container">

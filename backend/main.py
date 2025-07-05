@@ -123,72 +123,196 @@ async def send_otp_email(to_email: str, otp: str):
         return False
 
 # --- API ENDPOINTS ---
+@app.post("/signup")
+async def signup(
+    username: str = Form(...),
+    password: str = Form(...),
+    full_name: str = Form(...),
+    phone_number: str = Form(...),
+    email: str = Form(...),
+    fathers_name: str = Form(...),
+    last_qualification: str = Form(...),
+    cnic_front: UploadFile = File(...),
+    cnic_back: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    logger.debug(f"Received tutor signup request for username: {username}")
+
+    # Check if username exists
+    if db.query(User).filter(User.username == username).first():
+        logger.warning(f"Username {username} already exists")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists"
+        )
+    
+    # Generate OTP
+    otp = str(random.randint(100000, 999999))
+    otp_created_at = datetime.now(timezone.utc)
+    
+    # Handle file uploads
+    cnic_front_path = None
+    cnic_back_path = None
+    try:
+        # Sanitize filenames
+        front_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', cnic_front.filename)
+        back_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', cnic_back.filename)
+        
+        # Save files
+        cnic_front_path = os.path.join("uploads", f"{username}_cnic_front_{front_filename}")
+        cnic_back_path = os.path.join("uploads", f"{username}_cnic_back_{back_filename}")
+        
+        front_abs_path = os.path.join("static", cnic_front_path)
+        back_abs_path = os.path.join("static", cnic_back_path)
+        
+        os.makedirs(os.path.dirname(front_abs_path), exist_ok=True)
+        
+        async with aiofiles.open(front_abs_path, "wb") as f:
+            await f.write(await cnic_front.read())
+        async with aiofiles.open(back_abs_path, "wb") as f:
+            await f.write(await cnic_back.read())
+            
+    except Exception as e:
+        logger.error(f"Failed to save CNIC files: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save CNIC files: {str(e)}"
+        )
+
+    try:
+        # Create user with OTP data
+        user = User(
+            username=username,
+            hashed_password=pwd_context.hash(password),
+            user_type="Tutor",
+            full_name=full_name,
+            phone_number=phone_number,
+            email=email,
+            fathers_name=fathers_name,
+            last_qualification=last_qualification,
+            cnic_front_path=cnic_front_path,
+            cnic_back_path=cnic_back_path,
+            otp=otp,
+            otp_created_at=otp_created_at,
+            is_verified=False
+        )
+        
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.debug(f"Tutor {username} added to database")
+        
+        # Send OTP email
+        try:
+            await send_otp_email(email, otp)
+        except Exception as e:
+            logger.error(f"Failed to send OTP email: {str(e)}")
+            # Don't fail registration if email fails
+            
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={
+                "message": "Registration successful, OTP sent",
+                "email": email,
+                "next_step": "verify"
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Database error: {str(e)}")
+        # Cleanup files if they were created
+        if cnic_front_path and os.path.exists(front_abs_path):
+            os.remove(front_abs_path)
+        if cnic_back_path and os.path.exists(back_abs_path):
+            os.remove(back_abs_path)
+            
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
+
 @app.post("/verify-otp")
 async def verify_otp(
     email: str = Form(...),
     otp: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    user = db.query(User).filter(
-        User.email == email,
-        User.otp == otp,
-        User.otp_created_at >= datetime.now(timezone.utc) - timedelta(minutes=5),
-        User.is_verified == False
-    ).first()
+    # Input validation
+    if not email or not otp or len(otp) != 6:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid OTP format"
+        )
 
+    user = db.query(User).filter(User.email == email).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired OTP.")
+        raise HTTPException(
+            status_code=400,
+            detail="Email not registered"
+        )
 
+    if user.is_verified:
+        raise HTTPException(
+            status_code=400,
+            detail="Account already verified"
+        )
+
+    if user.otp != otp:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid OTP"
+        )
+
+    if datetime.now(timezone.utc) - user.otp_created_at > timedelta(minutes=5):
+        raise HTTPException(
+            status_code=400,
+            detail="OTP expired"
+        )
+
+    # Mark as verified
     user.is_verified = True
     user.otp = None
     user.otp_created_at = None
     db.commit()
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Account verified successfully"})
 
-@app.post("/signup", name="signup")
-@limiter.limit("5/minute")
-async def signup(
-    request: Request,
-    username: str = Form(...),
-    password: str = Form(...),
-    user_type: str = Form(...),
-    full_name: str = Form(...),
-    phone_number: str = Form(...),
-    email: Optional[EmailStr] = Form(None),
-    fathers_name: Optional[str] = Form(None),
-    last_qualification: Optional[str] = Form(None),
-    register_as_parent: bool = Form(False),
-    cnic_front: Optional[UploadFile] = File(None),
-    cnic_back: Optional[UploadFile] = File(None),
+    return {"status": "verified", "message": "Account verified successfully"}
+
+@app.post("/resend-otp")
+async def resend_otp(
+    email: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    if db.query(User).filter(User.username == username).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email not registered"
+        )
 
-    otp = str(random.randint(100000, 999999))
-    user = User(
-        username=username,
-        hashed_password=pwd_context.hash(password),
-        user_type=user_type.capitalize(),
-        full_name=full_name,
-        phone_number=phone_number,
-        email=email,
-        fathers_name=fathers_name,
-        last_qualification=last_qualification,
-        register_as_parent=register_as_parent,
-        otp=otp,
-        otp_created_at=datetime.now(timezone.utc)
-    )
-    db.add(user)
+    if user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account already verified"
+        )
+
+    # Generate new OTP
+    new_otp = str(random.randint(100000, 999999))
+    user.otp = new_otp
+    user.otp_created_at = datetime.now(timezone.utc)
     db.commit()
 
-    if email:
-        await send_otp_email(email, otp)
-
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content={"message": "Registration successful. Please check your email for the OTP."}
-    )
+    # Send new OTP
+    try:
+        await send_otp_email(email, new_otp)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"status": "success", "message": "New OTP sent successfully"}
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to send OTP: {str(e)}"
+        )
 
 @app.get("/login", name="login")
 async def get_login_page(request: Request, error: Optional[str] = None):
