@@ -903,7 +903,7 @@ h3::after {
           } %}
           {% for area, img in area_images.items() %}
           <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
-            <img src="{{ url_for('static', filename=img) }}" alt="{{ area }}">
+            <img src="/static/{{ img }}" alt="{{ area }}">
             <div class="carousel-caption">
               <h5>{{ area }}</h5>
             </div>
@@ -944,7 +944,7 @@ h3::after {
           } %}
           {% for board, img in board_images.items() %}
           <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
-            <img src="{{ url_for('static', filename=img) }}" alt="{{ board }}">
+            <img src="/static/{{ img }}" alt="{{ board }}">
             <div class="carousel-caption">
               <h5>{{ board }}</h5>
             </div>
