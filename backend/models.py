@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text,Float
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime, timedelta, timezone
 from datetime import datetime
 
 Base = declarative_base()
@@ -25,44 +26,20 @@ class User(Base):
     otp_created_at = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
 
+# -------------------- StudentRegistration --------------------
 
-# -------------------- STUDENT_LEADS --------------------
-
-class StudentLead(Base):
-    __tablename__ = 'student_leads'
-
+class StudentRegistration(Base):
+    __tablename__ = "student_registrations"
+    
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(80), nullable=False)
-    area = Column(String(120), nullable=True)
-    board = Column(String(120), nullable=True)
-    subjects = Column(String(255), nullable=True)
-    fee = Column(Integer, nullable=True)
-    accepted_by = Column(String(80), nullable=True)
-    status = Column(String(50), nullable=True, default='Pending Approval')
-    verified = Column(Integer, nullable=True, default=0)
-    tutor_approved = Column(Integer, nullable=True, default=0)
-
-
-# -------------------- STUDENTS --------------------
-
-class Student(Base):
-    __tablename__ = 'students'
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    full_name = Column(String(120), nullable=False)
-    relation = Column(String(120), nullable=True)
-    status = Column(String(20), nullable=True, default='pending')
-
-
-# -------------------- TUTORS --------------------
-
-class Tutor(Base):
-    __tablename__ = 'tutors'
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    full_name = Column(String(120), nullable=False)
-    father_name = Column(String(120), nullable=True)
-    cnic_front = Column(String(120), nullable=True)
-    cnic_back = Column(String(120), nullable=True)
+    full_name = Column(String)
+    phone_number = Column(String)
+    email = Column(String, unique=True, index=True)
+    area = Column(String)
+    board = Column(String)
+    subjects = Column(String)  # Comma-separated list
+    total_fee = Column(Float)
+    is_verified = Column(Boolean, default=False)
+    otp = Column(String, nullable=True)
+    otp_created_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

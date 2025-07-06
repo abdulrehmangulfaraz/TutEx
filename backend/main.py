@@ -23,7 +23,8 @@ from dotenv import load_dotenv
 
 # Local Application Imports
 from database import SessionLocal
-from models import User
+# Update imports in main.py
+from models import User, StudentRegistration
 
 # SlowAPI for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -100,6 +101,15 @@ class RegisterForm(BaseModel):
     last_qualification: Optional[str] = None
     register_as_parent: Optional[bool] = False
 
+class StudentForm(BaseModel):
+    area: str
+    board: str
+    subjects: list[str]
+    full_name: str
+    phone_number: str
+    email: EmailStr
+    total_fee: float
+
 # --- EMAIL SENDING ---
 async def send_otp_email(to_email: str, otp: str):
     if not to_email:
@@ -133,6 +143,262 @@ async def send_otp_email(to_email: str, otp: str):
         return False
 
 # --- API ENDPOINTS ---
+# Add to the API ENDPOINTS section in main.py
+@app.post("/student/submit")
+async def submit_student_form(
+    request: Request,
+    form: StudentForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    # Validate inputs
+    if not form.subjects:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please select at least one subject"
+        )
+    if form.total_fee < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Total fee cannot be negative"
+        )
+    
+    # Check if email is already registered
+    if db.query(StudentRegistration).filter(StudentRegistration.email == form.email).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    # Generate OTP
+    otp = str(random.randint(100000, 999999))
+    otp_created_at = datetime.now(timezone.utc)
+    
+    # Create student registration record
+    registration = StudentRegistration(
+        full_name=form.full_name,
+        phone_number=form.phone_number,
+        email=form.email,
+        area=form.area,
+        board=form.board,
+        subjects=",".join(form.subjects),  # Store as comma-separated string
+        total_fee=form.total_fee,
+        is_verified=False,
+        otp=otp,
+        otp_created_at=otp_created_at
+    )
+    
+    try:
+        db.add(registration)
+        db.commit()
+        db.refresh(registration)
+        logger.debug(f"Student registration created for {form.email}")
+        
+        # Send OTP email
+        try:
+            await send_otp_email(form.email, otp)
+            flash(request, "OTP sent to your email", "success")
+            # Store email in session for OTP verification
+            request.session["student_email"] = form.email
+            return JSONResponse(
+                status_code=status.HTTP_201_CREATED,
+                content={
+                    "status": "success",
+                    "message": "Form submitted, OTP sent",
+                    "next_step": "verify"
+                }
+            )
+        except Exception as e:
+            logger.error(f"Failed to send OTP email: {str(e)}")
+            db.delete(registration)
+            db.commit()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send OTP"
+            )
+    except Exception as e:
+        logger.error(f"Database error: {str(e)}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
+    
+
+@app.post("/student/verify-otp")
+async def student_verify_otp(
+    request: Request,
+    email: str = Form(...),
+    otp: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    print("\n===============================")
+    print("🚀 Incoming Student OTP Verification Request")
+    print("===============================")
+    print(f"📧 Email Received: {email}")
+    print(f"🔢 OTP Received: {otp}")
+    print(f"🕒 Current Server Time (UTC): {datetime.now(timezone.utc)}")
+
+    # Input validation
+    print("🔍 Step 1: Validating Inputs...")
+    if not email or not otp or len(otp) != 6:
+        print("❌ Validation Failed: Missing or Invalid OTP Format")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid OTP format"
+        )
+    print("✅ Inputs Validated")
+
+    # Fetch registration
+    print("🔍 Step 2: Querying StudentRegistration Table...")
+    registration = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
+    
+    if not registration:
+        print(f"❌ Email not found in registrations: {email}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email not registered"
+        )
+    print(f"✅ Registration Found: ID={registration.id}")
+    print(f"   - Is Verified: {registration.is_verified}")
+    print(f"   - Stored OTP: {registration.otp}")
+    print(f"   - OTP Timestamp: {registration.otp_created_at}")
+
+    # Already verified
+    print("🔍 Step 3: Checking Verification Status...")
+    if registration.is_verified:
+        print("❌ Account is already verified, no action needed")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account already verified"
+        )
+    print("✅ Account is not yet verified")
+
+    # Check OTP match
+    print("🔍 Step 4: Matching OTP...")
+    if registration.otp != otp:
+        print(f"❌ OTP mismatch - Expected: {registration.otp}, Got: {otp}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid OTP"
+        )
+    print("✅ OTP matches")
+
+    # Check OTP expiration
+    print("🔍 Step 5: Checking OTP Expiry...")
+    otp_created_at_utc = registration.otp_created_at.replace(tzinfo=timezone.utc)
+    now_utc = datetime.now(timezone.utc)
+    time_difference = now_utc - otp_created_at_utc
+    print(f"🕒 OTP Age: {time_difference.total_seconds()} seconds")
+
+    if time_difference > timedelta(minutes=5):
+        print("❌ OTP has expired")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="OTP expired"
+        )
+    print("✅ OTP is valid and within time limit")
+
+    # Mark as verified
+    print("🔧 Step 6: Updating Verification Status in DB...")
+    registration.is_verified = True
+    registration.otp = None
+    registration.otp_created_at = None
+
+    print("📦 Committing changes to database...")
+    db.commit()
+    print("✅ Changes committed successfully")
+
+    print("🎉 ✅ Student verification successful")
+    print(f"   - ID: {registration.id}")
+    print(f"   - Verified at: {now_utc}")
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"status": "verified", "message": "Account verified successfully", "next_step": "summary"}
+    )
+
+# Add to the API ENDPOINTS section in main.py
+@app.post("/student/resend-otp")
+async def student_resend_otp(
+    email: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    registration = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
+    if not registration:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email not registered"
+        )
+
+    if registration.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account already verified"
+        )
+
+    # Generate new OTP
+    new_otp = str(random.randint(100000, 999999))
+    registration.otp = new_otp
+    registration.otp_created_at = datetime.now(timezone.utc)
+    db.commit()
+
+    # Send new OTP
+    try:
+        await send_otp_email(email, new_otp)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"status": "success", "message": "New OTP sent successfully"}
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to send OTP: {str(e)}"
+        )
+    
+    # Add to the API ENDPOINTS section in main.py
+
+
+@app.get("/student/summary")
+async def get_student_summary(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    email = request.session.get("student_email")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No registration found in session"
+        )
+    
+    registration = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
+    if not registration or not registration.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Registration not found or not verified"
+        )
+    
+    context = {
+        "request": request,
+        "session": request.session,
+        "area": registration.area,
+        "board": registration.board,
+        "subjects": registration.subjects.split(","),
+        "total_fee": registration.total_fee,
+        "full_name": registration.full_name,
+        "phone_number": registration.phone_number,
+        "email": registration.email
+    }
+    return templates.TemplateResponse("student.html", context)
+
+@app.post("/student/new-calculation")
+async def new_calculation(request: Request):
+    request.session.pop("student_email", None)
+    flash(request, "Started new calculation", "success")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"status": "success", "message": "New calculation started", "next_step": "area"}
+    )
+
 @app.post("/signup")
 async def signup(
     username: str = Form(...),
