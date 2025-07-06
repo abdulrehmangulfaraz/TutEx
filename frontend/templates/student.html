@@ -707,94 +707,131 @@ h3::after {
   }
 
   // Function to proceed to OTP verification
-  function proceedToOTPVerification() {
+
+function proceedToOTPVerification() {
     // Collect personal info
     studentData.personalInfo = {
-      name: document.getElementById('studentName').value,
-      phone: document.getElementById('studentPhone').value,
-      email: document.getElementById('studentEmail').value
+        name: document.getElementById('studentName').value,
+        phone: document.getElementById('studentPhone').value,
+        email: document.getElementById('studentEmail').value
     };
 
     // Validate personal info
     if (!studentData.personalInfo.name || !studentData.personalInfo.phone || !studentData.personalInfo.email) {
-      showToast('error', 'Please fill all personal information fields');
-      return;
+        showToast('error', 'Please fill all personal information fields');
+        return;
     }
 
-    // Dummy OTP sending (replace with actual implementation later)
-    sendDummyOTP(studentData.personalInfo.email, studentData.personalInfo.phone)
-      .then(response => {
-        showToast('success', 'OTP sent to ' + studentData.personalInfo.email);
-        document.getElementById('step4').style.display = 'none';
-        document.getElementById('step5').style.display = 'block';
-        updateProgress(5);
-      })
-      .catch(error => {
-        showToast('error', 'Failed to send OTP: ' + error.message);
-      });
-  }
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('area', studentData.area);
+    formData.append('board', studentData.board);
+    formData.append('subjects', JSON.stringify(studentData.subjects));
+    formData.append('full_name', studentData.personalInfo.name);
+    formData.append('phone_number', studentData.personalInfo.phone);
+    formData.append('email', studentData.personalInfo.email);
+    formData.append('total_fee', document.getElementById('totalFee').textContent);
+
+    // Submit to backend
+    fetch('/student/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showToast('success', 'OTP sent successfully');
+            document.getElementById('step4').style.display = 'none';
+            document.getElementById('step5').style.display = 'block';
+            updateProgress(5);
+            document.getElementById('userEmail').textContent = studentData.personalInfo.email;
+        } else {
+            showToast('error', data.message || 'Submission failed');
+        }
+    })
+    .catch(error => {
+        showToast('error', 'Error during submission');
+        console.error('Error:', error);
+    });
+}
 
   // Function to resend OTP
-  function resendStudentOTP(event) {
+function resendStudentOTP(event) {
     event.preventDefault();
-    // Dummy OTP resend (replace with actual implementation later)
-    sendDummyOTP(studentData.personalInfo.email, studentData.personalInfo.phone)
-      .then(response => {
-        showToast('success', 'OTP resent successfully');
-      })
-      .catch(error => {
-        showToast('error', 'Failed to resend OTP');
-      });
-  }
+    const email = studentData.personalInfo.email;
+    
+    fetch('/student/resend-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showToast('success', 'New OTP sent successfully');
+        } else {
+            showToast('error', data.message || 'Failed to resend OTP');
+        }
+    })
+    .catch(error => {
+        showToast('error', 'Error resending OTP');
+        console.error('Error:', error);
+    });
+}
 
   // Function to verify OTP and submit registration
  
-  function verifyStudentOTP() {
+function verifyStudentOTP() {
     let otp = '';
     for (let i = 1; i <= 6; i++) {
-      otp += document.getElementById('studentOtp' + i).value;
+        const digit = document.getElementById(`studentOtp${i}`).value;
+        if (!digit) {
+            showToast('error', 'Please enter the complete OTP');
+            document.getElementById(`studentOtp${i}`).focus();
+            return;
+        }
+        otp += digit;
     }
 
-    if (otp.length !== 6) {
-      showToast('error', 'Please enter the complete OTP');
-      return;
-    }
+    const email = studentData.personalInfo.email;
+    
+    fetch('/student/verify-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'verified') {
+            showToast('success', 'Verification successful!');
+            setTimeout(() => {
+                window.location.href = '/student/summary';
+            }, 1000);
+        } else {
+            showToast('error', data.message || 'Verification failed');
+        }
+    })
+    .catch(error => {
+        showToast('error', 'Error during verification');
+        console.error('Error:', error);
+    });
+}
 
-    // Dummy OTP verification (replace with actual implementation later)
-    verifyDummyOTP(studentData.personalInfo.email, otp)
-      .then(response => {
-        showToast('success', 'Verification successful!');
-        setTimeout(() => {
-          // Hide all steps
-          document.querySelectorAll('[id^="step"]').forEach(step => {
-            step.style.display = 'none';
-          });
-          
-          // Show thank you message with summary
-          document.getElementById('thankYouMessage').style.display = 'block';
-          document.getElementById('summaryArea').textContent = studentData.area;
-          document.getElementById('summaryBoard').textContent = studentData.board;
-          document.getElementById('summarySubjects').textContent = studentData.subjects.join(', ');
-          document.getElementById('summaryFee').textContent = document.getElementById('totalFee').textContent;
-          
-          if (studentData.personalInfo.email || studentData.personalInfo.phone) {
-            const contactInfo = [studentData.personalInfo.email, studentData.personalInfo.phone]
-              .filter(Boolean).join(' or ');
-            document.getElementById('summaryContact').textContent = contactInfo;
-          }
-          
-          // Update progress steps to show completion
-          const steps = document.querySelectorAll('.progress-step');
-          steps.forEach(step => {
-            step.classList.add('completed');
-            step.classList.remove('active');
-          });
-        }, 1000);
-      })
-      .catch(error => {
-        showToast('error', 'Invalid OTP. Please try again.');
-      });
-  }
+function moveToNext(currentInput, nextInputId) {
+    if (currentInput.value.length === 1) {
+        document.getElementById(nextInputId).focus();
+    }
+}
+
+function moveToPrev(currentInput, prevInputId, event) {
+    if (event.key === 'Backspace' && currentInput.value.length === 0) {
+        document.getElementById(prevInputId).focus();
+    }
+}
 
   // OTP input navigation functions
   function moveToNext(currentInput, nextInputId) {
@@ -884,226 +921,215 @@ h3::after {
     </div>
   </div>
   
-  <form method="post" id="studentForm">
-    
-    <!-- Step 1: Area Selection -->
-    <div id="step1">
-      <h3>Select Your Area</h3>
-      <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {% set area_images = {
-            "DHA": "images/dha.png",
-            "Gulshan-e-Iqbal": "images/gulshan.png",
-            "PECHS": "images/pechs.png",
-            "Gulistan-e-Johar": "images/johar.png",
-            "Gulberg": "images/gulberg.png",
-            "North Nazimabad": "images/north_nazimabad.jpg",
-            "North Karachi": "images/north_karachi.jpg",
-            "Saddar": "images/sadar.jpg"
-          } %}
-          {% for area, img in area_images.items() %}
-          <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
-            <img src="/static/{{ img }}" alt="{{ area }}">
-            <div class="carousel-caption">
-              <h5>{{ area }}</h5>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <input type="hidden" id="area" name="area">
-      <div class="text-center mt-4">
-        <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next <i class="fas fa-arrow-right ms-2"></i></button>
-      </div>
-    </div>
 
-    <!-- Step 2: Board Selection -->
-    <div id="step2" style="display: none;">
-      <h3>Select Your Board</h3>
-      <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {% set board_images = {
-            "Cambridge O'Levels": "images/ciae.png",
-            "Cambridge A'Levels": "images/ciae.png",
-            "Karachi Matric Board": "images/bsek.jpg",
-            "Karachi Inter board": "images/biek.png",
-            "Federal Board": "images/fbis.png",
-            "Aga Khan Board": "images/akub.png",
-            "ICAP": "images/icap.jpg",
-            "ACCA": "images/acca.png",
-            "ICMA": "images/icma.jpg",
-            "Sindh Technical Board": "images/stb.png"
-          } %}
-          {% for board, img in board_images.items() %}
-          <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
-            <img src="/static/{{ img }}" alt="{{ board }}">
-            <div class="carousel-caption">
-              <h5>{{ board }}</h5>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <input type="hidden" id="board" name="board">
-      <div class="text-center mt-4">
-        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(2)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i class="fas fa-arrow-right ms-2"></i></button>
-      </div>
-    </div>
-
-    <!-- Step 3: Subject Selection -->
-    <div id="step3" style="display: none;">
-      <h3>Select Your Subjects</h3>
-      
-      <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        Please select at least one subject to continue
-      </div>
-      
-      <div class="row" id="subjectSelection">
-        <!-- Subjects will be dynamically populated here -->
-      </div>
-      
-      <div class="mt-4 p-3 bg-light rounded">
-        <h4 class="mb-0">
-          Total Fee: 
-          <span id="totalFee" class="fw-bold text-success">0</span> PKR
-        </h4>
-      </div>
-      
-      <div class="text-center mt-4">
-        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="button" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i class="fas fa-arrow-right ms-2"></i></button>
-      </div>
-    </div>
-
-    <!-- Step 4: Personal Information -->
-    <div id="step4" style="display: none;">
-      <h3>Your Information</h3>
-      
-      <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        Please provide your personal details for registration
-      </div>
-      
-      <div class="personal-info-form">
-        <div class="mb-4">
-          <label for="studentName" class="form-label">Full Name*</label>
-          <input type="text" class="form-control" id="studentName" placeholder="Enter your full name" required>
-        </div>
-        
-        <div class="mb-4">
-          <label for="studentPhone" class="form-label">Phone Number*</label>
-          <input type="tel" class="form-control" id="studentPhone" placeholder="Enter your phone number" required>
-        </div>
-        
-        <div class="mb-4">
-          <label for="studentEmail" class="form-label">Email Address*</label>
-          <input type="email" class="form-control" id="studentEmail" placeholder="Enter your email address" required>
-        </div>
-        
-        <div class="text-center mt-4">
-          <button type="button" class="btn btn-secondary me-2" onclick="document.getElementById('step4').style.display='none'; document.getElementById('step3').style.display='block'; updateProgress(3);"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-          <button type="button" class="btn btn-primary" onclick="proceedToOTPVerification()">Send OTP <i class="fas fa-paper-plane ms-2"></i></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Step 5: OTP Verification -->
-    <div id="step5" style="display: none;">
-      <h3>Verify Your Email</h3>
-      
-      <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        We've sent a 6-digit verification code to <strong id="userEmail"></strong>. Please enter it below.
-      </div>
-      
-      <div class="mb-4">
-        <label class="form-label text-center d-block">Enter OTP</label>
-        <div class="otp-container">
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp1" onkeyup="moveToNext(this, 'studentOtp2')" autofocus>
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp2" onkeyup="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp3" onkeyup="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp4" onkeyup="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp5" onkeyup="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
-          <input type="text" class="otp-input" maxlength="1" id="studentOtp6" onkeydown="moveToPrev(this, 'studentOtp5', event)">
-        </div>
-        <div class="text-center mt-2">
-          <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none">
-            <i class="fas fa-redo me-1"></i> Resend OTP
-          </a>
-        </div>
-      </div>
-      
-      <div class="text-center">
-        <button type="button" class="btn btn-secondary me-2" onclick="document.getElementById('step5').style.display='none'; document.getElementById('step4').style.display='block'; updateProgress(4);"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="button" class="btn btn-success" onclick="verifyStudentOTP()">
-          <i class="fas fa-check-circle me-2"></i> Verify & Submit
-        </button>
-      </div>
-    </div>
-    <!-- Add this new div at the bottom of your form-container div, just before the closing </form> tag -->
-<div id="thankYouMessage" style="display: none;">
-  <div class="text-center py-5">
-    <div class="mb-4">
-      <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-    </div>
-    <h2 class="mb-3">Fee Calculation Complete!</h2>
-    <p class="lead mb-4">Thank you for using our fee calculator. Here's a summary of your information:</p>
-    
-    <div class="card mx-auto mb-4" style="max-width: 600px;">
-      <div class="card-body">
-        <h5 class="card-title">Fee Summary</h5>
-        <div class="row">
-          <div class="col-md-6">
-            <p><strong>Area:</strong> <span id="summaryArea"></span></p>
-            <p><strong>Board:</strong> <span id="summaryBoard"></span></p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>Selected Subjects:</strong> <span id="summarySubjects"></span></p>
-            <p><strong>Total Fee:</strong> <span id="summaryFee" class="text-success fw-bold"></span> PKR</p>
+<form method="post" id="studentForm" action="/student/submit">
+  <!-- Step 1: Area Selection -->
+  <div id="step1">
+    <h3>Select Your Area</h3>
+    <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% set area_images = {
+          "DHA": "images/dha.png",
+          "Gulshan-e-Iqbal": "images/gulshan.png",
+          "PECHS": "images/pechs.png",
+          "Gulistan-e-Johar": "images/johar.png",
+          "Gulberg": "images/gulberg.png",
+          "North Nazimabad": "images/north_nazimabad.jpg",
+          "North Karachi": "images/north_karachi.jpg",
+          "Saddar": "images/sadar.jpg"
+        } %}
+        {% for area, img in area_images.items() %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
+          <img src="/static/{{ img }}" alt="{{ area }}" class="d-block w-100">
+          <div class="carousel-caption">
+            <h5>{{ area }}</h5>
           </div>
         </div>
+        {% endfor %}
       </div>
-    </div>
-    
-    <div class="alert alert-info mx-auto" style="max-width: 600px;">
-      <h5 class="alert-heading">Next Steps:</h5>
-      <ul class="mb-0">
-        <li>This is an estimated fee calculation</li>
-        <li>Contact us for exact fee structure and enrollment</li>
-        <li>We'll reach out to you at <strong id="summaryContact"></strong> if you provided details</li>
-      </ul>
-    </div>
-    
-    <div class="d-flex justify-content-center gap-3 mt-4">
-      <button class="btn btn-primary" onclick="window.location.reload()">
-        <i class="fas fa-calculator me-2"></i> New Calculation
+      <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
       </button>
-      <button class="btn btn-outline-secondary" onclick="window.print()">
-        <i class="fas fa-print me-2"></i> Print Summary
+      <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
       </button>
+    </div>
+    <input type="hidden" id="area" name="area">
+    <div class="text-center mt-4">
+      <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next <i class="fas fa-arrow-right ms-2"></i></button>
     </div>
   </div>
+
+  <!-- Step 2: Board Selection -->
+  <div id="step2" style="display: none;">
+    <h3>Select Your Board</h3>
+    <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% set board_images = {
+          "Cambridge O'Levels": "images/ciae.png",
+          "Cambridge A'Levels": "images/ciae.png",
+          "Karachi Matric Board": "images/bsek.jpg",
+          "Karachi Inter board": "images/biek.png",
+          "Federal Board": "images/fbis.png",
+          "Aga Khan Board": "images/akub.png",
+          "ICAP": "images/icap.jpg",
+          "ACCA": "images/acca.png",
+          "ICMA": "images/icma.jpg",
+          "Sindh Technical Board": "images/stb.png"
+        } %}
+        {% for board, img in board_images.items() %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
+          <img src="/static/{{ img }}" alt="{{ board }}" class="d-block w-100">
+          <div class="carousel-caption">
+            <h5>{{ board }}</h5>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <input type="hidden" id="board" name="board">
+    <div class="text-center mt-4">
+      <button type="button" class="btn btn-secondary me-2" onclick="prevStep(2)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
+      <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i class="fas fa-arrow-right ms-2"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 3: Subject Selection -->
+  <div id="step3" style="display: none;">
+    <h3>Select Your Subjects</h3>
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      Please select at least one subject to continue
+    </div>
+    <div class="row" id="subjectSelection">
+      <!-- Subjects populated dynamically by JavaScript -->
+    </div>
+    <input type="hidden" id="subjects" name="subjects">
+    <div class="mt-4 p-3 bg-light rounded">
+      <h4 class="mb-0">
+        Total Fee: 
+        <span id="totalFee" class="fw-bold text-success">0</span> PKR
+      </h4>
+      <input type="hidden" id="total_fee" name="total_fee" value="0">
+    </div>
+    <div class="text-center mt-4">
+      <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
+      <button type="button" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i class="fas fa-arrow-right ms-2"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 4: Personal Information -->
+  <div id="step4" style="display: none;">
+    <h3>Your Information</h3>
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      Please provide your personal details for registration
+    </div>
+    <div class="personal-info-form">
+      <div class="mb-4">
+        <label for="studentName" class="form-label">Full Name*</label>
+        <input type="text" class="form-control" id="studentName" name="full_name" placeholder="Enter your full name" required>
+      </div>
+      <div class="mb-4">
+        <label for="studentPhone" class="form-label">Phone Number*</label>
+        <input type="tel" class="form-control" id="studentPhone" name="phone_number" placeholder="Enter your phone number" required>
+      </div>
+      <div class="mb-4">
+        <label for="studentEmail" class="form-label">Email Address*</label>
+        <input type="email" class="form-control" id="studentEmail" name="email" placeholder="Enter your email address" required>
+      </div>
+      <div class="text-center mt-4">
+        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(4)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
+        <button type="submit" class="btn btn-primary">Send OTP <i class="fas fa-paper-plane ms-2"></i></button>
+      </div>
+    </div>
+  </div>
+
+<!-- Step 5: OTP Verification -->
+<div id="step5" style="display: none;">
+    <h3>Verify Your Email</h3>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        We've sent a 6-digit verification code to <strong id="userEmail"></strong>. Please enter it below.
+    </div>
+    <div class="mb-4">
+        <label class="form-label text-center d-block">Enter OTP</label>
+        <div class="otp-container">
+            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]" required 
+                   oninput="moveToNext(this, 'studentOtp2')">
+            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]" required 
+                   oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
+            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]" required 
+                   oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
+            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]" required 
+                   oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
+            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]" required 
+                   oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
+            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]" required 
+                   onkeydown="moveToPrev(this, 'studentOtp5', event)">
+        </div>
+        <div class="text-center mt-2">
+            <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none">
+                <i class="fas fa-redo me-1"></i> Resend OTP
+            </a>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(5)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
+        <button type="button" class="btn btn-success" onclick="verifyStudentOTP()">Verify & Submit <i class="fas fa-check-circle me-2"></i></button>
+    </div>
 </div>
-    
-  </form>
+
+  <!-- Thank You Message / Summary -->
+  <div id="thankYouMessage" style="display: none;">
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+      </div>
+      <h2 class="mb-3">Fee Calculation Complete!</h2>
+      <p class="lead mb-4">Thank you for using our fee calculator. Here's a summary of your information:</p>
+      <div class="card mx-auto mb-4" style="max-width: 600px;">
+        <div class="card-body">
+          <h5 class="card-title">Fee Summary</h5>
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Area:</strong> <span id="summaryArea"></span></p>
+              <p><strong>Board:</strong> <span id="summaryBoard"></span></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Selected Subjects:</strong> <span id="summarySubjects"></span></p>
+              <p><strong>Total Fee:</strong> <span id="summaryFee" class="text-success fw-bold"></span> PKR</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info mx-auto" style="max-width: 600px;">
+        <h5 class="alert-heading">Next Steps:</h5>
+        <ul class="mb-0">
+          <li>This is an estimated fee calculation</li>
+          <li>Contact us for exact fee structure and enrollment</li>
+          <li>We'll reach out to you at <strong id="summaryContact"></strong> if you provided details</li>
+        </ul>
+      </div>
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <button type="button" class="btn btn-primary" onclick="newCalculation()">New Calculation <i class="fas fa-calculator me-2"></i></button>
+        <button type="button" class="btn btn-outline-secondary" onclick="window.print()">Print Summary <i class="fas fa-print me-2"></i></button>
+      </div>
+    </div>
+  </div>
+</form>
+
+
 </div>
 
 <!-- Toast Notifications -->
