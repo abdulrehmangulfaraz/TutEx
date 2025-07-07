@@ -628,15 +628,22 @@ h3::after {
     document.getElementById('totalFee').textContent = totalFee;
   }
 
-  function checkSubmitButton() {
-    const submitButton = document.querySelector('button[type="submit"]');
-    const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked').length;
-    if (selectedSubjects > 0) {
-      submitButton.disabled = false;
-    } else {
-      submitButton.disabled = true;
+function checkSubmitButton() {
+    // Find the specific 'Next' button on the subjects step by its new ID
+    const nextButton = document.getElementById('subjectsNextBtn');
+
+    // IMPORTANT: Only run the rest of the code if the button is actually on the page
+    if (nextButton) {
+        const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked').length;
+        if (selectedSubjects > 0) {
+            // Enable the button if subjects are selected
+            nextButton.disabled = false;
+        } else {
+            // Disable it if no subjects are selected
+            nextButton.disabled = true;
+        }
     }
-  }
+}
 
   function nextStep(currentStep) {
     document.getElementById(`step${currentStep}`).style.display = 'none';
@@ -644,9 +651,11 @@ h3::after {
     updateProgress(currentStep + 1);
     if (currentStep + 1 === 3) {
       const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
-      updateSubjects(activeBoard); // Ensure subjects are loaded when navigating to step 3
+      updateSubjects(activeBoard); // This populates the subjects
+      checkSubmitButton(); // This will now correctly disable the 'Next' button initially
     }
-  }
+}
+  
 
   function prevStep(step) {
     document.getElementById(`step${step}`).style.display = 'none';
@@ -726,7 +735,9 @@ function proceedToOTPVerification() {
     const formData = new FormData();
     formData.append('area', studentData.area);
     formData.append('board', studentData.board);
-    formData.append('subjects', JSON.stringify(studentData.subjects));
+    studentData.subjects.forEach(subject => {
+      formData.append('subjects', subject);
+    });
     formData.append('full_name', studentData.personalInfo.name);
     formData.append('phone_number', studentData.personalInfo.phone);
     formData.append('email', studentData.personalInfo.email);
@@ -1024,7 +1035,7 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
     <div class="text-center mt-4">
       <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-      <button type="button" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i class="fas fa-arrow-right ms-2"></i></button>
+      <button type="button" id="subjectsNextBtn" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i class="fas fa-arrow-right ms-2"></i></button>
     </div>
   </div>
 
@@ -1050,7 +1061,7 @@ function moveToPrev(currentInput, prevInputId, event) {
       </div>
       <div class="text-center mt-4">
         <button type="button" class="btn btn-secondary me-2" onclick="prevStep(4)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="submit" class="btn btn-primary">Send OTP <i class="fas fa-paper-plane ms-2"></i></button>
+        <button type="button" class="btn btn-primary" onclick="proceedToOTPVerification()">Send OTP <i class="fas fa-paper-plane ms-2"></i></button>
       </div>
     </div>
   </div>
@@ -1065,17 +1076,17 @@ function moveToPrev(currentInput, prevInputId, event) {
     <div class="mb-4">
         <label class="form-label text-center d-block">Enter OTP</label>
         <div class="otp-container">
-            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]"  
                    oninput="moveToNext(this, 'studentOtp2')">
-            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]"  
                    oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
-            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]"  
                    oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
-            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]"  
                    oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
-            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]"  
                    oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
-            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]" required 
+            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]"  
                    onkeydown="moveToPrev(this, 'studentOtp5', event)">
         </div>
         <div class="text-center mt-2">
