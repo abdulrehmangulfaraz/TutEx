@@ -1,45 +1,71 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text,Float
+# backend/models.py
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+    Float,
+    Enum,  # Add Enum import
+    ForeignKey, # Add ForeignKey import
+)
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime, timedelta, timezone
-from datetime import datetime
+from datetime import datetime, timezone
+import enum  # Add enum import
 
 Base = declarative_base()
 
-# -------------------- USERS --------------------
+
+# Define an Enum for our lead statuses
+class LeadStatus(str, enum.Enum):
+    PENDING_ADMIN_VERIFICATION = "pending_admin_verification"
+    VERIFIED_AVAILABLE = "verified_available"
+    PENDING_TUTOR_APPROVAL = "pending_tutor_approval"
+    ASSIGNED = "assigned"
+    REJECTED = "rejected"
+
 
 class User(Base):
-    __tablename__ = 'users'
-
+    # ... (Your User class remains unchanged)
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    user_type = Column(String, nullable=False)
-    full_name = Column(String, nullable=False)
-    phone_number = Column(String, nullable=False)
-    email = Column(String, nullable=True)
-    fathers_name = Column(String, nullable=True)
-    last_qualification = Column(String, nullable=True)
-    register_as_parent = Column(Boolean, default=False)
-    cnic_front_path = Column(String, nullable=True)
-    cnic_back_path = Column(String, nullable=True)
-    otp = Column(String(6), nullable=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    user_type = Column(String, default="Tutor")
+    full_name = Column(String)
+    phone_number = Column(String)
+    email = Column(String)
+    fathers_name = Column(String)
+    last_qualification = Column(String)
+    register_as_parent = Column(String)
+    cnic_front_path = Column(String)
+    cnic_back_path = Column(String)
+    otp = Column(String, nullable=True)
     otp_created_at = Column(DateTime, nullable=True)
     is_verified = Column(Boolean, default=False)
 
-# -------------------- StudentRegistration --------------------
 
 class StudentRegistration(Base):
     __tablename__ = "student_registrations"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String)
     phone_number = Column(String)
     email = Column(String, unique=True, index=True)
     area = Column(String)
     board = Column(String)
-    subjects = Column(String)  # Comma-separated list
+    subjects = Column(String)
     total_fee = Column(Float)
-    is_verified = Column(Boolean, default=False)
+    is_verified = Column(Boolean, default=False)  # Student OTP verification
     otp = Column(String, nullable=True)
     otp_created_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    # ---- Add these two new columns ----
+    status = Column(
+        Enum(LeadStatus),
+        default=LeadStatus.PENDING_ADMIN_VERIFICATION,
+        nullable=False,
+    )
+    accepted_by_tutor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
