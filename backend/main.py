@@ -144,6 +144,57 @@ async def send_otp_email(to_email: str, otp: str):
 
 # --- API ENDPOINTS ---
 # Add to the API ENDPOINTS section in main.py
+# --- Admin Panel Routes ---
+
+@app.get("/admin", name="admin")
+async def get_admin_page(request: Request, db: Session = Depends(get_db)):
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
+
+    unverified_leads = db.query(StudentRegistration).filter(StudentRegistration.status == 'PENDING_ADMIN_VERIFICATION').all()
+    pending_requests = db.query(StudentRegistration).filter(StudentRegistration.status == 'PENDING_TUTOR_APPROVAL').all()
+
+    context = {
+        "request": request,
+        "session": request.session,
+        "unverified_leads": unverified_leads,
+        "pending_requests": pending_requests,
+        "get_flashed_messages": lambda **kwargs: get_flashed_messages(request, **kwargs)
+    }
+    return templates.TemplateResponse("admin.html", context)
+
+@app.post("/verify_lead/{lead_id}", name="verify_lead")
+async def verify_lead(request: Request, lead_id: int, db: Session = Depends(get_db)):
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
+
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+    if lead:
+        lead.status = 'VERIFIED_AVAILABLE'
+        db.commit()
+        flash(request, "Lead verified successfully!", "success")
+    else:
+        flash(request, "Lead not found.", "error")
+    
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/approve_tutor_match/{lead_id}", name="approve_tutor_match")
+async def approve_tutor_match(request: Request, lead_id: int, db: Session = Depends(get_db)):
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
+
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+    if lead:
+        lead.status = 'ASSIGNED'
+        db.commit()
+        flash(request, "Tutor match approved!", "success")
+    else:
+        flash(request, "Lead not found.", "error")
+
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+
+
 @app.post("/student/submit")
 async def submit_student_form(
     request: Request,
@@ -742,3 +793,6 @@ async def get_how_it_works_page(request: Request):
 @app.get("/contact", name="contact")
 async def get_contact_page(request: Request):
     return templates.TemplateResponse("contact.html", {"request": request, "session": request.session})
+
+
+

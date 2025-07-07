@@ -12,13 +12,12 @@
           {% endif %}
         {% endwith %}
         
-        <!-- Unverified Leads -->
         <h3>Unverified Leads</h3>
         {% if unverified_leads %}
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Username</th>
+                        <th>Full Name</th>
                         <th>Area</th>
                         <th>Board</th>
                         <th>Subjects</th>
@@ -29,11 +28,11 @@
                 <tbody>
                     {% for lead in unverified_leads %}
                     <tr>
-                        <td>{{ lead.username }}</td>
+                        <td>{{ lead.full_name }}</td>
                         <td>{{ lead.area }}</td>
                         <td>{{ lead.board }}</td>
                         <td>{{ lead.subjects }}</td>
-                        <td>Rs. {{ lead.fee }}</td>
+                        <td>Rs. {{ lead.total_fee }}</td>
                         <td>
                             <form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}">
                                 <button type="submit" class="btn btn-primary">Verify</button>
@@ -47,18 +46,17 @@
             <p>No unverified leads.</p>
         {% endif %}
         
-        <!-- Pending Tutor Requests -->
         <h3>Pending Tutor Requests</h3>
         {% if pending_requests %}
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Username</th>
+                        <th>Full Name</th>
                         <th>Area</th>
                         <th>Board</th>
                         <th>Subjects</th>
                         <th>Fee</th>
-                        <th>Requested By</th>
+                        <th>Requested By Tutor ID</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -66,12 +64,12 @@
                 <tbody>
                     {% for lead in pending_requests %}
                     <tr>
-                        <td>{{ lead.username }}</td>
+                        <td>{{ lead.full_name }}</td>
                         <td>{{ lead.area }}</td>
                         <td>{{ lead.board }}</td>
                         <td>{{ lead.subjects }}</td>
-                        <td>Rs. {{ lead.fee }}</td>
-                        <td>{{ lead.accepted_by }}</td>
+                        <td>Rs. {{ lead.total_fee }}</td>
+                        <td>{{ lead.accepted_by_tutor_id }}</td>
                         <td>{{ lead.status }}</td>
                         <td>
                             <form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}">
@@ -85,8 +83,6 @@
         {% else %}
             <p>No pending tutor requests.</p>
         {% endif %}
-        
-        <script src="/static/js/script.js"></script>
     </div>
 </section>
 {% endblock %}
