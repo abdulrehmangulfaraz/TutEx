@@ -128,37 +128,37 @@
 {% if leads is defined %}
     {% if leads %}
         <h3 class="mt-4">Matching Student Leads</h3>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Area</th>
-                    <th>Board</th>
-                    <th>Subjects</th>
-                    <th>Fee</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead in leads %}
-                <tr>
-                    <td>{{ lead.username }}</td>
-                    <td>{{ lead.area }}</td>
-                    <td>{{ lead.board }}</td>
-                    <td>{{ lead.subjects }}</td>
-                    <td>Rs. {{ lead.fee }}</td>
-                    <td>
-                        <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}" data-lead-id="{{ lead.id }}">
-                            <button type="submit" class="btn btn-success accept-lead-btn">Accept Lead</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="mt-4">No verified leads found for the selected filters.</p>
-    {% endif %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Area</th>
+                        <th>Board</th>
+                        <th>Subjects</th>
+                        <th>Fee</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in leads %}
+                    <tr>
+                        <td>{{ lead.full_name }}</td>
+                        <td>{{ lead.area }}</td>
+                        <td>{{ lead.board }}</td>
+                        <td>{{ lead.subjects }}</td>
+                        <td>Rs. {{ lead.total_fee }}</td>
+                        <td>
+                            <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}" data-lead-id="{{ lead.id }}">
+                                <button type="submit" class="btn btn-success accept-lead-btn">Accept Lead</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="mt-4">No verified leads found for the selected filters.</p>
+        {% endif %}
 {% endif %}
 
 <!-- JavaScript for Handling Lead Acceptance -->

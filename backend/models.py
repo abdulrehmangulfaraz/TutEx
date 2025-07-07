@@ -18,12 +18,12 @@ Base = declarative_base()
 
 
 # Define an Enum for our lead statuses
-class LeadStatus(str, enum.Enum):
-    PENDING_ADMIN_VERIFICATION = "pending_admin_verification"
-    VERIFIED_AVAILABLE = "verified_available"
-    PENDING_TUTOR_APPROVAL = "pending_tutor_approval"
-    ASSIGNED = "assigned"
-    REJECTED = "rejected"
+class LeadStatus(enum.Enum):
+    PENDING_ADMIN_VERIFICATION = "PENDING_ADMIN_VERIFICATION"
+    VERIFIED_AVAILABLE = "VERIFIED_AVAILABLE"
+    PENDING_TUTOR_APPROVAL = "PENDING_TUTOR_APPROVAL"
+    TUTOR_MATCHED = "TUTOR_MATCHED"  # <-- ADD THIS LINE
+    REJECTED = "REJECTED"
 
 
 class User(Base):

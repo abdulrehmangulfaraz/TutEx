@@ -24,13 +24,25 @@ from dotenv import load_dotenv
 # Local Application Imports
 from database import SessionLocal
 # Update imports in main.py
-from models import User, StudentRegistration
+from models import User, StudentRegistration, LeadStatus
 
 # SlowAPI for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+
+# ... (after your imports)
+
+def flash(request: Request, message: str, category: str = "primary"):
+    if "_messages" not in request.session:
+        request.session["_messages"] = []
+    request.session["_messages"].append({"message": message, "category": category})
+
+def get_flashed_messages(request: Request):
+    return request.session.pop("_messages") if "_messages" in request.session else []
+
+# ... (rest of your app code, starting with @app.get("/"))
 
 # Load environment variables from .env file
 load_dotenv()
@@ -144,22 +156,136 @@ async def send_otp_email(to_email: str, otp: str):
 
 # --- API ENDPOINTS ---
 # Add to the API ENDPOINTS section in main.py
+
+@app.get("/tutor_dashboard", name="tutor_dashboard")
+async def get_tutor_dashboard_page(
+    request: Request,
+    db: Session = Depends(get_db),
+    area: Optional[str] = None,
+    board: Optional[str] = None,
+    subject: Optional[str] = None,
+):
+    if 'user' not in request.session:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+
+    user = request.session["user"]
+    query = db.query(StudentRegistration).filter(
+        StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
+    )
+
+    if area:
+        query = query.filter(StudentRegistration.area == area)
+    if board:
+        query = query.filter(StudentRegistration.board == board)
+    if subject:
+        query = query.filter(StudentRegistration.subjects.contains(subject))
+
+    leads = query.all()
+
+    context = {
+        "request": request,
+        "session": request.session,
+        "user": user["username"],
+        "role": user["user_type"],
+        "leads": leads,
+        "selected_area": area,
+        "selected_board": board,
+        "selected_subject": subject,
+        "get_flashed_messages": lambda with_categories=False: get_flashed_messages(request, with_categories)
+    }
+    return templates.TemplateResponse("tutor_dashboard.html", context)
+
+@app.post("/accept_lead/{lead_id}", name="accept_lead")
+async def accept_lead(
+    request: Request,
+    lead_id: int,
+    db: Session = Depends(get_db)
+):
+    if 'user' not in request.session:
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"message": "Please log in to accept leads"}
+        )
+
+    user_info = request.session["user"]
+    tutor = db.query(User).filter(User.username == user_info["username"]).first()
+
+    if not tutor:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": "Tutor not found"}
+        )
+
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+    if lead and lead.status == LeadStatus.VERIFIED_AVAILABLE:
+        lead.status = LeadStatus.PENDING_TUTOR_APPROVAL
+        lead.accepted_by_tutor_id = tutor.id
+        db.commit()
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": "Lead accepted successfully, pending admin approval"}
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={"message": "Lead not available or already accepted"}
+    )
+
 # --- Admin Panel Routes ---
+
+
+
+@app.post("/reject_tutor_match/{lead_id}", name="reject_tutor_match")
+async def reject_tutor_match(request: Request, lead_id: int, db: Session = Depends(get_db)):
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
+
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+    if lead and lead.status == LeadStatus.PENDING_TUTOR_APPROVAL:
+        lead.status = LeadStatus.VERIFIED_AVAILABLE
+        lead.accepted_by_tutor_id = None  # Remove the association with the tutor
+        db.commit()
+        flash(request, "Tutor match rejected. The lead is now available again.", "success")
+    else:
+        flash(request, "Lead not found or already processed.", "error")
+
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/admin", name="admin")
 async def get_admin_page(request: Request, db: Session = Depends(get_db)):
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
 
-    unverified_leads = db.query(StudentRegistration).filter(StudentRegistration.status == 'PENDING_ADMIN_VERIFICATION').all()
-    pending_requests = db.query(StudentRegistration).filter(StudentRegistration.status == 'PENDING_TUTOR_APPROVAL').all()
+    # Fetch Unverified Leads
+    unverified_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.status == LeadStatus.PENDING_ADMIN_VERIFICATION
+    ).all()
+
+    # The rest of your queries for pending_requests, available_leads, etc.
+    pending_requests = db.query(StudentRegistration, User).join(
+        User, StudentRegistration.accepted_by_tutor_id == User.id
+    ).filter(
+        StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
+    ).all()
+
+    available_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
+    ).all()
+
+    matched_leads = db.query(StudentRegistration, User).join(
+        User, StudentRegistration.accepted_by_tutor_id == User.id
+    ).filter(
+        StudentRegistration.status == LeadStatus.TUTOR_MATCHED
+    ).all()
 
     context = {
         "request": request,
         "session": request.session,
         "unverified_leads": unverified_leads,
         "pending_requests": pending_requests,
-        "get_flashed_messages": lambda **kwargs: get_flashed_messages(request, **kwargs)
+        "available_leads": available_leads,
+        "matched_leads": matched_leads,
+        "get_flashed_messages": get_flashed_messages,
     }
     return templates.TemplateResponse("admin.html", context)
 
@@ -170,9 +296,9 @@ async def verify_lead(request: Request, lead_id: int, db: Session = Depends(get_
 
     lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
     if lead:
-        lead.status = 'VERIFIED_AVAILABLE'
+        lead.status = LeadStatus.VERIFIED_AVAILABLE
         db.commit()
-        flash(request, "Lead verified successfully!", "success")
+        flash(request, "Lead verified successfully and is now available to tutors.", "success")
     else:
         flash(request, "Lead not found.", "error")
     
@@ -184,15 +310,16 @@ async def approve_tutor_match(request: Request, lead_id: int, db: Session = Depe
         return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
 
     lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
-    if lead:
-        lead.status = 'ASSIGNED'
+    
+    if lead and lead.status == LeadStatus.PENDING_TUTOR_APPROVAL:
+        # Set the status to TUTOR_MATCHED
+        lead.status = LeadStatus.TUTOR_MATCHED
         db.commit()
-        flash(request, "Tutor match approved!", "success")
+        flash(request, "Tutor match approved successfully!", "success")
     else:
-        flash(request, "Lead not found.", "error")
+        flash(request, "Lead not found or its status was not pending approval.", "error")
 
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
-
 
 
 @app.post("/student/submit")

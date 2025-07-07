@@ -1,88 +1,151 @@
 {% extends "base.html" %}
+
 {% block title %}Admin Panel{% endblock %}
+
 {% block content %}
-<section class="admin-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Admin Panel</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">{{ message }}</div>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Admin Panel</h1>
+
+        {% with messages = get_flashed_messages(request) %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.category }}">{{ message.message }}</div>
             {% endfor %}
-          {% endif %}
-        {% endwith %}
-        
-        <h3>Unverified Leads</h3>
-        {% if unverified_leads %}
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Area</th>
-                        <th>Board</th>
-                        <th>Subjects</th>
-                        <th>Fee</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for lead in unverified_leads %}
-                    <tr>
-                        <td>{{ lead.full_name }}</td>
-                        <td>{{ lead.area }}</td>
-                        <td>{{ lead.board }}</td>
-                        <td>{{ lead.subjects }}</td>
-                        <td>Rs. {{ lead.total_fee }}</td>
-                        <td>
-                            <form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}">
-                                <button type="submit" class="btn btn-primary">Verify</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No unverified leads.</p>
         {% endif %}
-        
-        <h3>Pending Tutor Requests</h3>
-        {% if pending_requests %}
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Area</th>
-                        <th>Board</th>
-                        <th>Subjects</th>
-                        <th>Fee</th>
-                        <th>Requested By Tutor ID</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for lead in pending_requests %}
-                    <tr>
-                        <td>{{ lead.full_name }}</td>
-                        <td>{{ lead.area }}</td>
-                        <td>{{ lead.board }}</td>
-                        <td>{{ lead.subjects }}</td>
-                        <td>Rs. {{ lead.total_fee }}</td>
-                        <td>{{ lead.accepted_by_tutor_id }}</td>
-                        <td>{{ lead.status }}</td>
-                        <td>
-                            <form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}">
-                                <button type="submit" class="btn btn-success">Approve Tutor</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No pending tutor requests.</p>
-        {% endif %}
-    </div>
-</section>
+    {% endwith %}
+
+    <hr>
+    <h3 class="mt-4">📢 New Unverified Leads</h3>
+    {% if unverified_leads %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Area</th>
+                    <th>Board</th>
+                    <th>Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in unverified_leads %}
+                <tr>
+                    <td>{{ lead.full_name }}</td>
+                    <td>{{ lead.area }}</td>
+                    <td>{{ lead.board }}</td>
+                    <td>Rs. {{ lead.total_fee }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Verify</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No new leads to verify.</p>
+    {% endif %}
+
+    <hr>
+    <h3 class="mt-4">Pending Tutor Requests</h3>
+    {% if pending_requests %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Area</th>
+                    <th>Board</th>
+                    <th>Requested By Tutor</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead, tutor in pending_requests %}
+                <tr>
+                    <td>{{ lead.full_name }}</td>
+                    <td>{{ lead.area }}</td>
+                    <td>{{ lead.board }}</td>
+                    <td>{{ tutor.full_name }}</td>
+                    <td>{{ lead.status.value }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No pending tutor requests.</p>
+    {% endif %}
+
+    <hr>
+    <h3 class="mt-5">✅ Completed Tuition Matches</h3>
+    {% if matched_leads %}
+        <table class="table table-bordered">
+             <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Area</th>
+                    <th>Board</th>
+                    <th>Fee</th>
+                    <th>Matched Tutor</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead, tutor in matched_leads %}
+                <tr>
+                    <td>{{ lead.full_name }}</td>
+                    <td>{{ lead.area }}</td>
+                    <td>{{ lead.board }}</td>
+                    <td>Rs. {{ lead.total_fee }}</td>
+                    <td>{{ tutor.full_name }}</td>
+                    <td><span class="badge bg-success">{{ lead.status.value }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No completed tuition matches yet.</p>
+    {% endif %}
+
+    <hr>
+    <h3 class="mt-5">📢 Approved & Available Tuitions</h3>
+    {% if available_leads %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Area</th>
+                    <th>Board</th>
+                    <th>Subjects</th>
+                    <th>Fee</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in available_leads %}
+                <tr>
+                    <td>{{ lead.full_name }}</td>
+                    <td>{{ lead.area }}</td>
+                    <td>{{ lead.board }}</td>
+                    <td>{{ lead.subjects }}</td>
+                    <td>Rs. {{ lead.total_fee }}</td>
+                    <td><span class="badge bg-info text-dark">{{ lead.status.value }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No tuitions are currently available for tutors to accept.</p>
+    {% endif %}
+
+</div>
 {% endblock %}
