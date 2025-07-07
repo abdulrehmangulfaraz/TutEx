@@ -147,9 +147,29 @@ async def send_otp_email(to_email: str, otp: str):
 @app.post("/student/submit")
 async def submit_student_form(
     request: Request,
-    form: StudentForm = Depends(),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    area: str = Form(...),
+    board: str = Form(...),
+    subjects: list[str] = Form(...),
+    full_name: str = Form(...),
+    phone_number: str = Form(...),
+    email: EmailStr = Form(...),
+    total_fee: float = Form(...)
 ):
+    # Manually create the Pydantic model instance for validation and use
+    try:
+        form = StudentForm(
+            area=area,
+            board=board,
+            subjects=subjects,
+            full_name=full_name,
+            phone_number=phone_number,
+            email=email,
+            total_fee=total_fee
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+
     # Validate inputs
     if not form.subjects:
         raise HTTPException(

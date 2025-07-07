@@ -741,7 +741,10 @@ function proceedToOTPVerification() {
     formData.append('full_name', studentData.personalInfo.name);
     formData.append('phone_number', studentData.personalInfo.phone);
     formData.append('email', studentData.personalInfo.email);
-    formData.append('total_fee', document.getElementById('totalFee').textContent);
+    // Extracts the number from the text and converts it to a float
+    const feeText = document.getElementById('totalFee').textContent;
+    const totalFee = parseFloat(feeText.replace(/[^\d.-]/g, ''));
+    formData.append('total_fee', totalFee);
 
     // Submit to backend
     fetch('/student/submit', {
