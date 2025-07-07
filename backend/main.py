@@ -168,30 +168,46 @@ async def get_tutor_dashboard_page(
     if 'user' not in request.session:
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
-    user = request.session["user"]
-    query = db.query(StudentRegistration).filter(
+    user_info = request.session["user"]
+    tutor = db.query(User).filter(User.username == user_info["username"]).first()
+
+    # 1. Fetch leads available for this tutor to accept (with filtering)
+    available_leads_query = db.query(StudentRegistration).filter(
         StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
     )
-
     if area:
-        query = query.filter(StudentRegistration.area == area)
+        available_leads_query = available_leads_query.filter(StudentRegistration.area == area)
     if board:
-        query = query.filter(StudentRegistration.board == board)
+        available_leads_query = available_leads_query.filter(StudentRegistration.board == board)
     if subject:
-        query = query.filter(StudentRegistration.subjects.contains(subject))
+        available_leads_query = available_leads_query.filter(StudentRegistration.subjects.contains(subject))
+    
+    available_leads = available_leads_query.all()
 
-    leads = query.all()
+    # 2. Fetch leads this tutor has requested (pending admin approval)
+    pending_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
+    ).all()
+
+    # 3. Fetch leads assigned to this tutor
+    assigned_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.TUTOR_MATCHED
+    ).all()
 
     context = {
         "request": request,
         "session": request.session,
-        "user": user["username"],
-        "role": user["user_type"],
-        "leads": leads,
+        "user": user_info["username"],
+        "role": user_info["user_type"],
+        "available_leads": available_leads,
+        "pending_leads": pending_leads,
+        "assigned_leads": assigned_leads,
         "selected_area": area,
         "selected_board": board,
         "selected_subject": subject,
-        "get_flashed_messages": lambda with_categories=False: get_flashed_messages(request, with_categories)
+        "get_flashed_messages": get_flashed_messages
     }
     return templates.TemplateResponse("tutor_dashboard.html", context)
 
@@ -202,34 +218,26 @@ async def accept_lead(
     db: Session = Depends(get_db)
 ):
     if 'user' not in request.session:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            content={"message": "Please log in to accept leads"}
-        )
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
     user_info = request.session["user"]
     tutor = db.query(User).filter(User.username == user_info["username"]).first()
 
     if not tutor:
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content={"message": "Tutor not found"}
-        )
+        flash(request, "Tutor profile not found.", "danger")
+        return RedirectResponse(url=request.url_for('tutor_dashboard'), status_code=status.HTTP_303_SEE_OTHER)
 
     lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
     if lead and lead.status == LeadStatus.VERIFIED_AVAILABLE:
         lead.status = LeadStatus.PENDING_TUTOR_APPROVAL
         lead.accepted_by_tutor_id = tutor.id
         db.commit()
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={"message": "Lead accepted successfully, pending admin approval"}
-        )
+        flash(request, "Lead accepted successfully! It is now pending admin approval.", "success")
+    else:
+        flash(request, "Lead could not be accepted. It may have been taken by another tutor.", "warning")
 
-    return JSONResponse(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        content={"message": "Lead not available or already accepted"}
-    )
+    # Redirect back to the tutor dashboard
+    return RedirectResponse(url=request.url_for('tutor_dashboard'), status_code=status.HTTP_303_SEE_OTHER)
 
 # --- Admin Panel Routes ---
 
