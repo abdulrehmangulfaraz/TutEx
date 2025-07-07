@@ -432,7 +432,7 @@ h3::after {
   }
 }
 /* Thank You Message Styles */
-#thankYouMessage {
+#thankYouMessage, #registrationCompleteMessage {
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -445,7 +445,6 @@ h3::after {
 <section>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Your existing JavaScript code remains unchanged
   // Define premium subjects
   const premiumSubjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Audit"];
 
@@ -565,14 +564,13 @@ h3::after {
     ]
   };
 
-  // Function to update subjects based on selected board
   function updateSubjects(board) {
     const subjectContainer = document.getElementById('subjectSelection');
-    subjectContainer.innerHTML = ''; // Clear previous subjects
+    subjectContainer.innerHTML = '';
     const subjects = boardSubjects[board] || [];
     subjects.forEach(subject => {
       const div = document.createElement('div');
-      div.className = 'col-md-4 col-sm-6 mb-3'; // Responsive layout
+      div.className = 'col-md-4 col-sm-6 mb-3';
       div.innerHTML = `
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="subjects" value="${subject}" id="sub${subject.replace(/\s|[-()]/g, '')}" onchange="calculateFee(); checkSubmitButton()">
@@ -581,96 +579,60 @@ h3::after {
       `;
       subjectContainer.appendChild(div);
     });
-    calculateFee(); // Recalculate fee when board changes
-    checkSubmitButton(); // Check submit button state
+    calculateFee();
+    checkSubmitButton();
   }
 
   function calculateFee() {
-    // Get selected area and board
     const selectedArea = document.getElementById('area').value;
     const selectedBoard = document.getElementById('board').value;
-    
-    // Calculate base fees
-    let areaFee = 2000; // Default for other areas
-    if (areaBaseFees[selectedArea]) {
-      areaFee = areaBaseFees[selectedArea];
-    }
-    
-    let boardFee = 2000; // Default for other boards
-    if (boardAdditionalFees[selectedBoard]) {
-      boardFee = boardAdditionalFees[selectedBoard];
-    }
-    
-    // Calculate per subject cap
+    let areaFee = areaBaseFees[selectedArea] || 2000;
+    let boardFee = boardAdditionalFees[selectedBoard] || 2000;
     const perSubjectCap = areaFee + boardFee;
-    
-    // Calculate total fee
-    let totalFee = areaFee + boardFee; // Start with base fees
-    
-    // Add subject fees
+    let totalFee = areaFee + boardFee;
     const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
     selectedSubjects.forEach(subject => {
-      const subjectName = subject.value.split(' - ')[0]; // Get subject name without code
-      let subjectFee = 5000; // Default for other subjects
-      
-      if (premiumSubjects.includes(subjectName)) {
-        subjectFee = 6000;
-      }
-      
-      // Apply cap per subject
-      if (subjectFee > perSubjectCap) {
-        subjectFee = perSubjectCap;
-      }
-      
-      totalFee += subjectFee;
+      const subjectName = subject.value.split(' - ')[0];
+      let subjectFee = premiumSubjects.includes(subjectName) ? 6000 : 5000;
+      totalFee += Math.min(subjectFee, perSubjectCap);
     });
-    
     document.getElementById('totalFee').textContent = totalFee;
   }
 
-function checkSubmitButton() {
-    // Find the specific 'Next' button on the subjects step by its new ID
+  function checkSubmitButton() {
     const nextButton = document.getElementById('subjectsNextBtn');
-
-    // IMPORTANT: Only run the rest of the code if the button is actually on the page
     if (nextButton) {
-        const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked').length;
-        if (selectedSubjects > 0) {
-            // Enable the button if subjects are selected
-            nextButton.disabled = false;
-        } else {
-            // Disable it if no subjects are selected
-            nextButton.disabled = true;
-        }
+      nextButton.disabled = document.querySelectorAll('input[name="subjects"]:checked').length === 0;
     }
-}
+  }
 
   function nextStep(currentStep) {
     document.getElementById(`step${currentStep}`).style.display = 'none';
-    document.getElementById(`step${currentStep + 1}`).style.display = 'block';
+    const nextStepElement = document.getElementById(`step${currentStep + 1}`);
+    if(nextStepElement) nextStepElement.style.display = 'block';
     updateProgress(currentStep + 1);
     if (currentStep + 1 === 3) {
       const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
-      updateSubjects(activeBoard); // This populates the subjects
-      checkSubmitButton(); // This will now correctly disable the 'Next' button initially
+      updateSubjects(activeBoard);
+      checkSubmitButton();
     }
-}
-  
+  }
 
   function prevStep(step) {
     document.getElementById(`step${step}`).style.display = 'none';
-    document.getElementById(`step${step - 1}`).style.display = 'block';
+    const prevStepElement = document.getElementById(`step${step - 1}`);
+    if(prevStepElement) prevStepElement.style.display = 'block';
     updateProgress(step - 1);
   }
 
-  // Update progress steps
   function updateProgress(currentStep) {
     const steps = document.querySelectorAll('.progress-step');
     steps.forEach((step, index) => {
-      if (index < currentStep) {
+      const stepNumber = index + 1;
+      if (stepNumber < currentStep) {
         step.classList.add('completed');
         step.classList.remove('active');
-      } else if (index === currentStep - 1) {
+      } else if (stepNumber === currentStep) {
         step.classList.add('active');
         step.classList.remove('completed');
       } else {
@@ -679,231 +641,153 @@ function checkSubmitButton() {
     });
   }
 
-  // Global variables to store form data
-  let studentData = {
-    area: '',
-    board: '',
-    subjects: [],
-    personalInfo: {},
-    verification: {}
-  };
+  let studentData = { area: '', board: '', subjects: [], personalInfo: {} };
 
-  // Function to collect all data before proceeding to personal info
   function proceedToPersonalInfo() {
-    // Collect area, board, and subjects
     studentData.area = document.getElementById('area').value;
     studentData.board = document.getElementById('board').value;
     studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
-    
-    // Hide step3 and show step4
-    document.getElementById('step3').style.display = 'none';
-    document.getElementById('step4').style.display = 'block';
-    updateProgress(4);
+    nextStep(3);
   }
 
-  // Dummy function for sending OTP (replace with actual implementation later)
-  function sendDummyOTP(email, phone) {
-    console.log("Dummy OTP sent to:", email, phone);
-    // In a real implementation, this would call your backend to send OTP
-    return Promise.resolve({ status: 'success', message: 'OTP sent successfully' });
-  }
-
-  // Dummy function for verifying OTP (replace with actual implementation later)
-  function verifyDummyOTP(email, otp) {
-    console.log("Dummy OTP verification for:", email, otp);
-    // In a real implementation, this would call your backend to verify OTP
-    return Promise.resolve({ status: 'success', message: 'OTP verified successfully' });
-  }
-
-  // Function to proceed to OTP verification
-
-function proceedToOTPVerification() {
-    // Collect personal info
+  function proceedToOTPVerification() {
     studentData.personalInfo = {
-        name: document.getElementById('studentName').value,
-        phone: document.getElementById('studentPhone').value,
-        email: document.getElementById('studentEmail').value
+      name: document.getElementById('studentName').value,
+      phone: document.getElementById('studentPhone').value,
+      email: document.getElementById('studentEmail').value
     };
 
-    // Validate personal info
     if (!studentData.personalInfo.name || !studentData.personalInfo.phone || !studentData.personalInfo.email) {
-        showToast('error', 'Please fill all personal information fields');
-        return;
+      showToast('error', 'Please fill all personal information fields');
+      return;
     }
 
-    // Prepare form data
     const formData = new FormData();
     formData.append('area', studentData.area);
     formData.append('board', studentData.board);
-    studentData.subjects.forEach(subject => {
-      formData.append('subjects', subject);
-    });
+    studentData.subjects.forEach(subject => formData.append('subjects', subject));
     formData.append('full_name', studentData.personalInfo.name);
     formData.append('phone_number', studentData.personalInfo.phone);
     formData.append('email', studentData.personalInfo.email);
-    // Extracts the number from the text and converts it to a float
     const feeText = document.getElementById('totalFee').textContent;
-    const totalFee = parseFloat(feeText.replace(/[^\d.-]/g, ''));
+    const totalFee = parseFloat(feeText.replace(/[^\d.-]/g, '')) || 0;
     formData.append('total_fee', totalFee);
 
-    // Submit to backend
-    fetch('/student/submit', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
+    fetch('/student/submit', { method: 'POST', body: formData })
+      .then(response => response.json())
+      .then(data => {
         if (data.status === 'success') {
-            showToast('success', 'OTP sent successfully');
-            document.getElementById('step4').style.display = 'none';
-            document.getElementById('step5').style.display = 'block';
-            updateProgress(5);
-            document.getElementById('userEmail').textContent = studentData.personalInfo.email;
+          showToast('success', 'OTP sent successfully');
+          nextStep(4);
+          document.getElementById('userEmail').textContent = studentData.personalInfo.email;
         } else {
-            showToast('error', data.message || 'Submission failed');
+          showToast('error', data.detail || 'Submission failed');
         }
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         showToast('error', 'Error during submission');
         console.error('Error:', error);
-    });
-}
+      });
+  }
 
-  // Function to resend OTP
-function resendStudentOTP(event) {
+  function resendStudentOTP(event) {
     event.preventDefault();
     const email = studentData.personalInfo.email;
-    
     fetch('/student/resend-otp', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `email=${encodeURIComponent(email)}`
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${encodeURIComponent(email)}`
     })
     .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showToast('success', 'New OTP sent successfully');
-        } else {
-            showToast('error', data.message || 'Failed to resend OTP');
-        }
-    })
+    .then(data => showToast(data.status === 'success' ? 'success' : 'error', data.message || 'Failed to resend OTP'))
     .catch(error => {
-        showToast('error', 'Error resending OTP');
-        console.error('Error:', error);
+      showToast('error', 'Error resending OTP');
+      console.error('Error:', error);
     });
-}
+  }
 
-  // Function to verify OTP and submit registration
- 
-function verifyStudentOTP() {
-    let otp = '';
-    for (let i = 1; i <= 6; i++) {
-        const digit = document.getElementById(`studentOtp${i}`).value;
-        if (!digit) {
-            showToast('error', 'Please enter the complete OTP');
-            document.getElementById(`studentOtp${i}`).focus();
-            return;
-        }
-        otp += digit;
+  function verifyStudentOTP() {
+    const otp = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
+    if (otp.length !== 6) {
+      showToast('error', 'Please enter the complete OTP');
+      return;
     }
 
     const email = studentData.personalInfo.email;
-    
     fetch('/student/verify-otp', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'verified') {
-            showToast('success', 'Verification successful!');
-            setTimeout(() => {
-                window.location.href = '/student/summary';
-            }, 1000);
-        } else {
-            showToast('error', data.message || 'Verification failed');
-        }
+      if (data.status === 'verified') {
+        showToast('success', 'Verification successful!');
+        document.getElementById('step5').style.display = 'none';
+        document.getElementById('registrationCompleteMessage').style.display = 'block';
+        document.querySelectorAll('.progress-step').forEach(step => {
+            step.classList.add('completed');
+            step.classList.remove('active');
+        });
+        setTimeout(() => {
+          window.location.href = '/student/summary';
+        }, 3000);
+      } else {
+        showToast('error', data.detail || 'Verification failed');
+      }
     })
     .catch(error => {
-        showToast('error', 'Error during verification');
-        console.error('Error:', error);
+      showToast('error', 'Error during verification');
+      console.error('Error:', error);
     });
-}
+  }
 
-function moveToNext(currentInput, nextInputId) {
-    if (currentInput.value.length === 1) {
-        document.getElementById(nextInputId).focus();
-    }
-}
-
-function moveToPrev(currentInput, prevInputId, event) {
-    if (event.key === 'Backspace' && currentInput.value.length === 0) {
-        document.getElementById(prevInputId).focus();
-    }
-}
-
-  // OTP input navigation functions
   function moveToNext(currentInput, nextInputId) {
-    if (currentInput.value.length === 1) {
-      document.getElementById(nextInputId).focus();
+    if (currentInput.value.length === currentInput.maxLength) {
+      const next = document.getElementById(nextInputId);
+      if(next) next.focus();
     }
   }
-  
+
   function moveToPrev(currentInput, prevInputId, event) {
     if (event.key === 'Backspace' && currentInput.value.length === 0) {
-      document.getElementById(prevInputId).focus();
+      const prev = document.getElementById(prevInputId);
+      if(prev) prev.focus();
     }
   }
 
-  // Show toast notification
   function showToast(type, message) {
-    const toastElement = type === 'success' 
-      ? document.getElementById('successToast')
-      : document.getElementById('errorToast');
-      
+    const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+    const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : 'errorToastMessage');
+    messageElement.textContent = message;
     const toast = new bootstrap.Toast(toastElement);
-    
-    if (type === 'success') {
-      document.getElementById('successToastMessage').textContent = message;
-    } else {
-      document.getElementById('errorToastMessage').textContent = message;
-    }
-    
     toast.show();
   }
+  
+  function newCalculation() {
+      fetch('/student/new-calculation', { method: 'POST' })
+          .then(() => window.location.reload());
+  }
 
-  // INITIAL SETUP: Event Listeners and Defaults
   document.addEventListener('DOMContentLoaded', function () {
-    // Set initial board and area values
     const initialBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
     document.getElementById('board').value = initialBoard;
     const initialArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
     document.getElementById('area').value = initialArea;
-    
-    // Setup area carousel event
+
     document.getElementById('areaCarousel').addEventListener('slid.bs.carousel', function () {
       const activeArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
       document.getElementById('area').value = activeArea;
-      calculateFee(); // Recalculate fee when area changes
+      calculateFee();
     });
-    
-    // Setup board carousel event
+
     document.getElementById('boardCarousel').addEventListener('slid.bs.carousel', function () {
       const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
       document.getElementById('board').value = activeBoard;
       updateSubjects(activeBoard);
-      calculateFee(); // Recalculate fee when board changes
     });
-    
-    // Initially load subjects for the active board on page load
+
     updateSubjects(initialBoard);
-    
-    // Initialize progress steps
     updateProgress(1);
   });
 </script>
@@ -911,33 +795,16 @@ function moveToPrev(currentInput, prevInputId, event) {
 <div class="form-container">
   <h2>Student Portal</h2>
   
-  <!-- Progress Steps -->
   <div class="progress-steps">
-    <div class="progress-step active">
-      <span>1</span>
-      <span class="progress-label">Area</span>
-    </div>
-    <div class="progress-step">
-      <span>2</span>
-      <span class="progress-label">Board</span>
-    </div>
-    <div class="progress-step">
-      <span>3</span>
-      <span class="progress-label">Subjects</span>
-    </div>
-    <div class="progress-step">
-      <span>4</span>
-      <span class="progress-label">Details</span>
-    </div>
-    <div class="progress-step">
-      <span>5</span>
-      <span class="progress-label">Verify</span>
-    </div>
+    <div class="progress-step"><span>1</span><span class="progress-label">Area</span></div>
+    <div class="progress-step"><span>2</span><span class="progress-label">Board</span></div>
+    <div class="progress-step"><span>3</span><span class="progress-label">Subjects</span></div>
+    <div class="progress-step"><span>4</span><span class="progress-label">Details</span></div>
+    <div class="progress-step"><span>5</span><span class="progress-label">Verify</span></div>
+    <div class="progress-step"><span><i class="fas fa-check"></i></span><span class="progress-label">Complete</span></div>
   </div>
-  
 
 <form method="post" id="studentForm" action="/student/submit">
-  <!-- Step 1: Area Selection -->
   <div id="step1">
     <h3>Select Your Area</h3>
     <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -965,7 +832,7 @@ function moveToPrev(currentInput, prevInputId, event) {
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
+      <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </button>
@@ -976,7 +843,6 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
   </div>
 
-  <!-- Step 2: Board Selection -->
   <div id="step2" style="display: none;">
     <h3>Select Your Board</h3>
     <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -1018,23 +884,18 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
   </div>
 
-  <!-- Step 3: Subject Selection -->
   <div id="step3" style="display: none;">
     <h3>Select Your Subjects</h3>
     <div class="alert alert-info">
       <i class="fas fa-info-circle me-2"></i>
       Please select at least one subject to continue
     </div>
-    <div class="row" id="subjectSelection">
-      <!-- Subjects populated dynamically by JavaScript -->
-    </div>
-    <input type="hidden" id="subjects" name="subjects">
+    <div class="row" id="subjectSelection"></div>
     <div class="mt-4 p-3 bg-light rounded">
       <h4 class="mb-0">
         Total Fee: 
         <span id="totalFee" class="fw-bold text-success">0</span> PKR
       </h4>
-      <input type="hidden" id="total_fee" name="total_fee" value="0">
     </div>
     <div class="text-center mt-4">
       <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
@@ -1042,7 +903,6 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
   </div>
 
-  <!-- Step 4: Personal Information -->
   <div id="step4" style="display: none;">
     <h3>Your Information</h3>
     <div class="alert alert-info">
@@ -1069,7 +929,6 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
   </div>
 
-<!-- Step 5: OTP Verification -->
 <div id="step5" style="display: none;">
     <h3>Verify Your Email</h3>
     <div class="alert alert-info">
@@ -1079,23 +938,15 @@ function moveToPrev(currentInput, prevInputId, event) {
     <div class="mb-4">
         <label class="form-label text-center d-block">Enter OTP</label>
         <div class="otp-container">
-            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]"  
-                   oninput="moveToNext(this, 'studentOtp2')">
-            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]"  
-                   oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
-            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]"  
-                   oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
-            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]"  
-                   oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
-            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]"  
-                   oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
-            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]"  
-                   onkeydown="moveToPrev(this, 'studentOtp5', event)">
+            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp2')">
+            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
+            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
+            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
+            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
+            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]" onkeydown="moveToPrev(this, 'studentOtp5', event)">
         </div>
         <div class="text-center mt-2">
-            <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none">
-                <i class="fas fa-redo me-1"></i> Resend OTP
-            </a>
+            <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none"><i class="fas fa-redo me-1"></i> Resend OTP</a>
         </div>
     </div>
     <div class="text-center">
@@ -1104,7 +955,19 @@ function moveToPrev(currentInput, prevInputId, event) {
     </div>
 </div>
 
-  <!-- Thank You Message / Summary -->
+<div id="registrationCompleteMessage" style="display: none;">
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+      </div>
+      <h2 class="mb-3">Thank You For Registering!</h2>
+      <p class="lead mb-4">Your account has been successfully verified. You will be redirected to your summary page shortly.</p>
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+</div>
+
   <div id="thankYouMessage" style="display: none;">
     <div class="text-center py-5">
       <div class="mb-4">
@@ -1146,7 +1009,6 @@ function moveToPrev(currentInput, prevInputId, event) {
 
 </div>
 
-<!-- Toast Notifications -->
 <div class="toast-container">
   <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
     <div class="d-flex">
