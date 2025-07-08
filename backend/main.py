@@ -121,6 +121,7 @@ class StudentForm(BaseModel):
     full_name: str
     phone_number: str
     email: EmailStr
+    address: str
     total_fee: float
 
 # --- EMAIL SENDING ---
