@@ -7,12 +7,12 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     Float,
-    Enum,  # Add Enum import
-    ForeignKey, # Add ForeignKey import
+    Enum,
+    ForeignKey,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime, timezone
-import enum  # Add enum import
+import enum
 
 Base = declarative_base()
 
@@ -22,7 +22,7 @@ class LeadStatus(enum.Enum):
     PENDING_ADMIN_VERIFICATION = "PENDING_ADMIN_VERIFICATION"
     VERIFIED_AVAILABLE = "VERIFIED_AVAILABLE"
     PENDING_TUTOR_APPROVAL = "PENDING_TUTOR_APPROVAL"
-    TUTOR_MATCHED = "TUTOR_MATCHED"  # <-- ADD THIS LINE
+    TUTOR_MATCHED = "TUTOR_MATCHED"
     REJECTED = "REJECTED"
 
 
@@ -54,15 +54,14 @@ class StudentRegistration(Base):
     phone_number = Column(String)
     email = Column(String, unique=True, index=True)
     area = Column(String)
+    address = Column(String) # <-- ADD THIS LINE
     board = Column(String)
     subjects = Column(String)
     total_fee = Column(Float)
-    is_verified = Column(Boolean, default=False)  # Student OTP verification
+    is_verified = Column(Boolean, default=False)
     otp = Column(String, nullable=True)
     otp_created_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-
-    # ---- Add these two new columns ----
     status = Column(
         Enum(LeadStatus),
         default=LeadStatus.PENDING_ADMIN_VERIFICATION,

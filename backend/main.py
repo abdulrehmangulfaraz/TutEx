@@ -109,6 +109,7 @@ class RegisterForm(BaseModel):
     full_name: str
     phone_number: str
     email: Optional[EmailStr] = None
+    address: str
     fathers_name: Optional[str] = None
     last_qualification: Optional[str] = None
     register_as_parent: Optional[bool] = False
@@ -340,6 +341,7 @@ async def submit_student_form(
     full_name: str = Form(...),
     phone_number: str = Form(...),
     email: EmailStr = Form(...),
+    address: str = Form(...),
     total_fee: float = Form(...)
 ):
     # Manually create the Pydantic model instance for validation and use
@@ -351,6 +353,7 @@ async def submit_student_form(
             full_name=full_name,
             phone_number=phone_number,
             email=email,
+            address=address,
             total_fee=total_fee
         )
     except Exception as e:
@@ -385,6 +388,7 @@ async def submit_student_form(
         phone_number=form.phone_number,
         email=form.email,
         area=form.area,
+        address=form.address,
         board=form.board,
         subjects=",".join(form.subjects),  # Store as comma-separated string
         total_fee=form.total_fee,
