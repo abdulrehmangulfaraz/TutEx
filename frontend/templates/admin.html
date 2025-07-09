@@ -90,6 +90,17 @@
         .btn-action.btn-reject { background-color: var(--danger-light); color: var(--danger-color); }
         .btn-action.btn-reject:hover { background-color: var(--danger-color); color: #fff; }
 
+        /* === Original Modal Styling (This is for the default modal, not the new one) === */
+        .modal-header { border-bottom: 1px solid var(--border-color); }
+        .modal-title { font-weight: 600; color: var(--text-primary); }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================================================================== */
+        /* === NEW, SCOPED MODAL STYLES (WON'T AFFECT DASHBOARD) === */
+        /* ================================================================== */
 #verifyLeadModal .modal-content {
     background-color: #f8fafc;
     border-radius: 19.2px; /* 24px * 0.8 */
