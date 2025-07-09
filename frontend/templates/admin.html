@@ -38,12 +38,8 @@
 
         /* === Sidebar === */
         .admin-sidebar {
-            width: 260px;
-            background: var(--sidebar-bg);
-            position: fixed;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            width: 260px; background: var(--sidebar-bg); position: fixed; height: 100vh;
+            display: flex; flex-direction: column;
         }
         .sidebar-header { padding: 1.75rem 1.5rem; text-align: center; }
         .sidebar-header h3 { color: #fff; margin: 0; font-weight: 700; font-size: 1.5rem; }
@@ -63,16 +59,17 @@
         .top-navbar {
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color); padding: 1rem 2.5rem;
-            position: sticky; top: 0; z-index: 1000;
+            position: sticky; top: 0; z-index: 999;
         }
         .top-navbar h1 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); }
         main { padding: 2.5rem; }
         
-        /* === Stat Cards === */
-        .stat-card {
-            background: var(--card-bg); border-radius: 1rem; padding: 1.5rem; border: 1px solid var(--border-color);
-            display: flex; align-items: center; transition: all 0.3s ease;
+        /* === Stat Cards & Main Cards === */
+        .stat-card, .main-card {
+            background: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
         }
+        .stat-card { display: flex; align-items: center; padding: 1.5rem; transition: all 0.3s ease; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .stat-icon {
             font-size: 1.75rem; width: 60px; height: 60px; border-radius: 50%;
@@ -85,12 +82,6 @@
         .bg-success-gradient { background: linear-gradient(45deg, #4ade80, #22c55e); }
         .stat-info h5 { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
         .stat-info p { margin: 0; color: var(--text-secondary); }
-
-        /* === Main Cards === */
-        .main-card {
-            background-color: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-        }
         .main-card .card-header {
             background-color: #f8fafc; border-bottom: 1px solid var(--border-color);
             font-weight: 600; padding: 1rem 1.5rem; color: var(--text-primary);
@@ -98,52 +89,50 @@
         .card-header .fas { margin-right: 0.75rem; }
         .main-card .card-body { padding: 1.5rem; }
         
-        /* === DataTables Premium Redesign === */
+        /* === DataTables & Action Buttons === */
         .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1.5rem 0; }
         .dataTables_length, .dataTables_filter { display: flex; align-items: center; }
-        .dataTables_length label { font-weight: 500; margin-right: 0.5rem; white-space: nowrap; }
+        .dataTables_length label {
+            display: flex; align-items: center; background-color: #f8fafc;
+            border: 1px solid var(--border-color); border-radius: 0.5rem;
+            padding: 0 0.75rem; font-weight: 500;
+        }
         .dataTables_length select {
             -webkit-appearance: none; -moz-appearance: none; appearance: none;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
             background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px;
-            padding: 0.6rem 2.5rem 0.6rem 1rem !important; font-weight: 500;
+            padding: 0.6rem 2.5rem 0.6rem 0.5rem !important; font-weight: 500;
+            border: none !important; background-color: transparent !important; margin: 0 0.5rem;
         }
-        .dataTables_length select, .dataTables_filter input {
-            border: 1px solid var(--border-color); border-radius: 0.5rem;
+        .dataTables_filter input {
+            border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem 1rem;
             background-color: #f8fafc; transition: all 0.2s ease;
-        }
-        .dataTables_filter input { padding: 0.6rem 1rem; }
-        .dataTables_length select:focus, .dataTables_filter input:focus {
-             outline: none; border-color: var(--primary-color); background-color: #fff; box-shadow: 0 0 0 3px var(--primary-light);
         }
         .dataTables_wrapper .paginate_button {
             border-radius: 0.5rem !important; margin: 0 0.25rem !important; min-width: 40px; height: 40px;
             display: inline-flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-color) !important; box-shadow: none !important;
         }
-        .dataTables_wrapper .paginate_button.current, .dataTables_wrapper .paginate_button.current:hover {
-            background: var(--primary-color) !important; color: #fff !important; border-color: var(--primary-color) !important;
-        }
-        
-        table.dataTable thead th { font-weight: 600; color: var(--text-primary); }
         table.dataTable tbody tr:hover { background-color: #f8fafc; cursor: pointer; }
         table.dataTable tbody td { vertical-align: middle; padding: 0.9rem 1rem; }
-        
-        /* === Action Buttons Redesign === */
         .btn-action {
             padding: 0.35rem 0.9rem; border-radius: 50rem; font-size: 0.8rem;
             font-weight: 600; border: none; transition: all 0.2s ease;
         }
         .btn-action .fas { margin-right: 5px; }
-        
         .btn-action.btn-verify { background-color: var(--primary-light); color: var(--primary-color); }
         .btn-action.btn-verify:hover { background-color: var(--primary-color); color: #fff; }
-        
         .btn-action.btn-approve { background-color: var(--success-light); color: var(--success-color); }
         .btn-action.btn-approve:hover { background-color: var(--success-color); color: #fff; }
-        
         .btn-action.btn-reject { background-color: var(--danger-light); color: var(--danger-color); }
         .btn-action.btn-reject:hover { background-color: var(--danger-color); color: #fff; }
+
+        /* === Verification Modal === */
+        .modal-header { border-bottom: 1px solid var(--border-color); }
+        .modal-title { font-weight: 600; color: var(--text-primary); }
+        .summary-item { margin-bottom: 1rem; }
+        .summary-item dt { font-weight: 600; color: var(--text-primary); }
+        .summary-item dd { color: var(--text-secondary); margin-left: 0; }
 
         .content-section { display: none; }
         .content-section.active { display: block; animation: fadeIn 0.5s ease; }
@@ -176,7 +165,15 @@
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-bell text-warning"></i> New Unverified Leads</div><div class="card-body"><table id="unverifiedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Action</th></tr></thead><tbody>{% for lead in unverified_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td><form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}"><button type="submit" class="btn-action btn-verify"><i class="fas fa-check"></i> Verify</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
+                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-bell text-warning"></i> New Unverified Leads</div><div class="card-body"><table id="unverifiedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Action</th></tr></thead><tbody>
+                        {% for lead in unverified_leads %}
+                        <tr>
+                            <td>{{ lead.full_name }}</td>
+                            <td>{{ lead.area }}</td>
+                            <td><button type="button" class="btn-action btn-verify" data-bs-toggle="modal" data-bs-target="#verifyLeadModal" data-lead-id="{{ lead.id }}"><i class="fas fa-check"></i> Verify</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody></table></div></div></div>
                     <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div><div class="card-body"><table id="pendingRequestsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Action</th></tr></thead><tbody>{% for lead, tutor in pending_requests %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn-action btn-approve"><i class="fas fa-check-circle"></i> Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn-action btn-reject"><i class="fas fa-times-circle"></i> Reject</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
                     <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-list-alt text-secondary"></i> Approved & Available</div><div class="card-body"><table id="availableLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Fee</th></tr></thead><tbody>{% for lead in available_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td></tr>{% endfor %}</tbody></table></div></div></div>
                     <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Matches</div><div class="card-body"><table id="matchedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Status</th></tr></thead><tbody>{% for lead, tutor in matched_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><span class="badge rounded-pill bg-success-light text-success">{{ lead.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
@@ -187,6 +184,36 @@
             <div id="studentsContent" class="content-section"><div class="main-card"><div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered Students</div><div class="card-body"><table id="allStudentsTable" class="table" style="width:100%"><thead><tr><th>Full Name</th><th>Email</th><th>Phone</th><th>Area</th><th>Board</th><th>Status</th></tr></thead><tbody>{% for student in all_students %}<tr><td>{{ student.full_name }}</td><td>{{ student.email }}</td><td>{{ student.phone_number }}</td><td>{{ student.area }}</td><td>{{ student.board }}</td><td><span class="badge rounded-pill bg-secondary-light text-secondary">{{ student.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
         </main>
     </div>
+</div>
+
+<div class="modal fade" id="verifyLeadModal" tabindex="-1" aria-labelledby="verifyLeadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 1rem;">
+      <div class="modal-header"><h5 class="modal-title" id="verifyLeadModalLabel"><i class="fas fa-clipboard-check me-2 text-primary"></i>Lead Verification Summary</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body p-4">
+        <div id="modal-loader" class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
+        <div id="modal-content-summary" style="display: none;">
+            <div class="row">
+                <div class="col-md-6"><dl class="summary-item"><dt>Student Name</dt><dd id="modal-full_name"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Contact Email</dt><dd id="modal-email"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Phone Number</dt><dd id="modal-phone_number"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Total Fee</dt><dd id="modal-total_fee"></dd></dl></div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-md-6"><dl class="summary-item"><dt>Area</dt><dd id="modal-area"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Address</dt><dd id="modal-address"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Board</dt><dd id="modal-board"></dd></dl></div>
+                <div class="col-md-6"><dl class="summary-item"><dt>Subjects</dt><dd id="modal-subjects"></dd></dl></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form id="verify-form" method="POST" action=""><button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Confirm & Verify</button></form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -202,10 +229,7 @@ $(document).ready(function () {
             "lengthMenu": "Show _MENU_",
             "search": "",
             "searchPlaceholder": "Search...",
-            "paginate": {
-                "previous": "<i class='fas fa-chevron-left'></i>",
-                "next":     "<i class='fas fa-chevron-right'></i>"
-            }
+            "paginate": { "previous": "<i class='fas fa-chevron-left'></i>", "next": "<i class='fas fa-chevron-right'></i>" }
         },
         "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
                '<"table-responsive"t>' +
@@ -228,6 +252,46 @@ $(document).ready(function () {
 
     $.each(tabs, (name, components) => {
         components.tab.on('click', (e) => { e.preventDefault(); showTab(name); });
+    });
+    
+    var verifyLeadModal = document.getElementById('verifyLeadModal');
+    verifyLeadModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var leadId = button.getAttribute('data-lead-id');
+        var modalLoader = $('#modal-loader');
+        var modalContent = $('#modal-content-summary');
+        
+        modalContent.hide();
+        modalLoader.show();
+        
+        var verifyForm = $('#verify-form');
+        var verifyUrl = "{{ url_for('verify_lead', lead_id=0) }}".replace('0', leadId);
+        verifyForm.attr('action', verifyUrl);
+
+        fetch(`/api/lead/${leadId}`)
+            .then(response => {
+                if (!response.ok) { throw new Error('Network response was not ok'); }
+                return response.json();
+            })
+            .then(data => {
+                if (data.detail) { throw new Error(data.detail); }
+                
+                $('#modal-full_name').text(data.full_name || 'N/A');
+                $('#modal-email').text(data.email || 'N/A');
+                $('#modal-phone_number').text(data.phone_number || 'N/A');
+                $('#modal-total_fee').text(data.total_fee || 'N/A');
+                $('#modal-area').text(data.area || 'N/A');
+                $('#modal-address').text(data.address || 'N/A');
+                $('#modal-board').text(data.board || 'N/A');
+                $('#modal-subjects').text(data.subjects || 'N/A');
+
+                modalLoader.hide();
+                modalContent.show();
+            })
+            .catch(error => {
+                console.error('Error fetching lead details:', error);
+                modalLoader.html('<div class="text-danger p-4">Failed to load details. Please check the console and backend logs.</div>');
+            });
     });
 });
 </script>

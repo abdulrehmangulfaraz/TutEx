@@ -262,6 +262,32 @@ async def reject_tutor_match(request: Request, lead_id: int, db: Session = Depen
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
 
 # In backend/main.py
+# In backend/main.py, replace the old get_lead_details function with this one
+
+@app.get("/api/lead/{lead_id}", name="get_lead_details")
+async def get_lead_details(lead_id: int, db: Session = Depends(get_db)):
+    """API endpoint to get the full details of a student lead."""
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+    
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+        
+    # CORRECTED: Only include fields that exist in your models.py
+    lead_details = {
+        "id": lead.id,
+        "full_name": lead.full_name,
+        "email": lead.email,
+        "phone_number": lead.phone_number,
+        "area": lead.area,
+        "address": lead.address,
+        "board": lead.board,
+        "subjects": lead.subjects,
+        "total_fee": f"Rs. {lead.total_fee:,.0f}",
+        "registration_date": lead.created_at.strftime("%d %b, %Y")
+    }
+    
+    return JSONResponse(content=lead_details)
+
 @app.get("/admin_logout", name="admin_logout")
 async def admin_logout(request: Request):
     """Logs the admin out by clearing the session and redirecting to login."""
