@@ -308,7 +308,7 @@ $(document).ready(function () {
         modalLoader.show();
         
         var verifyForm = $('#verify-form');
-        verifyForm.attr('action', "{{ url_for('verify_lead', lead_id=0) }}".replace('0', leadId));
+        verifyForm.attr('action', "{{ url_for('verify_lead', lead_id='PLACEHOLDER') }}".replace('PLACEHOLDER', leadId));
 
         fetch(`/api/lead/${leadId}`)
             .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
