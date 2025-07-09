@@ -373,11 +373,11 @@ async def submit_student_form(
         )
     
     # Check if email is already registered
-    if db.query(StudentRegistration).filter(StudentRegistration.email == form.email).first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
-        )
+    # if db.query(StudentRegistration).filter(StudentRegistration.email == form.email).first():
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Email already registered"
+    #     )
     
     # Generate OTP
     otp = str(random.randint(100000, 999999))
@@ -461,7 +461,10 @@ async def student_verify_otp(
 
     # Fetch registration
     print("🔍 Step 2: Querying StudentRegistration Table...")
-    registration = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
+    registration = db.query(StudentRegistration).filter(
+        StudentRegistration.email == email,
+        StudentRegistration.is_verified == False
+    ).order_by(StudentRegistration.created_at.desc()).first()
     
     if not registration:
         print(f"❌ Email not found in registrations: {email}")
