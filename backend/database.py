@@ -18,10 +18,21 @@ db_name = os.getenv("DB_NAME")
 DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 # Create SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=20,          # The number of connections to keep open in the pool
+    max_overflow=10,       # The number of extra connections to allow beyond pool_size
+    pool_timeout=30,       # How long to wait for a connection before timing out
+    pool_recycle=1800      # Recycle connections after 30 minutes to prevent stale connections
+)
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base class for SQLAlchemy models
-Base = declarative_base()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

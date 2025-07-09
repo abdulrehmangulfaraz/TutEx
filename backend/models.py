@@ -52,7 +52,7 @@ class StudentRegistration(Base):
     id = Column(Integer, primary_key=True, index=True)
     full_name = Column(String)
     phone_number = Column(String)
-    email = Column(String, index=True)
+    email = Column(String)
     area = Column(String)
     address = Column(String) # <-- ADD THIS LINE
     board = Column(String)
