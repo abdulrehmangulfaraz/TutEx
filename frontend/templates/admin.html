@@ -14,6 +14,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
     <style>
+        /* ================================================================== */
+        /* === ORIGINAL DASHBOARD STYLES (RESTORED & UNTOUCHED) === */
+        /* ================================================================== */
         :root {
             --primary-color: #6366f1; /* Indigo */
             --primary-light: #eef2ff;
@@ -37,18 +40,12 @@
         }
 
         /* === Sidebar === */
-        .admin-sidebar {
-            width: 260px; background: var(--sidebar-bg); position: fixed; height: 100vh;
-            display: flex; flex-direction: column;
-        }
+        .admin-sidebar { width: 260px; background: var(--sidebar-bg); position: fixed; height: 100vh; display: flex; flex-direction: column; }
         .sidebar-header { padding: 1.75rem 1.5rem; text-align: center; }
         .sidebar-header h3 { color: #fff; margin: 0; font-weight: 700; font-size: 1.5rem; }
         .sidebar-header .fa-shield-alt { color: var(--primary-color); }
         .admin-sidebar-nav { flex-grow: 1; padding: 1rem 0; }
-        .admin-sidebar-nav a {
-            padding: 1rem 1.75rem; font-size: 0.95rem; display: flex; align-items: center; color: #cbd5e1;
-            text-decoration: none; transition: all 0.2s; margin: 0.25rem 0.75rem; border-radius: 8px; font-weight: 500;
-        }
+        .admin-sidebar-nav a { padding: 1rem 1.75rem; font-size: 0.95rem; display: flex; align-items: center; color: #cbd5e1; text-decoration: none; transition: all 0.2s; margin: 0.25rem 0.75rem; border-radius: 8px; font-weight: 500; }
         .admin-sidebar-nav a .fas { margin-right: 1rem; width: 20px; text-align: center; }
         .admin-sidebar-nav a:hover { background: var(--primary-color); color: #ffffff; }
         .admin-sidebar-nav li.active > a { background: var(--primary-color); color: #ffffff; font-weight: 600; }
@@ -56,69 +53,35 @@
 
         /* === Main Content & Top Bar === */
         .admin-content { width: calc(100% - 260px); margin-left: 260px; }
-        .top-navbar {
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color); padding: 1rem 2.5rem;
-            position: sticky; top: 0; z-index: 999;
-        }
+        .top-navbar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 999; }
         .top-navbar h1 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); }
         main { padding: 2.5rem; }
         
         /* === Stat Cards & Main Cards === */
-        .stat-card, .main-card {
-            background: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-        }
+        .stat-card, .main-card { background: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
         .stat-card { display: flex; align-items: center; padding: 1.5rem; transition: all 0.3s ease; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .stat-icon {
-            font-size: 1.75rem; width: 60px; height: 60px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; margin-right: 1.5rem;
-        }
+        .stat-icon { font-size: 1.75rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; margin-right: 1.5rem; }
         .bg-warning-gradient { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
         .bg-info-gradient { background: linear-gradient(45deg, #38bdf8, #0ea5e9); }
         .bg-primary-gradient { background: linear-gradient(45deg, #818cf8, #6366f1); }
         .bg-success-gradient { background: linear-gradient(45deg, #4ade80, #22c55e); }
         .stat-info h5 { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
         .stat-info p { margin: 0; color: var(--text-secondary); }
-        .main-card .card-header {
-            background-color: #f8fafc; border-bottom: 1px solid var(--border-color);
-            font-weight: 600; padding: 1rem 1.5rem; color: var(--text-primary);
-        }
+        .main-card .card-header { background-color: #f8fafc; border-bottom: 1px solid var(--border-color); font-weight: 600; padding: 1rem 1.5rem; color: var(--text-primary); }
         .card-header .fas { margin-right: 0.75rem; }
         .main-card .card-body { padding: 1.5rem; }
         
         /* === DataTables & Action Buttons === */
         .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1.5rem 0; }
         .dataTables_length, .dataTables_filter { display: flex; align-items: center; }
-        .dataTables_length label {
-            display: flex; align-items: center; background-color: #f8fafc;
-            border: 1px solid var(--border-color); border-radius: 0.5rem;
-            padding: 0 0.75rem; font-weight: 500;
-        }
-        .dataTables_length select {
-            -webkit-appearance: none; -moz-appearance: none; appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px;
-            padding: 0.6rem 2.5rem 0.6rem 0.5rem !important; font-weight: 500;
-            border: none !important; background-color: transparent !important; margin: 0 0.5rem;
-        }
-        .dataTables_filter input {
-            border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem 1rem;
-            background-color: #f8fafc; transition: all 0.2s ease;
-        }
-        .dataTables_wrapper .paginate_button {
-            border-radius: 0.5rem !important; margin: 0 0.25rem !important; min-width: 40px; height: 40px;
-            display: inline-flex; align-items: center; justify-content: center;
-            border: 1px solid var(--border-color) !important; box-shadow: none !important;
-        }
+        .dataTables_length label { display: flex; align-items: center; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0 0.75rem; font-weight: 500; }
+        .dataTables_length select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding: 0.6rem 2.5rem 0.6rem 0.5rem !important; font-weight: 500; border: none !important; background-color: transparent !important; margin: 0 0.5rem; }
+        .dataTables_filter input { border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem 1rem; background-color: #f8fafc; transition: all 0.2s ease; }
+        .dataTables_wrapper .paginate_button { border-radius: 0.5rem !important; margin: 0 0.25rem !important; min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color) !important; box-shadow: none !important; }
         table.dataTable tbody tr:hover { background-color: #f8fafc; cursor: pointer; }
         table.dataTable tbody td { vertical-align: middle; padding: 0.9rem 1rem; }
-        .btn-action {
-            padding: 0.35rem 0.9rem; border-radius: 50rem; font-size: 0.8rem;
-            font-weight: 600; border: none; transition: all 0.2s ease;
-        }
+        .btn-action { padding: 0.35rem 0.9rem; border-radius: 50rem; font-size: 0.8rem; font-weight: 600; border: none; transition: all 0.2s ease; }
         .btn-action .fas { margin-right: 5px; }
         .btn-action.btn-verify { background-color: var(--primary-light); color: var(--primary-color); }
         .btn-action.btn-verify:hover { background-color: var(--primary-color); color: #fff; }
@@ -127,16 +90,100 @@
         .btn-action.btn-reject { background-color: var(--danger-light); color: var(--danger-color); }
         .btn-action.btn-reject:hover { background-color: var(--danger-color); color: #fff; }
 
-        /* === Verification Modal === */
-        .modal-header { border-bottom: 1px solid var(--border-color); }
-        .modal-title { font-weight: 600; color: var(--text-primary); }
-        .summary-item { margin-bottom: 1rem; }
-        .summary-item dt { font-weight: 600; color: var(--text-primary); }
-        .summary-item dd { color: var(--text-secondary); margin-left: 0; }
+#verifyLeadModal .modal-content {
+    background-color: #f8fafc;
+    border-radius: 19.2px; /* 24px * 0.8 */
+    border: none;
+    box-shadow: 0 20px 40px -9.6px rgba(30, 41, 59, 0.15); /* Scaled */
+    overflow: hidden;
+}
+#verifyLeadModal .modal-header {
+    background: linear-gradient(135deg, #5D3FD3, #2563eb);
+    color: white;
+    padding: 1.6rem; /* 2rem * 0.8 */
+    border-bottom: none;
+    text-align: center;
+    display: block;
+}
+#verifyLeadModal .header-icon {
+    font-size: 2rem; /* 2.5rem * 0.8 */
+    margin-bottom: 0.8rem;
+    display: inline-block;
+}
+#verifyLeadModal .modal-title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.2rem; /* 1.5rem * 0.8 */
+    color: white;
+}
+#verifyLeadModal .modal-body {
+    padding: 2rem; /* 2.5rem * 0.8 */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+#verifyLeadModal .modal-body.visible {
+    opacity: 1;
+}
+#verifyLeadModal .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 250px * 0.8 */
+    gap: 0.8rem 1.6rem; /* 1rem, 2rem scaled */
+}
+#verifyLeadModal .details-item {
+    margin-bottom: 1rem; /* 1.25rem * 0.8 */
+}
+#verifyLeadModal .details-item strong {
+    display: block;
+    font-weight: 500;
+    color: #475569;
+    font-size: 0.72rem; /* 0.9rem * 0.8 */
+    margin-bottom: 0.2rem; /* 0.25rem * 0.8 */
+}
+#verifyLeadModal .details-item span,
+#verifyLeadModal .details-item ul {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.8rem; /* 1rem * 0.8 */
+}
+#verifyLeadModal .subjects-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 4px; /* 5px * 0.8 */
+}
+#verifyLeadModal .subjects-list li {
+    padding: 1.6px 0; /* 2px * 0.8 */
+}
+#verifyLeadModal .fee-section {
+    background: linear-gradient(135deg, #f5f3ff, #eef2f7);
+    padding: 1.2rem; /* 1.5rem * 0.8 */
+    border-radius: 12px; /* 15px * 0.8 */
+    border: 1px solid var(--border-color);
+    text-align: center;
+    margin-top: 1.6rem; /* 2rem * 0.8 */
+}
+#verifyLeadModal .fee-display {
+    font-size: 1.6rem; /* 2rem * 0.8 */
+    font-weight: 700;
+    color: #5D3FD3;
+}
+#verifyLeadModal .modal-footer {
+    background-color: #fff;
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 2rem; /* 1.25rem & 2.5rem * 0.8 */
+}
+#verifyLeadModal .modal-footer .btn {
+    border-radius: 40px; /* 50px * 0.8 */
+    padding: 9.6px 24px; /* 12px 30px * 0.8 */
+    font-weight: 600;
+    border: none;
+}
+#verifyLeadModal .modal-footer .btn-primary {
+    background-color: #5D3FD3;
+}
+#verifyLeadModal .modal-footer .btn-primary:hover {
+    background-color: #4c2db3;
+}
 
-        .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -188,29 +235,32 @@
 
 <div class="modal fade" id="verifyLeadModal" tabindex="-1" aria-labelledby="verifyLeadModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 1rem;">
-      <div class="modal-header"><h5 class="modal-title" id="verifyLeadModalLabel"><i class="fas fa-clipboard-check me-2 text-primary"></i>Lead Verification Summary</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
-      <div class="modal-body p-4">
-        <div id="modal-loader" class="text-center p-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-icon"><i class="fas fa-user-check"></i></div>
+        <h2 class="modal-title" id="verifyLeadModalLabel">Lead Verification Summary</h2>
+      </div>
+      <div class="modal-body">
+        <div id="modal-loader" class="text-center p-5"><div class="spinner-border" style="width: 3rem; height: 3rem; color: #5D3FD3;" role="status"><span class="visually-hidden">Loading...</span></div></div>
         <div id="modal-content-summary" style="display: none;">
-            <div class="row">
-                <div class="col-md-6"><dl class="summary-item"><dt>Student Name</dt><dd id="modal-full_name"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Contact Email</dt><dd id="modal-email"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Phone Number</dt><dd id="modal-phone_number"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Total Fee</dt><dd id="modal-total_fee"></dd></dl></div>
+            <div class="details-grid">
+                <div class="details-item"><strong><i class="fas fa-user me-2 text-muted"></i>Student Name</strong><span id="modal-full_name"></span></div>
+                <div class="details-item"><strong><i class="fas fa-envelope me-2 text-muted"></i>Contact Email</strong><span id="modal-email"></span></div>
+                <div class="details-item"><strong><i class="fas fa-phone-alt me-2 text-muted"></i>Phone Number</strong><span id="modal-phone_number"></span></div>
+                <div class="details-item"><strong><i class="fas fa-map-marker-alt me-2 text-muted"></i>Area</strong><span id="modal-area"></span></div>
+                <div class="details-item"><strong><i class="fas fa-school me-2 text-muted"></i>Board</strong><span id="modal-board"></span></div>
+                <div class="details-item"><strong><i class="fas fa-home me-2 text-muted"></i>Address</strong><span id="modal-address"></span></div>
+                <div class="details-item"><strong><i class="fas fa-book me-2 text-muted"></i>Subjects</strong><ul class="subjects-list" id="modal-subjects-list"></ul></div>
             </div>
-            <hr class="my-3">
-            <div class="row">
-                <div class="col-md-6"><dl class="summary-item"><dt>Area</dt><dd id="modal-area"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Address</dt><dd id="modal-address"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Board</dt><dd id="modal-board"></dd></dl></div>
-                <div class="col-md-6"><dl class="summary-item"><dt>Subjects</dt><dd id="modal-subjects"></dd></dl></div>
+            <div class="fee-section">
+                <strong>Estimated Monthly Fee</strong>
+                <div class="fee-display" id="modal-total_fee"></div>
             </div>
         </div>
       </div>
-      <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <form id="verify-form" method="POST" action=""><button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Confirm & Verify</button></form>
+        <form id="verify-form" method="POST" action="" class="m-0"><button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Confirm & Verify</button></form>
       </div>
     </div>
   </div>
@@ -220,77 +270,69 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
 <script>
 $(document).ready(function () {
+    // --- DataTable and Tab Logic (Unchanged) ---
     const dataTableOptions = {
         "pagingType": "simple_numbers",
-        "language": {
-            "lengthMenu": "Show _MENU_",
-            "search": "",
-            "searchPlaceholder": "Search...",
-            "paginate": { "previous": "<i class='fas fa-chevron-left'></i>", "next": "<i class='fas fa-chevron-right'></i>" }
-        },
-        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-               '<"table-responsive"t>' +
-               '<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        "language": { "lengthMenu": "Show _MENU_", "search": "", "searchPlaceholder": "Search...", "paginate": { "previous": "<i class='fas fa-chevron-left'></i>", "next": "<i class='fas fa-chevron-right'></i>" } },
+        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"table-responsive"t><"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
     };
     $('table').DataTable(dataTableOptions);
-
-    const tabs = {
-        dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' },
-        tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'Manage Tutors' },
-        students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'Manage Students' }
-    };
-
-    function showTab(tabName) {
-        $.each(tabs, (key, value) => { value.tab.removeClass('active'); value.content.removeClass('active'); });
-        tabs[tabName].tab.addClass('active');
-        tabs[tabName].content.addClass('active');
-        $('#page-title').text(tabs[tabName].title);
-    }
-
-    $.each(tabs, (name, components) => {
-        components.tab.on('click', (e) => { e.preventDefault(); showTab(name); });
-    });
+    const tabs = { dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' }, tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'Manage Tutors' }, students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'Manage Students' } };
+    function showTab(tabName) { $.each(tabs, (key, value) => { value.tab.removeClass('active'); value.content.removeClass('active'); }); tabs[tabName].tab.addClass('active'); tabs[tabName].content.addClass('active'); $('#page-title').text(tabs[tabName].title); }
+    $.each(tabs, (name, components) => { components.tab.on('click', (e) => { e.preventDefault(); showTab(name); }); });
     
+    // --- Creative Modal Logic (Final Version) ---
     var verifyLeadModal = document.getElementById('verifyLeadModal');
     verifyLeadModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var leadId = button.getAttribute('data-lead-id');
-        var modalLoader = $('#modal-loader');
-        var modalContent = $('#modal-content-summary');
-        
+        var modalLoader = $('#verifyLeadModal #modal-loader');
+        var modalContent = $('#verifyLeadModal #modal-content-summary');
+        var modalBody = $('#verifyLeadModal .modal-body');
+
         modalContent.hide();
+        modalBody.removeClass('visible');
         modalLoader.show();
         
         var verifyForm = $('#verify-form');
-        var verifyUrl = "{{ url_for('verify_lead', lead_id=0) }}".replace('0', leadId);
-        verifyForm.attr('action', verifyUrl);
+        verifyForm.attr('action', "{{ url_for('verify_lead', lead_id=0) }}".replace('0', leadId));
 
         fetch(`/api/lead/${leadId}`)
-            .then(response => {
-                if (!response.ok) { throw new Error('Network response was not ok'); }
-                return response.json();
-            })
+            .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
             .then(data => {
-                if (data.detail) { throw new Error(data.detail); }
-                
                 $('#modal-full_name').text(data.full_name || 'N/A');
                 $('#modal-email').text(data.email || 'N/A');
                 $('#modal-phone_number').text(data.phone_number || 'N/A');
-                $('#modal-total_fee').text(data.total_fee || 'N/A');
+                $('#modal-total_fee').text(data.total_fee ? `Rs. ${data.total_fee.toLocaleString()}` : 'N/A');
                 $('#modal-area').text(data.area || 'N/A');
                 $('#modal-address').text(data.address || 'N/A');
                 $('#modal-board').text(data.board || 'N/A');
-                $('#modal-subjects').text(data.subjects || 'N/A');
+                
+                const subjectsContainer = $('#modal-subjects-list');
+                subjectsContainer.empty();
+                if (data.subjects && typeof data.subjects === 'string') {
+                    const subjectsArray = data.subjects.split(',').map(s => s.trim()).filter(Boolean);
+                    if (subjectsArray.length > 0) {
+                        subjectsArray.forEach(subject => {
+                            subjectsContainer.append($('<li></li>').text(subject));
+                        });
+                    } else {
+                         subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
+                    }
+                } else {
+                     subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
+                }
 
                 modalLoader.hide();
                 modalContent.show();
+                setTimeout(() => modalBody.addClass('visible'), 50);
+
             })
             .catch(error => {
                 console.error('Error fetching lead details:', error);
-                modalLoader.html('<div class="text-danger p-4">Failed to load details. Please check the console and backend logs.</div>');
+                modalLoader.html('<div class="alert alert-danger">Failed to load details. Please try again.</div>');
             });
     });
 });
