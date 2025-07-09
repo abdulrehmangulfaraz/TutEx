@@ -268,7 +268,8 @@ async def get_admin_page(request: Request, db: Session = Depends(get_db)):
 
     # Fetch Unverified Leads
     unverified_leads = db.query(StudentRegistration).filter(
-        StudentRegistration.status == LeadStatus.PENDING_ADMIN_VERIFICATION
+        StudentRegistration.status == LeadStatus.PENDING_ADMIN_VERIFICATION,
+        StudentRegistration.is_verified == True
     ).all()
 
     # The rest of your queries for pending_requests, available_leads, etc.
