@@ -28,6 +28,8 @@
             --success-light: #dcfce7;
             --danger-color: #ef4444;
             --danger-light: #fee2e2;
+            --warning-color: #f59e0b;
+            --warning-light: #fef3c7;
             --sidebar-bg: #1e293b; /* Dark Slate */
             --content-bg: #f0f2f5; /* Light Gray */
             --card-bg: #ffffff;
@@ -295,6 +297,10 @@
             background-color: var(--danger-color); 
             color: #fff; 
         }
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .badge.bg-warning-light {
             background-color: var(--warning-light);
             color: var(--warning-color);
@@ -412,6 +418,30 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
+
+        /* New styles for pending request limitation */
+        .pending-limit-notice {
+            background-color: var(--warning-light);
+            border-left: 4px solid var(--warning-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .pending-limit-notice i {
+            color: var(--warning-color);
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+        .pending-limit-notice p {
+            margin: 0;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .accept-lead-form {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -514,6 +544,13 @@
                                 <i class="fas fa-bullhorn text-warning"></i> Available Student Leads
                             </div>
                             <div class="card-body">
+                                {% if pending_leads|length > 0 %}
+                                <div class="pending-limit-notice">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>You currently have {{ pending_leads|length }} pending request(s). Please wait for admin approval before accepting new leads.</p>
+                                </div>
+                                {% endif %}
+
                                 <form method="get" action="{{ url_for('tutor_dashboard') }}" class="mb-4 p-3 bg-light border rounded">
                                     <div class="row g-2 align-items-end">
                                         <div class="col-md-3">
@@ -578,7 +615,9 @@
                                                 <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
                                                 <td>
                                                     <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}">
-                                                        <button type="submit" class="btn-action btn-approve"><i class="fas fa-check"></i> Accept Lead</button>
+                                                        <button type="submit" class="btn-action btn-approve" {% if pending_leads|length > 0 %}disabled title="You can only have one pending request at a time"{% endif %}>
+                                                            <i class="fas fa-check"></i> Accept Lead
+                                                        </button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -793,6 +832,15 @@ $(document).ready(function () {
 
     // Ensure the initial tab (Dashboard) is active when the page loads
     showTab('dashboard');
+
+    // Prevent form submission if tutor has pending requests
+    $('.accept-lead-form').on('submit', function(e) {
+        if ($(this).find('button').is(':disabled')) {
+            e.preventDefault();
+            // Show a more prominent alert if needed
+            alert('You already have pending requests. Please wait for admin approval before accepting new leads.');
+        }
+    });
 });
 </script>
 </body>
