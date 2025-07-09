@@ -1,151 +1,329 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutEx Admin Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-{% block title %}Admin Panel{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
-{% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Admin Panel</h1>
+    <style>
+        :root {
+            --sidebar-bg: linear-gradient(180deg, #2a2f4a 0%, #1c2033 100%);
+            --primary-text: #E0E0E0;
+            --active-bg: rgba(255, 255, 255, 0.05);
+            --active-border: #3b82f6;
+            --content-bg: #f4f7fc;
+            --card-bg: #ffffff;
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            --font-family: 'Inter', sans-serif;
+        }
 
+        body {
+            background-color: var(--content-bg);
+            font-family: var(--font-family);
+        }
+
+        .admin-wrapper {
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            position: fixed;
+            height: 100vh;
+            color: var(--primary-text);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .sidebar-header h3 {
+            color: #fff;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .admin-sidebar-nav {
+            flex-grow: 1;
+            padding: 1rem 0;
+        }
+
+        .admin-sidebar-nav a {
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
+            display: block;
+            color: var(--primary-text);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin: 0.25rem 0;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+        .admin-sidebar-nav a .fas {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            opacity: 0.8;
+        }
+        .admin-sidebar-nav a:hover {
+            background: var(--active-bg);
+            color: #ffffff;
+        }
+        .admin-sidebar-nav li.active > a {
+            background: var(--active-bg);
+            border-left-color: var(--active-border);
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Content Styles */
+        .admin-content {
+            width: calc(100% - 260px);
+            padding: 2.5rem;
+            margin-left: 260px;
+        }
+
+        .main-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden; /* Important for table border radius */
+        }
+        .main-card .card-header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid #eef2f7;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 1rem 1.5rem;
+        }
+        .main-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* DataTables Customization */
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+        }
+        .dataTables_wrapper .dataTables_length select {
+            border-radius: 8px !important;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid #ddd;
+        }
+        
+        table.dataTable {
+            border-collapse: collapse !important;
+        }
+        table.dataTable thead th {
+            font-weight: 600;
+            color: #334155;
+        }
+        table.dataTable tbody tr {
+            transition: background-color 0.2s;
+        }
+        table.dataTable tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* General */
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="admin-wrapper">
+    <nav class="admin-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-shield-alt"></i> Admin Panel</h3>
+        </div>
+        
+        <ul class="nav flex-column admin-sidebar-nav">
+            <li class="nav-item active" id="dashboardTab">
+                <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li class="nav-item" id="tutorsTab">
+                <a class="nav-link" href="#"><i class="fas fa-chalkboard-teacher"></i> Tutors</a>
+            </li>
+            <li class="nav-item" id="studentsTab">
+                <a class="nav-link" href="#"><i class="fas fa-user-graduate"></i> Students</a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-light w-100"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <main class="admin-content">
         {% with messages = get_flashed_messages(request) %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.category }}">{{ message.message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <hr>
-    <h3 class="mt-4">📢 New Unverified Leads</h3>
-    {% if unverified_leads %}
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Area</th>
-                    <th>Board</th>
-                    <th>Fee</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead in unverified_leads %}
-                <tr>
-                    <td>{{ lead.full_name }}</td>
-                    <td>{{ lead.area }}</td>
-                    <td>{{ lead.board }}</td>
-                    <td>Rs. {{ lead.total_fee }}</td>
-                    <td>
-                        <form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}">
-                            <button type="submit" class="btn btn-primary btn-sm">Verify</button>
-                        </form>
-                    </td>
-                </tr>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.category }} alert-dismissible fade show" role="alert">
+                        {{ message.message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No new leads to verify.</p>
-    {% endif %}
+            {% endif %}
+        {% endwith %}
 
-    <hr>
-    <h3 class="mt-4">Pending Tutor Requests</h3>
-    {% if pending_requests %}
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Area</th>
-                    <th>Board</th>
-                    <th>Requested By Tutor</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead, tutor in pending_requests %}
-                <tr>
-                    <td>{{ lead.full_name }}</td>
-                    <td>{{ lead.area }}</td>
-                    <td>{{ lead.board }}</td>
-                    <td>{{ tutor.full_name }}</td>
-                    <td>{{ lead.status.value }}</td>
-                    <td>
-                        <form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline">
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                        </form>
-                        <form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No pending tutor requests.</p>
-    {% endif %}
+        <div id="dashboardContent" class="content-section active">
+            <h1 class="mb-4 fw-bold">Dashboard</h1>
+            <div class="main-card mb-4">
+                <div class="card-header"><i class="fas fa-bell text-primary"></i> New Unverified Leads</div>
+                <div class="card-body">
+                    <table id="unverifiedLeadsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Student</th><th>Area</th><th>Board</th><th>Fee</th><th>Action</th></tr></thead>
+                        <tbody>
+                        {% for lead in unverified_leads %}
+                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ lead.board }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}"><button type="submit" class="btn btn-primary btn-sm">Verify</button></form></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+             <div class="main-card mb-4">
+                <div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div>
+                <div class="card-body">
+                    <table id="pendingRequestsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Student</th><th>Area</th><th>Requested By</th><th>Action</th></tr></thead>
+                        <tbody>
+                        {% for lead, tutor in pending_requests %}
+                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn btn-success btn-sm">Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn btn-danger btn-sm">Reject</button></form></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="main-card mb-4">
+                <div class="card-header"><i class="fas fa-list-alt text-warning"></i> Approved & Available Tuitions</div>
+                <div class="card-body">
+                    <table id="availableLeadsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Student</th><th>Area</th><th>Subjects</th><th>Fee</th><th>Status</th></tr></thead>
+                        <tbody>
+                        {% for lead in available_leads %}
+                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ lead.subjects }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><span class="badge bg-info text-dark">{{ lead.status.value }}</span></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="main-card">
+                <div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Tuition Matches</div>
+                <div class="card-body">
+                    <table id="matchedLeadsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Student</th><th>Area</th><th>Matched Tutor</th><th>Fee</th><th>Status</th></tr></thead>
+                        <tbody>
+                        {% for lead, tutor in matched_leads %}
+                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ tutor.full_name }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><span class="badge bg-success">{{ lead.status.value }}</span></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <hr>
-    <h3 class="mt-5">✅ Completed Tuition Matches</h3>
-    {% if matched_leads %}
-        <table class="table table-bordered">
-             <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Area</th>
-                    <th>Board</th>
-                    <th>Fee</th>
-                    <th>Matched Tutor</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead, tutor in matched_leads %}
-                <tr>
-                    <td>{{ lead.full_name }}</td>
-                    <td>{{ lead.area }}</td>
-                    <td>{{ lead.board }}</td>
-                    <td>Rs. {{ lead.total_fee }}</td>
-                    <td>{{ tutor.full_name }}</td>
-                    <td><span class="badge bg-success">{{ lead.status.value }}</span></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No completed tuition matches yet.</p>
-    {% endif %}
+        <div id="tutorsContent" class="content-section">
+            <h1 class="mb-4 fw-bold">Manage Tutors</h1>
+            <div class="main-card">
+                <div class="card-header"><i class="fas fa-chalkboard-teacher text-primary"></i> All Registered Tutors</div>
+                <div class="card-body">
+                    <table id="allTutorsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Qualification</th></tr></thead>
+                        <tbody>
+                        {% for tutor in all_tutors %}
+                            <tr><td>{{ tutor.username }}</td><td>{{ tutor.full_name }}</td><td>{{ tutor.email }}</td><td>{{ tutor.phone_number }}</td><td>{{ tutor.last_qualification }}</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <hr>
-    <h3 class="mt-5">📢 Approved & Available Tuitions</h3>
-    {% if available_leads %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Area</th>
-                    <th>Board</th>
-                    <th>Subjects</th>
-                    <th>Fee</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead in available_leads %}
-                <tr>
-                    <td>{{ lead.full_name }}</td>
-                    <td>{{ lead.area }}</td>
-                    <td>{{ lead.board }}</td>
-                    <td>{{ lead.subjects }}</td>
-                    <td>Rs. {{ lead.total_fee }}</td>
-                    <td><span class="badge bg-info text-dark">{{ lead.status.value }}</span></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No tuitions are currently available for tutors to accept.</p>
-    {% endif %}
-
+        <div id="studentsContent" class="content-section">
+             <h1 class="mb-4 fw-bold">Manage Students</h1>
+            <div class="main-card">
+                <div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered Students</div>
+                <div class="card-body">
+                    <table id="allStudentsTable" class="table table-striped" style="width:100%">
+                        <thead><tr><th>Full Name</th><th>Email</th><th>Phone</th><th>Area</th><th>Board</th><th>Status</th></tr></thead>
+                        <tbody>
+                        {% for student in all_students %}
+                            <tr><td>{{ student.full_name }}</td><td>{{ student.email }}</td><td>{{ student.phone_number }}</td><td>{{ student.area }}</td><td>{{ student.board }}</td><td><span class="badge bg-secondary">{{ student.status.value }}</span></td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
-{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    // Initialize all tables as DataTables
+    $('#unverifiedLeadsTable').DataTable();
+    $('#pendingRequestsTable').DataTable();
+    $('#availableLeadsTable').DataTable();
+    $('#matchedLeadsTable').DataTable();
+    $('#allTutorsTable').DataTable();
+    $('#allStudentsTable').DataTable();
+
+    // Sidebar Tab-switching Logic
+    const tabs = {
+        dashboard: {
+            tab: $('#dashboardTab'),
+            content: $('#dashboardContent')
+        },
+        tutors: {
+            tab: $('#tutorsTab'),
+            content: $('#tutorsContent')
+        },
+        students: {
+            tab: $('#studentsTab'),
+            content: $('#studentsContent')
+        }
+    };
+
+    function showTab(tabName) {
+        $.each(tabs, function(key, value) {
+            value.tab.removeClass('active');
+            value.content.removeClass('active');
+        });
+        tabs[tabName].tab.addClass('active');
+        tabs[tabName].content.addClass('active');
+    }
+
+    tabs.dashboard.tab.on('click', function(e) { e.preventDefault(); showTab('dashboard'); });
+    tabs.tutors.tab.on('click', function(e) { e.preventDefault(); showTab('tutors'); });
+    tabs.students.tab.on('click', function(e) { e.preventDefault(); showTab('students'); });
+});
+</script>
+
+</body>
+</html>

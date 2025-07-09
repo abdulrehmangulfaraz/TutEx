@@ -261,18 +261,26 @@ async def reject_tutor_match(request: Request, lead_id: int, db: Session = Depen
 
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
 
+# In backend/main.py
+@app.get("/admin_logout", name="admin_logout")
+async def admin_logout(request: Request):
+    """Logs the admin out by clearing the session and redirecting to login."""
+    request.session.clear()
+    flash(request, "You have been logged out from the admin panel.", "success")
+    return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+
+
 @app.get("/admin", name="admin")
 async def get_admin_page(request: Request, db: Session = Depends(get_db)):
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
 
-    # Fetch Unverified Leads
+    # Fetch data for the Control Panel (existing queries)
     unverified_leads = db.query(StudentRegistration).filter(
         StudentRegistration.status == LeadStatus.PENDING_ADMIN_VERIFICATION,
         StudentRegistration.is_verified == True
     ).all()
 
-    # The rest of your queries for pending_requests, available_leads, etc.
     pending_requests = db.query(StudentRegistration, User).join(
         User, StudentRegistration.accepted_by_tutor_id == User.id
     ).filter(
@@ -288,6 +296,14 @@ async def get_admin_page(request: Request, db: Session = Depends(get_db)):
     ).filter(
         StudentRegistration.status == LeadStatus.TUTOR_MATCHED
     ).all()
+        
+    # --- NEW QUERIES ---
+    # Fetch all users who are tutors
+    all_tutors = db.query(User).filter(User.user_type == 'Tutor').all()
+    
+    # Fetch all student registrations
+    all_students = db.query(StudentRegistration).all()
+    # --- END NEW QUERIES ---
 
     context = {
         "request": request,
@@ -296,6 +312,8 @@ async def get_admin_page(request: Request, db: Session = Depends(get_db)):
         "pending_requests": pending_requests,
         "available_leads": available_leads,
         "matched_leads": matched_leads,
+        "all_tutors": all_tutors,          # Add tutors to context
+        "all_students": all_students,      # Add students to context
         "get_flashed_messages": get_flashed_messages,
     }
     return templates.TemplateResponse("admin.html", context)
