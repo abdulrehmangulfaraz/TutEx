@@ -456,6 +456,53 @@
         .accept-lead-form {
             display: inline-block;
         }
+
+                .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin: -6rem auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-light);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .profile-avatar .fas {
+            font-size: 4rem;
+            color: var(--primary-color);
+        }
+        .profile-info-card {
+            padding: 2rem;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        .info-item .icon {
+            color: var(--primary-color);
+            margin-right: 1rem;
+            width: 20px;
+        }
+        .info-item .label {
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 150px;
+        }
+        .info-item .value {
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -727,64 +774,71 @@
             </div>
 
             <!-- Profile Content Section -->
-            <div id="profileContent" class="content-section">
-                <div class="main-card profile-card">
-                    <div class="profile-header">
-                        <div class="profile-avatar"><i class="fas fa-user"></i></div>
-                        <h2>{{ tutor.full_name if tutor else 'Tutor Name' }}</h2>
-                        <p>{{ tutor.email if tutor else 'tutor@example.com' }}</p>
+             <div id="profileContent" class="content-section">
+                <div class="profile-header"></div>
+                <div class="main-card profile-info-card" style="margin-top: -4rem;">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-tie"></i>
                     </div>
-                    <div class="profile-info">
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-id-badge"></i></span>
-                            <span class="label">Username:</span>
-                            <span class="value">{{ tutor.username if tutor else 'N/A' }}</span>
+                    <div class="text-center">
+                        <h2 class="h4 font-weight-bold">{{ tutor.full_name }}</h2>
+                        <p class="text-muted">{{ tutor.username }}</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Personal Information</h5>
+                            <div class="info-item">
+                                <i class="fas fa-envelope icon"></i>
+                                <span class="label">Email:</span>
+                                <span class="value">{{ tutor.email }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone icon"></i>
+                                <span class="label">Phone:</span>
+                                <span class="value">{{ tutor.phone_number }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-graduation-cap icon"></i>
+                                <span class="label">Qualification:</span>
+                                <span class="value">{{ tutor.last_qualification }}</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-user-friends icon"></i>
+                                <span class="label">Father's Name:</span>
+                                <span class="value">{{ tutor.fathers_name }}</span>
+                            </div>
                         </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-phone-alt"></i></span>
-                            <span class="label">Phone:</span>
-                            <span class="value">{{ tutor.phone_number if tutor else 'N/A' }}</span>
+
+                        <div class="col-lg-6">
+                            <h5 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Your Statistics</h5>
+                             <div class="row">
+                                 <div class="col-md-6 mb-3">
+                                     <div class="stat-card p-3">
+                                         <div class="stat-info">
+                                             <p class="mb-1 text-muted">Total Earnings</p>
+                                             <h5 class="mb-0">Rs. {{ "%.0f"|format(total_earnings) }}</h5>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="col-md-6 mb-3">
+                                     <div class="stat-card p-3">
+                                         <div class="stat-info">
+                                             <p class="mb-1 text-muted">Completed Tuitions</p>
+                                             <h5 class="mb-0">{{ completed_tuitions }}</h5>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
                         </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-graduation-cap"></i></span>
-                            <span class="label">Qualification:</span>
-                            <span class="value">{{ tutor.last_qualification if tutor else 'N/A' }}</span>
-                        </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
-                            <span class="label">Area:</span>
-                            <span class="value">{{ tutor.area if tutor else 'N/A' }}</span>
-                        </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-book-open"></i></span>
-                            <span class="label">Subjects:</span>
-                            <span class="value">
-                                {% if tutor and tutor.subjects %}
-                                    <ul>
-                                        {% for subject in tutor.subjects.split(',') %}
-                                            <li>{{ subject.strip() }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-calendar-alt"></i></span>
-                            <span class="label">Availability:</span>
-                            <span class="value">{{ tutor.availability if tutor else 'N/A' }}</span>
-                        </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-money-bill-wave"></i></span>
-                            <span class="label">Expected Fee:</span>
-                            <span class="value">Rs. {{ "%.0f"|format(tutor.expected_fee) if tutor and tutor.expected_fee is not none else 'N/A' }}</span>
-                        </div>
-                        <div class="profile-info-item">
-                            <span class="icon"><i class="fas fa-info-circle"></i></span>
-                            <span class="label">Bio:</span>
-                            <span class="value">{{ tutor.bio if tutor else 'No bio provided.' }}</span>
-                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Monthly Income</h5>
+                        <canvas id="monthlyIncomeChart" 
+                                data-labels='{{ chart_labels|tojson }}' 
+                                data-values='{{ chart_data|tojson }}'>
+                        </canvas>
                     </div>
                 </div>
             </div>
@@ -862,5 +916,80 @@ $(document).ready(function () {
     });
 });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function () {
+    // --- Your existing logic for DataTables and sidebar tabs should remain here ---
+
+    // NEW Chart.js logic (Error-Free Version)
+    const chartCanvas = document.getElementById('monthlyIncomeChart');
+    
+    // Check if the chart canvas element exists on the page
+    if (chartCanvas) {
+        // Read the data from the 'data-*' attributes
+        const labelsJson = chartCanvas.dataset.labels;
+        const dataJson = chartCanvas.dataset.values;
+
+        // Parse the JSON data into JavaScript arrays
+        // This is a safe way to convert the string data from HTML into usable arrays
+        const chartLabels = JSON.parse(labelsJson);
+        const chartData = JSON.parse(dataJson);
+
+        const monthlyIncomeChart = new Chart(chartCanvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                // Use the parsed data here
+                labels: chartLabels, 
+                datasets: [{
+                    label: 'Monthly Income (Rs)',
+                    data: chartData, // Use the parsed data here
+                    backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                    borderColor: 'rgba(99, 102, 241, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rs. ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += 'Rs. ' + context.parsed.y.toLocaleString();
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>

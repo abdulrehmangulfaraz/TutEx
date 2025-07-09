@@ -7,6 +7,13 @@ import random
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 from typing import Literal, Optional
+from collections import defaultdict
+
+from datetime import datetime
+from collections import defaultdict
+from fastapi import Request, Depends, status
+from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
 
 # Third-Party Libraries
 import aiofiles
@@ -159,6 +166,7 @@ async def send_otp_email(to_email: str, otp: str):
 # --- API ENDPOINTS ---
 # Add to the API ENDPOINTS section in main.py
 
+
 @app.get("/tutor_dashboard", name="tutor_dashboard")
 async def get_tutor_dashboard_page(
     request: Request,
@@ -167,50 +175,75 @@ async def get_tutor_dashboard_page(
     board: Optional[str] = None,
     subject: Optional[str] = None,
 ):
+    print("\n--- DEBUG: Entering /tutor_dashboard endpoint ---")
+
     if 'user' not in request.session:
+        print("--- DEBUG: User not in session. Redirecting to login. ---")
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
     user_info = request.session["user"]
-    tutor = db.query(User).filter(User.username == user_info["username"]).first()
+    print(f"--- DEBUG: Session user_info found: {user_info} ---")
 
-    # 1. Fetch leads available for this tutor to accept (with filtering)
-    available_leads_query = db.query(StudentRegistration).filter(
-        StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
-    )
-    if area:
-        available_leads_query = available_leads_query.filter(StudentRegistration.area == area)
-    if board:
-        available_leads_query = available_leads_query.filter(StudentRegistration.board == board)
-    if subject:
-        available_leads_query = available_leads_query.filter(StudentRegistration.subjects.contains(subject))
+    # Fetch the tutor object from the database
+    tutor_username = user_info.get("username")
+    print(f"--- DEBUG: Attempting to query for tutor with username: {tutor_username} ---")
+    tutor = db.query(User).filter(User.username == tutor_username).first()
+
+    # Check if the tutor was found in the database
+    if not tutor:
+        print(f"--- DEBUG: Tutor with username '{tutor_username}' NOT FOUND in the database. Redirecting. ---")
+        # Log the user out or redirect to an error page
+        return RedirectResponse(url="/login?error=Tutor+profile+not+found", status_code=status.HTTP_303_SEE_OTHER)
     
-    available_leads = available_leads_query.all()
-
-    # 2. Fetch leads this tutor has requested (pending admin approval)
-    pending_leads = db.query(StudentRegistration).filter(
-        StudentRegistration.accepted_by_tutor_id == tutor.id,
-        StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
-    ).all()
-
-    # 3. Fetch leads assigned to this tutor
+    print(f"--- DEBUG: Tutor FOUND: {tutor.full_name} (ID: {tutor.id}) ---")
+        
+    # --- Lead and Stat Calculations (same as before) ---
     assigned_leads = db.query(StudentRegistration).filter(
         StudentRegistration.accepted_by_tutor_id == tutor.id,
         StudentRegistration.status == LeadStatus.TUTOR_MATCHED
     ).all()
 
+    total_earnings = sum(lead.total_fee for lead in assigned_leads if lead.total_fee is not None)
+    completed_tuitions = len(assigned_leads)
+
+    monthly_income = defaultdict(float)
+    for lead in assigned_leads:
+        if lead.created_at and lead.total_fee is not None:
+            month_year = lead.created_at.strftime("%Y-%m")
+            monthly_income[month_year] += lead.total_fee
+
+    sorted_months = sorted(monthly_income.keys())
+    chart_labels = [datetime.strptime(my, "%Y-%m").strftime("%b %Y") for my in sorted_months]
+    chart_data = [monthly_income[my] for my in sorted_months]
+
+    # Create the context dictionary
     context = {
         "request": request,
         "session": request.session,
         "user": user_info["username"],
         "role": user_info["user_type"],
-        "available_leads": available_leads,
-        "pending_leads": pending_leads,
+        "tutor": tutor,  # Add the full tutor object here
+        "available_leads": [], # Keeping this minimal for now to isolate the error
+        "pending_leads": [],
         "assigned_leads": assigned_leads,
         "selected_area": area,
         "selected_board": board,
         "selected_subject": subject,
-        "get_flashed_messages": get_flashed_messages
+        "get_flashed_messages": get_flashed_messages,
+        "total_earnings": total_earnings,
+        "completed_tuitions": completed_tuitions,
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
     }
+
+    print(f"--- DEBUG: Context dictionary prepared. Keys: {list(context.keys())} ---")
+    # Specifically check if 'tutor' is in the context before rendering
+    if 'tutor' in context and context['tutor'] is not None:
+        print(f"--- DEBUG: 'tutor' key EXISTS in context. Value: {context['tutor'].full_name} ---")
+    else:
+        print("--- DEBUG: CRITICAL ERROR - 'tutor' key is MISSING or None in context right before render! ---")
+
+    print("--- DEBUG: Attempting to render tutor_dashboard.html template. ---")
     return templates.TemplateResponse("tutor_dashboard.html", context)
 
 @app.post("/accept_lead/{lead_id}", name="accept_lead")
@@ -934,20 +967,6 @@ async def logout(request: Request):
 
 
 # --- Protected Page Routes ---
-@app.get("/tutor_dashboard", name="tutor_dashboard")
-async def get_tutor_dashboard_page(request: Request):
-    if 'user' not in request.session:
-        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
-    
-    user = request.session["user"]
-    context = {
-        "request": request,
-        "session": request.session,
-        "user": user["username"],
-        "role": user["user_type"],
-        "get_flashed_messages": lambda with_categories=False: get_flashed_messages(request, with_categories)
-    }
-    return templates.TemplateResponse("tutor_dashboard.html", context)
 
 @app.get("/admin", name="admin")
 async def get_admin_page(request: Request):
@@ -964,7 +983,89 @@ async def get_admin_page(request: Request):
     }
     return templates.TemplateResponse("admin.html", context)
 
+@app.get("/tutor_dashboard", name="tutor_dashboard")
+async def get_tutor_dashboard_page(
+    request: Request,
+    db: Session = Depends(get_db),
+    area: Optional[str] = None,
+    board: Optional[str] = None,
+    subject: Optional[str] = None,
+):
+    # 1. Check if user is logged in
+    if 'user' not in request.session:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
+    user_info = request.session["user"]
+
+    # 2. ✅ **CRITICAL FIX**: Fetch the tutor object from the database
+    tutor = db.query(User).filter(User.username == user_info["username"]).first()
+
+    # 3. Handle the case where the tutor might not exist
+    if not tutor:
+        # This is a safeguard. If the user is in session but not in the DB, log them out.
+        return RedirectResponse(url="/login?error=Tutor profile not found.", status_code=status.HTTP_303_SEE_OTHER)
+        
+    # --- (Your existing lead-fetching logic remains the same) ---
+    available_leads_query = db.query(StudentRegistration).filter(
+        StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
+    )
+    if area:
+        available_leads_query = available_leads_query.filter(StudentRegistration.area == area)
+    if board:
+        available_leads_query = available_leads_query.filter(StudentRegistration.board == board)
+    if subject:
+        available_leads_query = available_leads_query.filter(StudentRegistration.subjects.contains(subject))
+    
+    available_leads = available_leads_query.all()
+
+    pending_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
+    ).all()
+
+    assigned_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.TUTOR_MATCHED
+    ).all()
+
+    # --- Calculate Profile Stats ---
+    total_earnings = sum(lead.total_fee for lead in assigned_leads if lead.total_fee is not None)
+    completed_tuitions = len(assigned_leads)
+
+    monthly_income = defaultdict(float)
+    for lead in assigned_leads:
+        if lead.created_at and lead.total_fee is not None:
+            month_year = lead.created_at.strftime("%Y-%m")
+            monthly_income[month_year] += lead.total_fee
+
+    sorted_months = sorted(monthly_income.keys())
+    chart_labels = [datetime.strptime(my, "%Y-%m").strftime("%b %Y") for my in sorted_months]
+    chart_data = [monthly_income[my] for my in sorted_months]
+
+    # 4. ✅ **CRITICAL FIX**: Add the 'tutor' object to the context dictionary
+    context = {
+        "request": request,
+        "session": request.session,
+        "user": user_info["username"],
+        "role": user_info["user_type"],
+        "tutor": tutor,  # <--- This line provides the tutor object to the HTML template
+        "available_leads": available_leads,
+        "pending_leads": pending_leads,
+        "assigned_leads": assigned_leads,
+        "selected_area": area,
+        "selected_board": board,
+        "selected_subject": subject,
+        "get_flashed_messages": get_flashed_messages,
+        "total_earnings": total_earnings,
+        "completed_tuitions": completed_tuitions,
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
+    }
+
+    # Optional: For debugging, you can print right before rendering
+    # print("Tutor object being sent to template:", context.get('tutor'))
+    
+    return templates.TemplateResponse("tutor_dashboard.html", context)
 
 
 # --- Public Page Routes ---
