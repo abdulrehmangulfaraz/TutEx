@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmed! - TutEx</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5D3FD3;
+            --secondary-color: #2563eb;
+            --success-color: #16a34a;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --text-color: #475569;
+            --border-color: #e2e8f0;
+            --border-radius: 24px;
+            --box-shadow: 0 25px 50px -12px rgba(30, 41, 59, 0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            /* FIX: Changed overflow to auto to allow scrolling when content is too tall */
+            overflow-y: auto; 
+        }
+
+        .ticket-container {
+            max-width: 800px;
+            width: 100%;
+            margin: auto;
+            background: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ticket-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 40px; /* Reduced padding */
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            text-align: center;
+        }
+        
+        .ticket-header .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px; /* Reduced margin */
+            display: inline-block;
+            animation: bounce 1.2s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        .ticket-header h2 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .ticket-body {
+            padding: 30px 40px; /* Reduced padding */
+        }
+        
+        .greeting {
+            text-align: center;
+            margin-bottom: 25px; /* Reduced margin */
+        }
+        
+        .greeting h4 {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px; /* Reduced gap */
+            border-top: 1px solid var(--border-color);
+            padding-top: 25px; /* Reduced padding */
+        }
+        
+        .details-section h5 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 18px; /* Reduced margin */
+            font-size: 1.1rem;
+        }
+
+        .details-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px; /* Reduced margin */
+            font-size: 0.95rem;
+        }
+        
+        .details-item i {
+            margin-right: 15px;
+            margin-top: 5px;
+            width: 18px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+        
+        .details-item strong {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .details-item span {
+            color: var(--text-color);
+        }
+
+        .subjects-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+        
+        .subjects-list li {
+            padding: 3px 0;
+        }
+
+        .summary-footer {
+            margin-top: 25px; /* Reduced margin */
+            padding-top: 25px; /* Reduced padding */
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 25px; /* Reduced gap */
+            align-items: center;
+        }
+        
+        .fee-section {
+            flex-basis: 40%;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f3ff, #eef2f7);
+            padding: 20px; /* Reduced padding */
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .fee-section strong {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .fee-display {
+            font-size: 2.2rem; /* Reduced font size */
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+
+        .next-step-info {
+            flex-basis: 60%;
+            text-align: center;
+        }
+
+        .next-step-info i {
+            font-size: 2rem;
+            color: var(--success-color);
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .next-step-info h5 {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .next-step-info p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .ticket-actions {
+            padding: 25px 40px; /* Reduced padding */
+            text-align: center;
+            background-color: var(--light-color);
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .btn-custom {
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.95rem;
+            margin: 5px;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #4c2db3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary-custom {
+            background: #e2e8f0;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary-custom:hover {
+            background: #d1d5db;
+            transform: translateY(-3px);
+        }
+        
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-footer {
+                flex-direction: column;
+            }
+            .ticket-body, .ticket-header, .ticket-actions {
+                padding: 25px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="ticket-container">
+    <div class="ticket-header">
+        <div class="icon"><i class="fas fa-check-circle"></i></div>
+        <h2>Registration Confirmed</h2>
+    </div>
+
+    <div class="ticket-body">
+        <div class="greeting">
+            <h4>Welcome, <strong>{{ full_name }}</strong>!</h4>
+            <p>Your application has been received. Here is a summary of your details.</p>
+        </div>
+
+        <div class="details-grid">
+            <div class="details-section">
+                <h5>Personal Information</h5>
+                <div class="details-item"><i class="fas fa-user"></i><div><strong>Name:</strong> <span>{{ full_name }}</span></div></div>
+                <div class="details-item"><i class="fas fa-envelope"></i><div><strong>Email:</strong> <span>{{ email }}</span></div></div>
+                <div class="details-item"><i class="fas fa-phone"></i><div><strong>Phone:</strong> <span>{{ phone_number }}</span></div></div>
+                <div class="details-item"><i class="fas fa-map-marker-alt"></i><div><strong>Address:</strong> <span>{{ address }}</span></div></div>
+            </div>
+            <div class="details-section">
+                <h5>Course Selection</h5>
+                <div class="details-item"><i class="fas fa-map-pin"></i><div><strong>Area:</strong> <span>{{ area }}</span></div></div>
+                <div class="details-item"><i class="fas fa-university"></i><div><strong>Board:</strong> <span>{{ board }}</span></div></div>
+                <div class="details-item"><i class="fas fa-book-open"></i>
+                    <div>
+                        <strong>Subjects:</strong>
+                        <ul class="subjects-list">
+                            {% for subject in subjects %}
+                                <li>{{ subject }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-footer">
+            <div class="fee-section">
+                <strong>Estimated Monthly Fee</strong>
+                <div class="fee-display">{{ total_fee }} PKR</div>
+            </div>
+            <div class="next-step-info">
+                <i class="fas fa-paper-plane"></i>
+                <h5>What Happens Now?</h5>
+                <!-- FIX: Updated the text to be more general -->
+                <p>Our team will review your application and will contact you at <strong>{{ email }}</strong> as soon as a suitable tutor is found. We're excited to have you with us!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="ticket-actions">
+        <p class="mb-3 text-muted">You can now close this page.</p>
+        <a href="{{ url_for('student') }}" class="btn btn-primary-custom btn-custom">New Application</a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary-custom btn-custom">Go to Homepage</a>
+    </div>
+</div>
+
+<script>
+    // Confetti celebration effect
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let confetti = [];
+        const confettiCount = 100; // Reduced for a more subtle effect
+        const colors = ['#5D3FD3', '#2563eb', '#ffffff', '#ffc700'];
+
+        function Confetti() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height - canvas.height;
+            this.size = Math.random() * 8 + 4;
+            this.speed = Math.random() * 3 + 2;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.rotation = Math.random() * 360;
+            this.spin = (Math.random() - 0.5) * 5;
+        }
+
+        Confetti.prototype.update = function() {
+            this.y += this.speed;
+            this.rotation += this.spin;
+            if (this.y > canvas.height) {
+                this.y = -this.size;
+                this.x = Math.random() * canvas.width;
+            }
+        };
+
+        Confetti.prototype.draw = function() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation * Math.PI / 180);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = Math.max(0, 1 - (this.y / canvas.height));
+            ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            ctx.restore();
+        };
+
+        function initConfetti() {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push(new Confetti());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < confetti.length; i++) {
+                confetti[i].update();
+                confetti[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        initConfetti();
+        animate();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            confetti = [];
+            initConfetti();
+        });
+    });
+</script>
+
+</body>
+</html>

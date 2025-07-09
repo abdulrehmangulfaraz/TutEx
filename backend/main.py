@@ -572,37 +572,44 @@ async def student_resend_otp(
     # Add to the API ENDPOINTS section in main.py
 
 
+# In backend/main.py
+
 @app.get("/student/summary")
 async def get_student_summary(
     request: Request,
     db: Session = Depends(get_db)
 ):
+    # Get the email of the most recently verified student from the session
     email = request.session.get("student_email")
     if not email:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No registration found in session"
-        )
+        # If no email, redirect to the start of the student form
+        return RedirectResponse(url="/student", status_code=status.HTTP_303_SEE_OTHER)
     
-    registration = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
-    if not registration or not registration.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Registration not found or not verified"
-        )
+    # Fetch the most recent registration for that email
+    # This ensures we show the correct summary if a user registers multiple times
+    registration = db.query(StudentRegistration).filter(
+        StudentRegistration.email == email
+    ).order_by(StudentRegistration.created_at.desc()).first()
+
+    if not registration:
+        # This is a fallback, in case the registration isn't found
+        return RedirectResponse(url="/student", status_code=status.HTTP_303_SEE_OTHER)
     
+    # Prepare the data for the template
     context = {
         "request": request,
-        "session": request.session,
+        "full_name": registration.full_name,
+        "email": registration.email,
+        "phone_number": registration.phone_number,
+        "address": registration.address,
         "area": registration.area,
         "board": registration.board,
-        "subjects": registration.subjects.split(","),
-        "total_fee": registration.total_fee,
-        "full_name": registration.full_name,
-        "phone_number": registration.phone_number,
-        "email": registration.email
+        "subjects": registration.subjects.split(','), # Turn the string back into a list
+        "total_fee": int(registration.total_fee) # Show fee as a whole number
     }
-    return templates.TemplateResponse("student.html", context)
+    
+    # Render the new summary template
+    return templates.TemplateResponse("student_summary.html", context)
 
 @app.post("/student/new-calculation")
 async def new_calculation(request: Request):

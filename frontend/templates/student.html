@@ -708,7 +708,9 @@ h3::after {
     });
   }
 
-  function verifyStudentOTP() {
+  // In frontend/templates/student.html, inside the <script> tag
+
+function verifyStudentOTP() {
     const otp = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
     if (otp.length !== 6) {
       showToast('error', 'Please enter the complete OTP');
@@ -716,33 +718,46 @@ h3::after {
     }
 
     const email = studentData.personalInfo.email;
+    
+    // Create the form data to send to the backend
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('otp', otp);
+
     fetch('/student/verify-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+      body: formData // Use FormData instead of URL encoding
     })
     .then(response => response.json())
     .then(data => {
       if (data.status === 'verified') {
-        showToast('success', 'Verification successful!');
+        showToast('success', 'Verification successful! Redirecting...');
+        
+        // Hide the OTP form and show the final completion message
         document.getElementById('step5').style.display = 'none';
         document.getElementById('registrationCompleteMessage').style.display = 'block';
+
+        // Update the progress bar to show completion
         document.querySelectorAll('.progress-step').forEach(step => {
             step.classList.add('completed');
             step.classList.remove('active');
         });
+
+        // **The Important Fix:** Wait a couple of seconds before redirecting
+        // This gives the user time to see the success message.
         setTimeout(() => {
           window.location.href = '/student/summary';
-        }, 3000);
+        }, 2000); // 2-second delay
+
       } else {
         showToast('error', data.detail || 'Verification failed');
       }
     })
     .catch(error => {
-      showToast('error', 'Error during verification');
+      showToast('error', 'An error occurred during verification.');
       console.error('Error:', error);
     });
-  }
+}
 
   function moveToNext(currentInput, nextInputId) {
     if (currentInput.value.length === currentInput.maxLength) {
