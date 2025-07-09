@@ -7,321 +7,228 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
     <style>
         :root {
-            --sidebar-bg: linear-gradient(180deg, #2a2f4a 0%, #1c2033 100%);
-            --primary-text: #E0E0E0;
-            --active-bg: rgba(255, 255, 255, 0.05);
-            --active-border: #3b82f6;
-            --content-bg: #f4f7fc;
+            --primary-color: #6366f1; /* Indigo */
+            --primary-light: #eef2ff;
+            --success-color: #22c55e;
+            --success-light: #dcfce7;
+            --danger-color: #ef4444;
+            --danger-light: #fee2e2;
+            --sidebar-bg: #1e293b; /* Dark Slate */
+            --content-bg: #f0f2f5; /* Light Gray */
             --card-bg: #ffffff;
-            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            --font-family: 'Inter', sans-serif;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --font-family: 'Poppins', sans-serif;
         }
 
         body {
             background-color: var(--content-bg);
             font-family: var(--font-family);
+            color: var(--text-secondary);
         }
 
-        .admin-wrapper {
-            display: flex;
-        }
-
-        /* Sidebar Styles */
+        /* === Sidebar === */
         .admin-sidebar {
             width: 260px;
             background: var(--sidebar-bg);
             position: fixed;
             height: 100vh;
-            color: var(--primary-text);
             display: flex;
             flex-direction: column;
         }
-
-        .sidebar-header {
-            padding: 1.5rem;
-            text-align: center;
-        }
-        
-        .sidebar-header h3 {
-            color: #fff;
-            margin: 0;
-            font-weight: 700;
-        }
-
-        .admin-sidebar-nav {
-            flex-grow: 1;
-            padding: 1rem 0;
-        }
-
+        .sidebar-header { padding: 1.75rem 1.5rem; text-align: center; }
+        .sidebar-header h3 { color: #fff; margin: 0; font-weight: 700; font-size: 1.5rem; }
+        .sidebar-header .fa-shield-alt { color: var(--primary-color); }
+        .admin-sidebar-nav { flex-grow: 1; padding: 1rem 0; }
         .admin-sidebar-nav a {
-            padding: 0.9rem 1.5rem;
-            font-size: 1rem;
-            display: block;
-            color: var(--primary-text);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin: 0.25rem 0;
-            border-left: 4px solid transparent;
-            font-weight: 500;
+            padding: 1rem 1.75rem; font-size: 0.95rem; display: flex; align-items: center; color: #cbd5e1;
+            text-decoration: none; transition: all 0.2s; margin: 0.25rem 0.75rem; border-radius: 8px; font-weight: 500;
         }
-        .admin-sidebar-nav a .fas {
-            margin-right: 15px;
-            width: 20px;
-            text-align: center;
-            opacity: 0.8;
-        }
-        .admin-sidebar-nav a:hover {
-            background: var(--active-bg);
-            color: #ffffff;
-        }
-        .admin-sidebar-nav li.active > a {
-            background: var(--active-bg);
-            border-left-color: var(--active-border);
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .sidebar-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .admin-sidebar-nav a .fas { margin-right: 1rem; width: 20px; text-align: center; }
+        .admin-sidebar-nav a:hover { background: var(--primary-color); color: #ffffff; }
+        .admin-sidebar-nav li.active > a { background: var(--primary-color); color: #ffffff; font-weight: 600; }
+        .sidebar-footer { padding: 1.5rem; }
 
-        /* Content Styles */
-        .admin-content {
-            width: calc(100% - 260px);
-            padding: 2.5rem;
-            margin-left: 260px;
+        /* === Main Content & Top Bar === */
+        .admin-content { width: calc(100% - 260px); margin-left: 260px; }
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); padding: 1rem 2.5rem;
+            position: sticky; top: 0; z-index: 1000;
         }
+        .top-navbar h1 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); }
+        main { padding: 2.5rem; }
+        
+        /* === Stat Cards === */
+        .stat-card {
+            background: var(--card-bg); border-radius: 1rem; padding: 1.5rem; border: 1px solid var(--border-color);
+            display: flex; align-items: center; transition: all 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .stat-icon {
+            font-size: 1.75rem; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; margin-right: 1.5rem;
+        }
+        .bg-warning-gradient { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
+        .bg-info-gradient { background: linear-gradient(45deg, #38bdf8, #0ea5e9); }
+        .bg-primary-gradient { background: linear-gradient(45deg, #818cf8, #6366f1); }
+        .bg-success-gradient { background: linear-gradient(45deg, #4ade80, #22c55e); }
+        .stat-info h5 { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
+        .stat-info p { margin: 0; color: var(--text-secondary); }
 
+        /* === Main Cards === */
         .main-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden; /* Important for table border radius */
+            background-color: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
         }
         .main-card .card-header {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid #eef2f7;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 1rem 1.5rem;
+            background-color: #f8fafc; border-bottom: 1px solid var(--border-color);
+            font-weight: 600; padding: 1rem 1.5rem; color: var(--text-primary);
         }
-        .main-card .card-body {
-            padding: 1.5rem;
+        .card-header .fas { margin-right: 0.75rem; }
+        .main-card .card-body { padding: 1.5rem; }
+        
+        /* === DataTables Premium Redesign === */
+        .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1.5rem 0; }
+        .dataTables_length, .dataTables_filter { display: flex; align-items: center; }
+        .dataTables_length label { font-weight: 500; margin-right: 0.5rem; white-space: nowrap; }
+        .dataTables_length select {
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px;
+            padding: 0.6rem 2.5rem 0.6rem 1rem !important; font-weight: 500;
+        }
+        .dataTables_length select, .dataTables_filter input {
+            border: 1px solid var(--border-color); border-radius: 0.5rem;
+            background-color: #f8fafc; transition: all 0.2s ease;
+        }
+        .dataTables_filter input { padding: 0.6rem 1rem; }
+        .dataTables_length select:focus, .dataTables_filter input:focus {
+             outline: none; border-color: var(--primary-color); background-color: #fff; box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .dataTables_wrapper .paginate_button {
+            border-radius: 0.5rem !important; margin: 0 0.25rem !important; min-width: 40px; height: 40px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border-color) !important; box-shadow: none !important;
+        }
+        .dataTables_wrapper .paginate_button.current, .dataTables_wrapper .paginate_button.current:hover {
+            background: var(--primary-color) !important; color: #fff !important; border-color: var(--primary-color) !important;
         }
         
-        /* DataTables Customization */
-        .dataTables_wrapper .dataTables_filter input {
-            border-radius: 8px !important;
-            padding: 0.5rem 1rem;
-            border: 1px solid #ddd;
-        }
-        .dataTables_wrapper .dataTables_length select {
-            border-radius: 8px !important;
-            padding: 0.5rem 2rem 0.5rem 1rem;
-            border: 1px solid #ddd;
-        }
+        table.dataTable thead th { font-weight: 600; color: var(--text-primary); }
+        table.dataTable tbody tr:hover { background-color: #f8fafc; cursor: pointer; }
+        table.dataTable tbody td { vertical-align: middle; padding: 0.9rem 1rem; }
         
-        table.dataTable {
-            border-collapse: collapse !important;
+        /* === Action Buttons Redesign === */
+        .btn-action {
+            padding: 0.35rem 0.9rem; border-radius: 50rem; font-size: 0.8rem;
+            font-weight: 600; border: none; transition: all 0.2s ease;
         }
-        table.dataTable thead th {
-            font-weight: 600;
-            color: #334155;
-        }
-        table.dataTable tbody tr {
-            transition: background-color 0.2s;
-        }
-        table.dataTable tbody tr:hover {
-            background-color: #f8f9fa;
-        }
+        .btn-action .fas { margin-right: 5px; }
         
-        /* General */
+        .btn-action.btn-verify { background-color: var(--primary-light); color: var(--primary-color); }
+        .btn-action.btn-verify:hover { background-color: var(--primary-color); color: #fff; }
+        
+        .btn-action.btn-approve { background-color: var(--success-light); color: var(--success-color); }
+        .btn-action.btn-approve:hover { background-color: var(--success-color); color: #fff; }
+        
+        .btn-action.btn-reject { background-color: var(--danger-light); color: var(--danger-color); }
+        .btn-action.btn-reject:hover { background-color: var(--danger-color); color: #fff; }
+
         .content-section { display: none; }
-        .content-section.active { display: block; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="admin-wrapper">
     <nav class="admin-sidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-shield-alt"></i> Admin Panel</h3>
-        </div>
-        
+        <div class="sidebar-header"><h3><i class="fas fa-shield-alt"></i> TutEx</h3></div>
         <ul class="nav flex-column admin-sidebar-nav">
-            <li class="nav-item active" id="dashboardTab">
-                <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            </li>
-            <li class="nav-item" id="tutorsTab">
-                <a class="nav-link" href="#"><i class="fas fa-chalkboard-teacher"></i> Tutors</a>
-            </li>
-            <li class="nav-item" id="studentsTab">
-                <a class="nav-link" href="#"><i class="fas fa-user-graduate"></i> Students</a>
-            </li>
+            <li class="nav-item active" id="dashboardTab"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li class="nav-item" id="tutorsTab"><a class="nav-link" href="#"><i class="fas fa-chalkboard-teacher"></i> Tutors</a></li>
+            <li class="nav-item" id="studentsTab"><a class="nav-link" href="#"><i class="fas fa-user-graduate"></i> Students</a></li>
         </ul>
-        
-        <div class="sidebar-footer">
-            <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-light w-100"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
+        <div class="sidebar-footer"><a href="{{ url_for('admin_logout') }}" class="btn btn-dark w-100"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
     </nav>
 
-    <main class="admin-content">
-        {% with messages = get_flashed_messages(request) %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.category }} alert-dismissible fade show" role="alert">
-                        {{ message.message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div class="admin-content">
+        <header class="top-navbar"><h1 id="page-title">Dashboard</h1></header>
 
-        <div id="dashboardContent" class="content-section active">
-            <h1 class="mb-4 fw-bold">Dashboard</h1>
-            <div class="main-card mb-4">
-                <div class="card-header"><i class="fas fa-bell text-primary"></i> New Unverified Leads</div>
-                <div class="card-body">
-                    <table id="unverifiedLeadsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Student</th><th>Area</th><th>Board</th><th>Fee</th><th>Action</th></tr></thead>
-                        <tbody>
-                        {% for lead in unverified_leads %}
-                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ lead.board }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}"><button type="submit" class="btn btn-primary btn-sm">Verify</button></form></td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+        <main>
+            <div id="dashboardContent" class="content-section active">
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-warning-gradient"><i class="fas fa-bell"></i></div><div class="stat-info"><h5>{{ unverified_leads|length }}</h5><p>New Leads</p></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-info-gradient"><i class="fas fa-hourglass-half"></i></div><div class="stat-info"><h5>{{ pending_requests|length }}</h5><p>Pending</p></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-primary-gradient"><i class="fas fa-chalkboard-teacher"></i></div><div class="stat-info"><h5>{{ all_tutors|length }}</h5><p>Tutors</p></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-success-gradient"><i class="fas fa-user-graduate"></i></div><div class="stat-info"><h5>{{ all_students|length }}</h5><p>Students</p></div></div></div>
                 </div>
-            </div>
-             <div class="main-card mb-4">
-                <div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div>
-                <div class="card-body">
-                    <table id="pendingRequestsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Student</th><th>Area</th><th>Requested By</th><th>Action</th></tr></thead>
-                        <tbody>
-                        {% for lead, tutor in pending_requests %}
-                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn btn-success btn-sm">Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn btn-danger btn-sm">Reject</button></form></td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="main-card mb-4">
-                <div class="card-header"><i class="fas fa-list-alt text-warning"></i> Approved & Available Tuitions</div>
-                <div class="card-body">
-                    <table id="availableLeadsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Student</th><th>Area</th><th>Subjects</th><th>Fee</th><th>Status</th></tr></thead>
-                        <tbody>
-                        {% for lead in available_leads %}
-                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ lead.subjects }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><span class="badge bg-info text-dark">{{ lead.status.value }}</span></td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="main-card">
-                <div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Tuition Matches</div>
-                <div class="card-body">
-                    <table id="matchedLeadsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Student</th><th>Area</th><th>Matched Tutor</th><th>Fee</th><th>Status</th></tr></thead>
-                        <tbody>
-                        {% for lead, tutor in matched_leads %}
-                            <tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>{{ tutor.full_name }}</td><td>Rs. {{ "%.2f"|format(lead.total_fee) }}</td><td><span class="badge bg-success">{{ lead.status.value }}</span></td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
 
-        <div id="tutorsContent" class="content-section">
-            <h1 class="mb-4 fw-bold">Manage Tutors</h1>
-            <div class="main-card">
-                <div class="card-header"><i class="fas fa-chalkboard-teacher text-primary"></i> All Registered Tutors</div>
-                <div class="card-body">
-                    <table id="allTutorsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Qualification</th></tr></thead>
-                        <tbody>
-                        {% for tutor in all_tutors %}
-                            <tr><td>{{ tutor.username }}</td><td>{{ tutor.full_name }}</td><td>{{ tutor.email }}</td><td>{{ tutor.phone_number }}</td><td>{{ tutor.last_qualification }}</td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="row g-4">
+                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-bell text-warning"></i> New Unverified Leads</div><div class="card-body"><table id="unverifiedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Action</th></tr></thead><tbody>{% for lead in unverified_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td><form method="POST" action="{{ url_for('verify_lead', lead_id=lead.id) }}"><button type="submit" class="btn-action btn-verify"><i class="fas fa-check"></i> Verify</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
+                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div><div class="card-body"><table id="pendingRequestsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Action</th></tr></thead><tbody>{% for lead, tutor in pending_requests %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn-action btn-approve"><i class="fas fa-check-circle"></i> Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn-action btn-reject"><i class="fas fa-times-circle"></i> Reject</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
+                    <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-list-alt text-secondary"></i> Approved & Available</div><div class="card-body"><table id="availableLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Fee</th></tr></thead><tbody>{% for lead in available_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td></tr>{% endfor %}</tbody></table></div></div></div>
+                    <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Matches</div><div class="card-body"><table id="matchedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Status</th></tr></thead><tbody>{% for lead, tutor in matched_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><span class="badge rounded-pill bg-success-light text-success">{{ lead.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
                 </div>
             </div>
-        </div>
 
-        <div id="studentsContent" class="content-section">
-             <h1 class="mb-4 fw-bold">Manage Students</h1>
-            <div class="main-card">
-                <div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered Students</div>
-                <div class="card-body">
-                    <table id="allStudentsTable" class="table table-striped" style="width:100%">
-                        <thead><tr><th>Full Name</th><th>Email</th><th>Phone</th><th>Area</th><th>Board</th><th>Status</th></tr></thead>
-                        <tbody>
-                        {% for student in all_students %}
-                            <tr><td>{{ student.full_name }}</td><td>{{ student.email }}</td><td>{{ student.phone_number }}</td><td>{{ student.area }}</td><td>{{ student.board }}</td><td><span class="badge bg-secondary">{{ student.status.value }}</span></td></tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
+            <div id="tutorsContent" class="content-section"><div class="main-card"><div class="card-header"><i class="fas fa-chalkboard-teacher text-primary"></i> All Registered Tutors</div><div class="card-body"><table id="allTutorsTable" class="table" style="width:100%"><thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Qualification</th></tr></thead><tbody>{% for tutor in all_tutors %}<tr><td>{{ tutor.username }}</td><td>{{ tutor.full_name }}</td><td>{{ tutor.email }}</td><td>{{ tutor.phone_number }}</td><td>{{ tutor.last_qualification }}</td></tr>{% endfor %}</tbody></table></div></div></div>
+            <div id="studentsContent" class="content-section"><div class="main-card"><div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered Students</div><div class="card-body"><table id="allStudentsTable" class="table" style="width:100%"><thead><tr><th>Full Name</th><th>Email</th><th>Phone</th><th>Area</th><th>Board</th><th>Status</th></tr></thead><tbody>{% for student in all_students %}<tr><td>{{ student.full_name }}</td><td>{{ student.email }}</td><td>{{ student.phone_number }}</td><td>{{ student.area }}</td><td>{{ student.board }}</td><td><span class="badge rounded-pill bg-secondary-light text-secondary">{{ student.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
+        </main>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 $(document).ready(function () {
-    // Initialize all tables as DataTables
-    $('#unverifiedLeadsTable').DataTable();
-    $('#pendingRequestsTable').DataTable();
-    $('#availableLeadsTable').DataTable();
-    $('#matchedLeadsTable').DataTable();
-    $('#allTutorsTable').DataTable();
-    $('#allStudentsTable').DataTable();
+    const dataTableOptions = {
+        "pagingType": "simple_numbers",
+        "language": {
+            "lengthMenu": "Show _MENU_",
+            "search": "",
+            "searchPlaceholder": "Search...",
+            "paginate": {
+                "previous": "<i class='fas fa-chevron-left'></i>",
+                "next":     "<i class='fas fa-chevron-right'></i>"
+            }
+        },
+        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+               '<"table-responsive"t>' +
+               '<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+    };
+    $('table').DataTable(dataTableOptions);
 
-    // Sidebar Tab-switching Logic
     const tabs = {
-        dashboard: {
-            tab: $('#dashboardTab'),
-            content: $('#dashboardContent')
-        },
-        tutors: {
-            tab: $('#tutorsTab'),
-            content: $('#tutorsContent')
-        },
-        students: {
-            tab: $('#studentsTab'),
-            content: $('#studentsContent')
-        }
+        dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' },
+        tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'Manage Tutors' },
+        students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'Manage Students' }
     };
 
     function showTab(tabName) {
-        $.each(tabs, function(key, value) {
-            value.tab.removeClass('active');
-            value.content.removeClass('active');
-        });
+        $.each(tabs, (key, value) => { value.tab.removeClass('active'); value.content.removeClass('active'); });
         tabs[tabName].tab.addClass('active');
         tabs[tabName].content.addClass('active');
+        $('#page-title').text(tabs[tabName].title);
     }
 
-    tabs.dashboard.tab.on('click', function(e) { e.preventDefault(); showTab('dashboard'); });
-    tabs.tutors.tab.on('click', function(e) { e.preventDefault(); showTab('tutors'); });
-    tabs.students.tab.on('click', function(e) { e.preventDefault(); showTab('students'); });
+    $.each(tabs, (name, components) => {
+        components.tab.on('click', (e) => { e.preventDefault(); showTab(name); });
+    });
 });
 </script>
 
