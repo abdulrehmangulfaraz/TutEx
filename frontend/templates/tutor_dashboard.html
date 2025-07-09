@@ -421,16 +421,14 @@
 
         /* New styles for pending request limitation */
         .pending-limit-notice {
-            background-color: var(--warning-light);
-            border-left: 4px solid var(--warning-color);
             padding: 1rem;
             margin-bottom: 1.5rem;
             border-radius: 0.5rem;
             display: flex;
             align-items: center;
+            border-left: 4px solid;
         }
         .pending-limit-notice i {
-            color: var(--warning-color);
             margin-right: 0.75rem;
             font-size: 1.5rem;
         }
@@ -438,6 +436,22 @@
             margin: 0;
             color: var(--text-primary);
             font-weight: 500;
+        }
+        /* Warning style when has pending requests */
+        .pending-limit-notice.has-pending {
+            background-color: var(--warning-light);
+            border-left-color: var(--warning-color);
+        }
+        .pending-limit-notice.has-pending i {
+            color: var(--warning-color);
+        }
+        /* Info style when no pending requests */
+        .pending-limit-notice.no-pending {
+            background-color: var(--primary-light);
+            border-left-color: var(--primary-color);
+        }
+        .pending-limit-notice.no-pending i {
+            color: var(--primary-color);
         }
         .accept-lead-form {
             display: inline-block;
@@ -545,9 +559,14 @@
                             </div>
                             <div class="card-body">
                                 {% if pending_leads|length > 0 %}
-                                <div class="pending-limit-notice">
+                                <div class="pending-limit-notice has-pending">
                                     <i class="fas fa-exclamation-circle"></i>
-                                    <p>You currently have {{ pending_leads|length }} pending request(s). Please wait for admin approval before accepting new leads.</p>
+                                    <p>You currently have 1 pending request (maximum allowed). Please wait for admin approval before accepting new leads.</p>
+                                </div>
+                                {% else %}
+                                <div class="pending-limit-notice no-pending">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>You can have a maximum of 1 pending request at a time. Once approved, you'll be able to accept more leads.</p>
                                 </div>
                                 {% endif %}
 
