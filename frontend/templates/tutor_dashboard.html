@@ -775,73 +775,114 @@
 
             <!-- Profile Content Section -->
              <div id="profileContent" class="content-section">
-                <div class="profile-header"></div>
-                <div class="main-card profile-info-card" style="margin-top: -4rem;">
-                    <div class="profile-avatar">
+    <div class="row">
+        <div class="col-lg-5 col-xl-4">
+            <div class="main-card p-4 h-100">
+                <div class="text-center mb-4">
+                    <div class="profile-avatar-lg mx-auto mb-3">
                         <i class="fas fa-user-tie"></i>
                     </div>
-                    <div class="text-center">
-                        <h2 class="h4 font-weight-bold">{{ tutor.full_name }}</h2>
-                        <p class="text-muted">{{ tutor.username }}</p>
-                    </div>
+                    <h2 class="h5 mb-0">{{ tutor.full_name }}</h2>
+                    <p class="text-muted small">@{{ tutor.username }}</p>
+                </div>
 
-                    <div class="row mt-4">
-                        <div class="col-lg-6">
-                            <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Personal Information</h5>
-                            <div class="info-item">
-                                <i class="fas fa-envelope icon"></i>
-                                <span class="label">Email:</span>
-                                <span class="value">{{ tutor.email }}</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-phone icon"></i>
-                                <span class="label">Phone:</span>
-                                <span class="value">{{ tutor.phone_number }}</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-graduation-cap icon"></i>
-                                <span class="label">Qualification:</span>
-                                <span class="value">{{ tutor.last_qualification }}</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-user-friends icon"></i>
-                                <span class="label">Father's Name:</span>
-                                <span class="value">{{ tutor.fathers_name }}</span>
-                            </div>
+                <h5 class="section-title"><span>Contact Information</span></h5>
+                <ul class="list-unstyled profile-details">
+                    <li><i class="fas fa-envelope-open-text icon"></i> <span>{{ tutor.email }}</span></li>
+                    <li><i class="fas fa-phone-alt icon"></i> <span>{{ tutor.phone_number }}</span></li>
+                    <li><i class="fas fa-map-marker-alt icon"></i> <span>{{ tutor.area }}, {{ tutor.city }}</span></li>
+                </ul>
+
+                <h5 class="section-title"><span>Academic Profile</span></h5>
+                <ul class="list-unstyled profile-details">
+                    <li><i class="fas fa-graduation-cap icon"></i> <span>{{ tutor.last_qualification }}</span></li>
+                    <li><i class="fas fa-book icon"></i> <span>Teaches: {{ tutor.subjects | join(', ') }}</span></li>
+                </ul>
+
+                <h5 class="section-title"><span>Personal Details</span></h5>
+                <ul class="list-unstyled profile-details">
+                    <li><i class="fas fa-user-shield icon"></i> <span>Father: {{ tutor.fathers_name }}</span></li>
+                    <li><i class="fas fa-calendar-check icon"></i> <span>Member Since: {{ member_since }}</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-xl-8">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="stat-card-v2 h-100">
+                        <div class="stat-icon-v2 bg-success-light">
+                            <i class="fas fa-wallet text-success"></i>
                         </div>
-
-                        <div class="col-lg-6">
-                            <h5 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Your Statistics</h5>
-                             <div class="row">
-                                 <div class="col-md-6 mb-3">
-                                     <div class="stat-card p-3">
-                                         <div class="stat-info">
-                                             <p class="mb-1 text-muted">Total Earnings</p>
-                                             <h5 class="mb-0">Rs. {{ "%.0f"|format(total_earnings) }}</h5>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <div class="col-md-6 mb-3">
-                                     <div class="stat-card p-3">
-                                         <div class="stat-info">
-                                             <p class="mb-1 text-muted">Completed Tuitions</p>
-                                             <h5 class="mb-0">{{ completed_tuitions }}</h5>
-                                         </div>
-                                     </div>
-                                 </div>
-                             </div>
+                        <div class="stat-info-v2">
+                            <p class="text-muted mb-1">Total Earnings</p>
+                            <h4 class="mb-0">Rs. {{ "%.0f"|format(total_earnings) }}</h4>
                         </div>
                     </div>
-
-                    <div class="mt-4">
-                        <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Monthly Income</h5>
-                        <canvas id="monthlyIncomeChart" 
-                                data-labels='{{ chart_labels|tojson }}' 
-                                data-values='{{ chart_data|tojson }}'>
-                        </canvas>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="stat-card-v2 h-100">
+                        <div class="stat-icon-v2 bg-info-light">
+                            <i class="fas fa-chalkboard-teacher text-info"></i>
+                        </div>
+                        <div class="stat-info-v2">
+                            <p class="text-muted mb-1">Active Tuitions</p>
+                            <h4 class="mb-0">{{ active_tuitions }}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="main-card p-4">
+                 <h5 class="card-title mb-3">Monthly Income Overview</h5>
+                 <canvas id="monthlyIncomeChart" 
+                    data-labels='{{ chart_labels|tojson }}' 
+                    data-values='{{ chart_data|tojson }}'
+                    style="min-height: 250px; max-height: 320px;">
+                 </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ... (your existing styles) ... */
+
+    .profile-avatar-lg {
+        width: 100px; height: 100px; border-radius: 50%;
+        background-color: var(--primary-light); display: flex;
+        align-items: center; justify-content: center;
+        border: 4px solid var(--primary-color);
+    }
+    .profile-avatar-lg .fas { font-size: 3rem; color: var(--primary-color); }
+
+    .section-title {
+        font-size: 1rem; font-weight: 600; color: var(--text-primary);
+        margin-bottom: 1rem; margin-top: 1.5rem; border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+    }
+    .section-title span { background-color: white; padding-right: 10px; }
+
+    .profile-details li { display: flex; align-items: center; margin-bottom: 0.8rem; font-size: 0.9rem; }
+    .profile-details .icon {
+        color: var(--primary-color); width: 28px; text-align: center;
+        font-size: 1rem; margin-right: 10px;
+    }
+
+    .stat-card-v2 {
+        display: flex; align-items: center; background-color: #fff;
+        padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e9ecef;
+    }
+    .stat-icon-v2 {
+        width: 50px; height: 50px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-right: 1rem; font-size: 1.5rem;
+    }
+    .bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
+    .text-success { color: #198754 !important; }
+    .bg-info-light { background-color: rgba(13, 202, 240, 0.1); }
+    .text-info { color: #0dcaf0 !important; }
+</style>
         </main>
     </div>
 </div>
@@ -919,68 +960,80 @@ $(document).ready(function () {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 $(document).ready(function () {
-    // --- Your existing logic for DataTables and sidebar tabs should remain here ---
-
-    // NEW Chart.js logic (Error-Free Version)
-    const chartCanvas = document.getElementById('monthlyIncomeChart');
     
-    // Check if the chart canvas element exists on the page
+    // ===================================================================
+    // YOUR EXISTING DATATABLE AND SIDEBAR TAB LOGIC SHOULD GO HERE
+    // For example:
+    // $('#availableLeadsTable').DataTable();
+    // $('#pendingLeadsTable').DataTable();
+    // etc.
+    // ===================================================================
+
+
+    // --- Logic for the Monthly Income Chart ---
+    const chartCanvas = document.getElementById('monthlyIncomeChart');
     if (chartCanvas) {
-        // Read the data from the 'data-*' attributes
-        const labelsJson = chartCanvas.dataset.labels;
-        const dataJson = chartCanvas.dataset.values;
+        const ctx = chartCanvas.getContext('2d');
+        const chartLabels = JSON.parse(chartCanvas.dataset.labels);
+        const chartData = JSON.parse(chartCanvas.dataset.values);
+        
+        // Create a gradient fill for the chart bars
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.8)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.3)');
 
-        // Parse the JSON data into JavaScript arrays
-        // This is a safe way to convert the string data from HTML into usable arrays
-        const chartLabels = JSON.parse(labelsJson);
-        const chartData = JSON.parse(dataJson);
-
-        const monthlyIncomeChart = new Chart(chartCanvas.getContext('2d'), {
+        const monthlyIncomeChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                // Use the parsed data here
-                labels: chartLabels, 
+                labels: chartLabels,
                 datasets: [{
-                    label: 'Monthly Income (Rs)',
-                    data: chartData, // Use the parsed data here
-                    backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                    label: 'Monthly Income',
+                    data: chartData,
+                    backgroundColor: gradient,
                     borderColor: 'rgba(99, 102, 241, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5,
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    hoverBackgroundColor: 'rgba(99, 102, 241, 1)',
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                        },
                         ticks: {
-                            callback: function(value) {
-                                return 'Rs. ' + value.toLocaleString();
-                            }
+                            callback: function(value) { return 'Rs. ' + value.toLocaleString(); }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
                         }
                     }
                 },
                 plugins: {
-                    legend: {
-                        display: false
+                    legend: { 
+                        display: false 
                     },
                     tooltip: {
+                        backgroundColor: '#333',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        displayColors: false,
+                        padding: 10,
                         callbacks: {
                             label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += 'Rs. ' + context.parsed.y.toLocaleString();
-                                }
-                                return label;
+                                return 'Income: Rs. ' + context.parsed.y.toLocaleString();
                             }
                         }
                     }
@@ -990,6 +1043,5 @@ $(document).ready(function () {
     }
 });
 </script>
-
 </body>
 </html>

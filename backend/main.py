@@ -14,6 +14,7 @@ from collections import defaultdict
 from fastapi import Request, Depends, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from typing import Optional
 
 # Third-Party Libraries
 import aiofiles
@@ -175,34 +176,43 @@ async def get_tutor_dashboard_page(
     board: Optional[str] = None,
     subject: Optional[str] = None,
 ):
-    print("\n--- DEBUG: Entering /tutor_dashboard endpoint ---")
-
     if 'user' not in request.session:
-        print("--- DEBUG: User not in session. Redirecting to login. ---")
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
     user_info = request.session["user"]
-    print(f"--- DEBUG: Session user_info found: {user_info} ---")
+    tutor = db.query(User).filter(User.username == user_info["username"]).first()
 
-    # Fetch the tutor object from the database
-    tutor_username = user_info.get("username")
-    print(f"--- DEBUG: Attempting to query for tutor with username: {tutor_username} ---")
-    tutor = db.query(User).filter(User.username == tutor_username).first()
-
-    # Check if the tutor was found in the database
     if not tutor:
-        print(f"--- DEBUG: Tutor with username '{tutor_username}' NOT FOUND in the database. Redirecting. ---")
-        # Log the user out or redirect to an error page
         return RedirectResponse(url="/login?error=Tutor+profile+not+found", status_code=status.HTTP_303_SEE_OTHER)
+
+    # --- ✅ CORRECTED LEAD FETCHING LOGIC ---
+    # Query for available leads
+    available_leads_query = db.query(StudentRegistration).filter(
+        StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
+    )
+    # Apply filters if they are provided
+    if area:
+        available_leads_query = available_leads_query.filter(StudentRegistration.area == area)
+    if board:
+        available_leads_query = available_leads_query.filter(StudentRegistration.board == board)
+    if subject:
+        available_leads_query = available_leads_query.filter(StudentRegistration.subjects.contains(subject))
     
-    print(f"--- DEBUG: Tutor FOUND: {tutor.full_name} (ID: {tutor.id}) ---")
-        
-    # --- Lead and Stat Calculations (same as before) ---
+    # Execute the query to get the list of available leads
+    available_leads = available_leads_query.all()
+
+    # --- (The rest of the logic remains the same) ---
+    pending_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
+    ).all()
+
     assigned_leads = db.query(StudentRegistration).filter(
         StudentRegistration.accepted_by_tutor_id == tutor.id,
         StudentRegistration.status == LeadStatus.TUTOR_MATCHED
     ).all()
 
+    # --- Stat Calculations ---
     total_earnings = sum(lead.total_fee for lead in assigned_leads if lead.total_fee is not None)
     completed_tuitions = len(assigned_leads)
 
@@ -216,15 +226,15 @@ async def get_tutor_dashboard_page(
     chart_labels = [datetime.strptime(my, "%Y-%m").strftime("%b %Y") for my in sorted_months]
     chart_data = [monthly_income[my] for my in sorted_months]
 
-    # Create the context dictionary
+    # Create the context dictionary with the correct available_leads
     context = {
         "request": request,
         "session": request.session,
         "user": user_info["username"],
         "role": user_info["user_type"],
-        "tutor": tutor,  # Add the full tutor object here
-        "available_leads": [], # Keeping this minimal for now to isolate the error
-        "pending_leads": [],
+        "tutor": tutor,
+        "available_leads": available_leads, # ✅ This now sends the real data
+        "pending_leads": pending_leads,
         "assigned_leads": assigned_leads,
         "selected_area": area,
         "selected_board": board,
@@ -235,6 +245,8 @@ async def get_tutor_dashboard_page(
         "chart_labels": chart_labels,
         "chart_data": chart_data,
     }
+    
+    return templates.TemplateResponse("tutor_dashboard.html", context)
 
     print(f"--- DEBUG: Context dictionary prepared. Keys: {list(context.keys())} ---")
     # Specifically check if 'tutor' is in the context before rendering
@@ -245,7 +257,7 @@ async def get_tutor_dashboard_page(
 
     print("--- DEBUG: Attempting to render tutor_dashboard.html template. ---")
     return templates.TemplateResponse("tutor_dashboard.html", context)
-
+    
 @app.post("/accept_lead/{lead_id}", name="accept_lead")
 async def accept_lead(
     request: Request,
