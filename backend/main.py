@@ -185,55 +185,71 @@ async def get_tutor_dashboard_page(
     if not tutor:
         return RedirectResponse(url="/login?error=Tutor+profile+not+found", status_code=status.HTTP_303_SEE_OTHER)
 
-    # --- ✅ CORRECTED LEAD FETCHING LOGIC ---
-    # Query for available leads
+    # Fetch all leads assigned to this tutor
+    assigned_leads = db.query(StudentRegistration).filter(
+        StudentRegistration.accepted_by_tutor_id == tutor.id,
+        StudentRegistration.status == LeadStatus.TUTOR_MATCHED
+    ).all()
+
+    # --- ⭐️ IMPROVED INCOME CALCULATION LOGIC ⭐️ ---
+    monthly_income = defaultdict(float)
+    current_date = datetime.now(timezone.utc)
+
+    for lead in assigned_leads:
+        if lead.created_at and lead.total_fee is not None:
+            # NOTE: Using the lead's creation date as the start of the tuition.
+            # A future improvement could be to store a specific 'match_date'.
+            start_date = lead.created_at.replace(tzinfo=timezone.utc)
+            
+            # Start iterating from the first day of the month the tuition began
+            iter_date = start_date.replace(day=1)
+            
+            # Loop through each month from the start date to the current date
+            while iter_date <= current_date:
+                month_year_key = iter_date.strftime("%Y-%m")
+                monthly_income[month_year_key] += lead.total_fee
+                
+                # Move to the next month, handling year change
+                next_month = iter_date.month + 1
+                next_year = iter_date.year
+                if next_month > 12:
+                    next_month = 1
+                    next_year += 1
+                iter_date = iter_date.replace(year=next_year, month=next_month)
+
+    # The total earnings are the sum of all monthly incomes calculated
+    total_earnings = sum(monthly_income.values())
+    
+    # --- Chart Data Preparation (this part is now correct) ---
+    sorted_months = sorted(monthly_income.keys())
+    chart_labels = [datetime.strptime(my, "%Y-%m").strftime("%b %Y") for my in sorted_months]
+    chart_data = [monthly_income[my] for my in sorted_months]
+    # --- END OF IMPROVED LOGIC ---
+
+    # Fetch other lead categories
     available_leads_query = db.query(StudentRegistration).filter(
         StudentRegistration.status == LeadStatus.VERIFIED_AVAILABLE
     )
-    # Apply filters if they are provided
     if area:
         available_leads_query = available_leads_query.filter(StudentRegistration.area == area)
     if board:
         available_leads_query = available_leads_query.filter(StudentRegistration.board == board)
     if subject:
         available_leads_query = available_leads_query.filter(StudentRegistration.subjects.contains(subject))
-    
-    # Execute the query to get the list of available leads
     available_leads = available_leads_query.all()
 
-    # --- (The rest of the logic remains the same) ---
     pending_leads = db.query(StudentRegistration).filter(
         StudentRegistration.accepted_by_tutor_id == tutor.id,
         StudentRegistration.status == LeadStatus.PENDING_TUTOR_APPROVAL
     ).all()
 
-    assigned_leads = db.query(StudentRegistration).filter(
-        StudentRegistration.accepted_by_tutor_id == tutor.id,
-        StudentRegistration.status == LeadStatus.TUTOR_MATCHED
-    ).all()
-
-    # --- Stat Calculations ---
-    total_earnings = sum(lead.total_fee for lead in assigned_leads if lead.total_fee is not None)
-    completed_tuitions = len(assigned_leads)
-
-    monthly_income = defaultdict(float)
-    for lead in assigned_leads:
-        if lead.created_at and lead.total_fee is not None:
-            month_year = lead.created_at.strftime("%Y-%m")
-            monthly_income[month_year] += lead.total_fee
-
-    sorted_months = sorted(monthly_income.keys())
-    chart_labels = [datetime.strptime(my, "%Y-%m").strftime("%b %Y") for my in sorted_months]
-    chart_data = [monthly_income[my] for my in sorted_months]
-
-    # Create the context dictionary with the correct available_leads
     context = {
         "request": request,
         "session": request.session,
         "user": user_info["username"],
         "role": user_info["user_type"],
         "tutor": tutor,
-        "available_leads": available_leads, # ✅ This now sends the real data
+        "available_leads": available_leads,
         "pending_leads": pending_leads,
         "assigned_leads": assigned_leads,
         "selected_area": area,
@@ -241,7 +257,6 @@ async def get_tutor_dashboard_page(
         "selected_subject": subject,
         "get_flashed_messages": get_flashed_messages,
         "total_earnings": total_earnings,
-        "completed_tuitions": completed_tuitions,
         "chart_labels": chart_labels,
         "chart_data": chart_data,
     }
