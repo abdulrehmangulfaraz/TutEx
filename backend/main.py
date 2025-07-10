@@ -34,7 +34,7 @@ from dotenv import load_dotenv
 # Local Application Imports
 from database import SessionLocal
 # Update imports in main.py
-from models import User, StudentRegistration, LeadStatus, TuitionStatus
+from models import User, StudentRegistration, LeadStatus, TuitionStatus, FeeDeduction
 
 # SlowAPI for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -441,18 +441,43 @@ async def get_admin_page(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse("admin.html", context)
 
 @app.post("/verify_lead/{lead_id}", name="verify_lead")
-async def verify_lead(request: Request, lead_id: int, db: Session = Depends(get_db)):
+async def verify_lead(
+    request: Request,
+    lead_id: int,
+    db: Session = Depends(get_db),
+    deducted_fee: float = Form(0.0)  # New field for the deducted fee
+):
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         return RedirectResponse(url="/login?error=Admin access required", status_code=status.HTTP_303_SEE_OTHER)
 
+    admin_user = request.session.get("user")
+    admin_id = db.query(User).filter(User.username == admin_user["username"]).first().id if admin_user else None
+
+
     lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
     if lead:
+        original_fee = lead.total_fee
+        final_fee = original_fee - deducted_fee
+
+        # Log the deduction
+        deduction_record = FeeDeduction(
+            lead_id=lead_id,
+            original_fee=original_fee,
+            deducted_amount=deducted_fee,
+            final_fee=final_fee,
+            admin_id=admin_id
+        )
+        db.add(deduction_record)
+
+        # Update the lead's fee and status
+        lead.total_fee = final_fee
         lead.status = LeadStatus.VERIFIED_AVAILABLE
         db.commit()
-        flash(request, "Lead verified successfully and is now available to tutors.", "success")
+
+        flash(request, f"Lead verified successfully! Final fee is now Rs. {final_fee:.0f}.", "success")
     else:
         flash(request, "Lead not found.", "error")
-    
+
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.post("/approve_tutor_match/{lead_id}", name="approve_tutor_match")

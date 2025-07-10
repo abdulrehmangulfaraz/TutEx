@@ -75,3 +75,14 @@ class StudentRegistration(Base):
     accepted_by_tutor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     tuition_status = Column(String, default=TuitionStatus.ONGOING)
     end_date = Column(DateTime, nullable=True)
+
+class FeeDeduction(Base):
+    __tablename__ = "fee_deductions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    lead_id = Column(Integer, ForeignKey("student_registrations.id"), nullable=False)
+    original_fee = Column(Float, nullable=False)
+    deducted_amount = Column(Float, nullable=False)
+    final_fee = Column(Float, nullable=False)
+    admin_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Optional: to track which admin made the change
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
