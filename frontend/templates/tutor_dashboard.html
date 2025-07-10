@@ -749,6 +749,7 @@
                                                 <th>Area</th>
                                                 <th>Board</th>
                                                 <th>Subjects</th>
+                                                <th>Address</th>
                                                 <th>Fee</th>
                                             </tr>
                                         </thead>
@@ -759,6 +760,7 @@
                                                 <td>{{ lead.area }}</td>
                                                 <td>{{ lead.board }}</td>
                                                 <td>{{ lead.subjects }}</td>
+                                                <td>{{ lead.address }}</td>
                                                 <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
                                             </tr>
                                             {% endfor %}
