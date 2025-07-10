@@ -17,6 +17,11 @@ import enum
 Base = declarative_base()
 
 
+class TuitionStatus(str, enum.Enum):
+    ONGOING = "ongoing"
+    COMPLETED = "completed"
+    DROPPED = "dropped"
+
 # Define an Enum for our lead statuses
 class LeadStatus(enum.Enum):
     PENDING_ADMIN_VERIFICATION = "PENDING_ADMIN_VERIFICATION"
@@ -68,3 +73,5 @@ class StudentRegistration(Base):
         nullable=False,
     )
     accepted_by_tutor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    tuition_status = Column(String, default=TuitionStatus.ONGOING)
+    end_date = Column(DateTime, nullable=True)

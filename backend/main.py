@@ -15,6 +15,8 @@ from fastapi import Request, Depends, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from typing import Optional
+from fastapi import APIRouter, Depends, Request, status, Query, HTTPException
+
 
 # Third-Party Libraries
 import aiofiles
@@ -32,7 +34,7 @@ from dotenv import load_dotenv
 # Local Application Imports
 from database import SessionLocal
 # Update imports in main.py
-from models import User, StudentRegistration, LeadStatus
+from models import User, StudentRegistration, LeadStatus, TuitionStatus
 
 # SlowAPI for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -166,7 +168,44 @@ async def send_otp_email(to_email: str, otp: str):
 
 # --- API ENDPOINTS ---
 # Add to the API ENDPOINTS section in main.py
+@app.post("/update_tuition_status/{lead_id}")
+async def update_tuition_status(
+    lead_id: int,
+    # ⭐️ RENAMED the parameter to 'new_status' to avoid conflict
+    # The Query(alias="status") part means it still reads the 'status' from the URL
+    new_status: TuitionStatus = Query(..., alias="status"),
+    db: Session = Depends(get_db),
+    request: Request = None,
+):
+    if "user" not in request.session:
+        # Now 'status' correctly refers to the FastAPI status module
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
+    user_info = request.session["user"]
+    if user_info["user_type"] != "tutor":
+        # Using HTTPException is better practice for API errors
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Unauthorized"
+        )
+    
+    lead = db.query(StudentRegistration).filter(StudentRegistration.id == lead_id).first()
+
+    if not lead:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Lead not found"
+        )
+
+    # Use the new parameter name here
+    lead.tuition_status = new_status
+    lead.end_date = datetime.now(timezone.utc) # Using timezone-aware datetime
+    db.commit()
+
+    # Admin notification logic can be added here
+    
+    # This redirect now works correctly
+    return RedirectResponse(url="/tutor_dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/tutor_dashboard", name="tutor_dashboard")
 async def get_tutor_dashboard_page(
@@ -197,19 +236,17 @@ async def get_tutor_dashboard_page(
 
     for lead in assigned_leads:
         if lead.created_at and lead.total_fee is not None:
-            # NOTE: Using the lead's creation date as the start of the tuition.
-            # A future improvement could be to store a specific 'match_date'.
             start_date = lead.created_at.replace(tzinfo=timezone.utc)
             
-            # Start iterating from the first day of the month the tuition began
+            # If the tuition has an end date, use it; otherwise, use the current date
+            end_date = lead.end_date.replace(tzinfo=timezone.utc) if lead.end_date else current_date
+
             iter_date = start_date.replace(day=1)
             
-            # Loop through each month from the start date to the current date
-            while iter_date <= current_date:
+            while iter_date <= end_date:
                 month_year_key = iter_date.strftime("%Y-%m")
                 monthly_income[month_year_key] += lead.total_fee
                 
-                # Move to the next month, handling year change
                 next_month = iter_date.month + 1
                 next_year = iter_date.year
                 if next_month > 12:
@@ -217,7 +254,6 @@ async def get_tutor_dashboard_page(
                     next_year += 1
                 iter_date = iter_date.replace(year=next_year, month=next_month)
 
-    # The total earnings are the sum of all monthly incomes calculated
     total_earnings = sum(monthly_income.values())
     
     # --- Chart Data Preparation (this part is now correct) ---
