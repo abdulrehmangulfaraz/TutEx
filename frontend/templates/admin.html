@@ -234,7 +234,44 @@
                     </tbody></table></div></div></div>
                     <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div><div class="card-body"><table id="pendingRequestsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Action</th></tr></thead><tbody>{% for lead, tutor in pending_requests %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn-action btn-approve"><i class="fas fa-check-circle"></i> Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn-action btn-reject"><i class="fas fa-times-circle"></i> Reject</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
                     <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-list-alt text-secondary"></i> Approved & Available</div><div class="card-body"><table id="availableLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Fee</th></tr></thead><tbody>{% for lead in available_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td></tr>{% endfor %}</tbody></table></div></div></div>
-                    <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Matches</div><div class="card-body"><table id="matchedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Status</th></tr></thead><tbody>{% for lead, tutor in matched_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><span class="badge rounded-pill bg-success-light text-success">{{ lead.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
+                    <div class="col-lg-6 mt-4">
+                        <div class="main-card h-100">
+                            <div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Matches</div>
+                            <div class="card-body">
+                                <table id="matchedLeadsTable" class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Tutor</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for lead, tutor in matched_leads %}
+                                        <tr>
+                                            <td>{{ lead.full_name }}</td>
+                                            <td>{{ tutor.full_name }}</td>
+                                            <td>
+                                                <span class="badge rounded-pill 
+                                                    {% if lead.tuition_status == 'completed' %}bg-success-light text-success
+                                                    {% elif lead.tuition_status == 'dropped' %}bg-danger-light text-danger
+                                                    {% elif lead.tuition_status == 'ongoing' %}bg-info-light text-info
+                                                    {% else %}bg-secondary-light text-secondary{% endif %}">
+                                                    
+                                                    {% if lead.tuition_status %}
+                                                        {{ lead.tuition_status.capitalize() }}
+                                                    {% else %}
+                                                        Ongoing
+                                                    {% endif %}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
