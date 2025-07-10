@@ -751,24 +751,41 @@
                                                 <th>Subjects</th>
                                                 <th>Address</th>
                                                 <th>Fee</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for lead in assigned_leads %}
                                             <tr>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ lead.area }}</td>
+                                                <td>{{ lead.board }}</td>
+                                                <td>{{ lead.subjects }}</td>
+                                                <td>{{ lead.address }}</td>
+                                                <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
                                                 <td>
                                                     {% if lead.tuition_status == 'ongoing' %}
-                                                    <form action="/update_tuition_status/{{ lead.id }}?status=completed" method="post" style="display: inline;">
-                                                        <button type="submit" class="btn btn-success btn-sm">Completed</button>
+                                                    <form action="/update_tuition_status/{{ lead.id }}?status=completed" method="post" style="display: inline;" >
+                                                        <button type="submit" class="btn-action btn-approve">
+                                                            <i class="fas fa-check-circle"></i> Completed
+                                                        </button>
                                                     </form>
-                                                    <form action="/update_tuition_status/{{ lead.id }}?status=dropped" method="post" style="display: inline;">
-                                                        <button type="submit" class="btn btn-danger btn-sm">Dropped</button>
+                                                    <form action="/update_tuition_status/{{ lead.id }}?status=dropped" method="post" style=" margin-left: 4px; margin-top: 10px;">
+                                                        <button type="submit" class="btn-action btn-reject">
+                                                            <i class="fas fa-times-circle"></i> Dropped
+                                                        </button>
                                                     </form>
                                                     {% else %}
                                                     <span class="badge 
-                                                        {% if lead.tuition_status == 'completed' %}bg-success{% endif %}
-                                                        {% if lead.tuition_status == 'dropped' %}bg-danger{% endif %}">
-                                                        {{ lead.tuition_status.capitalize() }}
+                                                        {% if lead.tuition_status == 'completed' %}bg-success
+                                                        {% elif lead.tuition_status == 'dropped' %}bg-danger
+                                                        {% else %}bg-secondary{% endif %}">
+
+                                                        {% if lead.tuition_status %}
+                                                            {{ lead.tuition_status.capitalize() }}
+                                                        {% else %}
+                                                            Not Set
+                                                        {% endif %}
                                                     </span>
                                                     {% endif %}
                                                 </td>
