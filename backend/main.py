@@ -478,7 +478,7 @@ async def verify_lead(
     else:
         flash(request, "Lead not found.", "error")
 
-    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)    
 
 @app.post("/approve_tutor_match/{lead_id}", name="approve_tutor_match")
 async def approve_tutor_match(request: Request, lead_id: int, db: Session = Depends(get_db)):
