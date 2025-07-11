@@ -1952,57 +1952,171 @@ cursor: pointer;
 </body>
 
 <!-- Popular Subjects section -->
-<div class="py-5 bg-light popular-courses">
-  <div class="container">
-    <div class="row">
-      <div class="col-xl-10 offset-xl-1 col-lg-12 text-center">
-        <div class="courses-box">
-          <h2 class="mb-5 fw-bold text-center">Popular Courses</h2>
-          <div class="row g-4">
-            
-            <!-- Course 1 -->
-            <div class="col-lg-3 col-sm-6">
-              <a href="/online-classes/short-term-courses" target="_blank" class="course-item card shadow h-100 text-decoration-none">
-                
-                  <img src="/static/images/student.png" alt="Short Term Courses" class="card-img-top">
-                                <div class="card-body text-center">
-                  <h5 class="card-title text-dark">Short Term Courses</h5>
-                </div>
-              </a>
-            </div>
-            <!-- Course 2 -->
-            <div class="col-lg-3 col-sm-6">
-              <a href="/online-classes/language" target="_blank" class="course-item card shadow h-100 text-decoration-none">
-                <img src="/static/images/student2.png" alt="Language Courses" class="card-img-top">
-                <div class="card-body text-center">
-                  <h5 class="card-title text-dark">Language Courses</h5>
-                </div>
-              </a>
-            </div>
-            <!-- Course 3 -->
-            <div class="col-lg-3 col-sm-6">
-              <a href="/online-classes/coding-programming" target="_blank" class="course-item card shadow h-100 text-decoration-none">
-                <img src="/static/images/student3.png" alt="Coding Classes" class="card-img-top">
-                <div class="card-body text-center">
-                  <h5 class="img-title text-dark">Coding Classes</h5>
-                </div>
-              </a>
-            </div>
-            <!-- Course 4 -->
-            <div class="col-lg-3 col-sm-6">
-              <a href="/online-classes/school" target="_blank" class="course-item card shadow h-100 text-decoration-none">
-                <img src="/static/images/student4.png" alt="School Classes" class="card-img-top">
-                <div class="card-body text-center">
-                  <h5 class="card-title text-dark">School Classes</h5>
-                </div>
-              </a>
-            </div>
-          </div>
+<!-- Start of Popular Courses Section -->
+<div style="background: linear-gradient(to bottom, #ffffff, #f3f4f6); padding: 100px 20px; font-family: Arial, sans-serif;">
+  <style>
+    /* Main container for the courses section */
+    .popular-container-abd {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Title for the section */
+    .popular-title-abd {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 60px;
+      color: #111827;
+    }
+
+    /* Responsive grid for the course cards */
+    .popular-grid-abd {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 50px; /* Increased gap for better spacing */
+    }
+
+    /*
+    * The main wrapper for each card unit.
+    * THIS is the hover target to ensure a smooth, stable animation.
+    */
+    .course-wrapper-abd {
+      position: relative;
+    }
+
+    /*
+    * The image container. This is the element that will "pop out".
+    * It has overflow:hidden to clip the image initially.
+    */
+    .course-image-container-abd {
+      position: relative;
+      z-index: 2; /* Sits on top of the content card */
+      height: 200px;
+      border-radius: 20px;
+      overflow: hidden; /* This is crucial for clipping the image initially */
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background-color: #eef2f7; /* Added background for contain-fit images */
+    }
+
+    .course-image-container-abd img {
+      width: 100%;
+      height: 100%;
+      /* Changed to 'contain' to ensure the full image is always visible */
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+
+    /*
+    * The content part of the card (the link and title).
+    * It's pulled up behind the image with a negative margin.
+    */
+    .course-card-abd {
+      display: block;
+      text-decoration: none;
+      position: relative;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      padding-top: 130px; /* Creates space for text below the image */
+      margin-top: -120px; /* Pulls this card up behind the image */
+      z-index: 1; /* Sits below the image container */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.4s ease;
+      text-align: center;
+    }
+
+    .course-title-abd {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1f2937;
+      transition: color 0.3s ease;
+    }
+
+    /* --- HOVER EFFECTS --- */
+    /* The hover is on the main wrapper, which controls all child animations */
+
+    /* 1. The image container pops out and up */
+    .course-wrapper-abd:hover .course-image-container-abd {
+      transform: translateY(-50px) scale(1.05);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 2. The image inside zooms slightly to add parallax */
+    .course-wrapper-abd:hover .course-image-container-abd img {
+      transform: scale(1.1);
+    }
+
+    /* 3. The content card moves down slightly to create space */
+    .course-wrapper-abd:hover .course-card-abd {
+      transform: translateY(10px);
+    }
+
+    /* 4. The title changes color on hover */
+    .course-wrapper-abd:hover .course-title-abd {
+      color: #4f46e5;
+    }
+  </style>
+
+  <div class="popular-container-abd">
+    <h2 class="popular-title-abd">Popular Courses</h2>
+    <div class="popular-grid-abd">
+
+      <!-- Card 1 -->
+      <div class="course-wrapper-abd">
+        <div class="course-image-container-abd">
+          <img src="/static/images/student.png" 
+               onerror="this.onerror=null;this.src='https://placehold.co/600x400/a2d2ff/333?text=Image+1';"
+               alt="Short Term Courses">
         </div>
+        <a href="/online-classes/short-term-courses" target="_blank" class="course-card-abd">
+          <div class="course-title-abd">Short Term Courses</div>
+        </a>
       </div>
+
+      <!-- Card 2 -->
+      <div class="course-wrapper-abd">
+        <div class="course-image-container-abd">
+          <img src="/static/images/student2.png" 
+               onerror="this.onerror=null;this.src='https://placehold.co/600x400/ffafcc/333?text=Image+2';"
+               alt="Language Courses">
+        </div>
+        <a href="/online-classes/language" target="_blank" class="course-card-abd">
+          <div class="course-title-abd">Language Courses</div>
+        </a>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="course-wrapper-abd">
+        <div class="course-image-container-abd">
+          <img src="/static/images/student3.png" 
+               onerror="this.onerror=null;this.src='https://placehold.co/600x400/bde0fe/333?text=Image+3';"
+               alt="Coding Classes">
+        </div>
+        <a href="/online-classes/coding-programming" target="_blank" class="course-card-abd">
+          <div class="course-title-abd">Coding Classes</div>
+        </a>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="course-wrapper-abd">
+        <div class="course-image-container-abd">
+          <img src="/static/images/student4.png" 
+               onerror="this.onerror=null;this.src='https://placehold.co/600x400/cddafd/333?text=Image+4';"
+               alt="School Classes">
+        </div>
+        <a href="/online-classes/school" target="_blank" class="course-card-abd">
+          <div class="course-title-abd">School Classes</div>
+        </a>
+      </div>
+
     </div>
   </div>
 </div>
+<!-- End of Popular Courses Section -->
+
+
 
 
 
