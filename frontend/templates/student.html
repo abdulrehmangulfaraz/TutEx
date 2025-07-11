@@ -108,6 +108,20 @@ h3::after {
   transform: scale(1.02);
 }
 
+.carousel-inner-b img {
+  border-radius: var(--border-radius);
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  height: 300px;
+  object-fit:scale-down;
+  transition: var(--transition);
+}
+
+.carousel-inner-b:hover img {
+  transform: scale(1.02);
+}
+
 .carousel-caption {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
@@ -863,7 +877,7 @@ function verifyStudentOTP() {
   <div id="step2" style="display: none;">
     <h3>Select Your Board</h3>
     <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
+      <div class="carousel-inner-b">
         {% set board_images = {
           "Cambridge O'Levels": "images/ciae.png",
           "Cambridge A'Levels": "images/ciae.png",
