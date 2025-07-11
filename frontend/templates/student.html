@@ -696,6 +696,8 @@ h3::after {
           showToast('success', 'OTP sent successfully');
           nextStep(4);
           document.getElementById('userEmail').textContent = studentData.personalInfo.email;
+          // MODIFICATION: Populate the total fee on the OTP screen
+          document.getElementById('otpTotalFee').textContent = feeText;
         } else {
           showToast('error', data.detail || 'Submission failed');
         }
@@ -923,7 +925,7 @@ function verifyStudentOTP() {
     </div>
     <div class="row" id="subjectSelection" ></div>
     <div class="mt-4 p-3 bg-light rounded" style="display: none;">
-      <h4 class="mb-0">
+      <h4 class="mb-0 text-center">
         Total Fee: 
         <span id="totalFee" class="fw-bold text-success">0</span> PKR
       </h4>
@@ -969,6 +971,12 @@ function verifyStudentOTP() {
     <div class="alert alert-info">
         <i class="fas fa-info-circle me-2"></i>
         We've sent a 6-digit verification code to <strong id="userEmail"></strong>. Please enter it below.
+    </div>
+    <div class="mt-4 p-3 bg-light rounded text-center mb-4">
+      <h4 class="mb-0">
+        Total Payable Fee: 
+        <span id="otpTotalFee" class="fw-bold text-success">0</span> PKR
+      </h4>
     </div>
     <div class="mb-4">
         <label class="form-label text-center d-block">Enter OTP</label>
