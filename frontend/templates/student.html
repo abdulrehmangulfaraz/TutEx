@@ -4,1075 +4,1141 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-:root {
-  --primary-color: #6a11cb;
-  --secondary-color: #2575fc;
-  --accent-color: #ff6b6b;
-  --dark-color: #2c3e50;
-  --light-color: #f8f9fa;
-  --success-color: #28a745;
-  --warning-color: #fd7e14;
-  --danger-color: #dc3545;
-  --border-radius: 12px;
-  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+  :root {
+    --primary-color: #6a11cb;
+    --secondary-color: #2575fc;
+    --accent-color: #ff6b6b;
+    --dark-color: #2c3e50;
+    --light-color: #f8f9fa;
+    --success-color: #28a745;
+    --warning-color: #fd7e14;
+    --danger-color: #dc3545;
+    --border-radius: 12px;
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-  min-height: 100vh;
-  color: var(--dark-color);
-}
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    min-height: 100vh;
+    color: var(--dark-color);
+  }
 
-.form-container {
-  max-width: 1000px;
-  margin: 30px auto;
-  background: #fff;
-  padding: 40px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  position: relative;
-  overflow: hidden;
-}
-
-.form-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-}
-
-h2, h3 {
-  font-weight: 600;
-  margin-bottom: 25px;
-  color: var(--dark-color);
-  position: relative;
-}
-
-h2 {
-  text-align: center;
-  font-size: 2.2rem;
-  margin-bottom: 30px;
-}
-
-h2::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  margin: 10px auto 0;
-  border-radius: 2px;
-}
-
-h3 {
-  font-size: 1.5rem;
-  padding-bottom: 10px;
-}
-
-h3::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  border-radius: 2px;
-}
-
-/* Carousel Styles */
-.carousel {
-  margin: 30px 0;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.carousel-inner img {
-  border-radius: var(--border-radius);
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: 300px;
-  object-fit: cover;
-  transition: var(--transition);
-}
-
-.carousel-inner:hover img {
-  transform: scale(1.02);
-}
-
-.carousel-inner-b img {
-  border-radius: var(--border-radius);
-  display: block;
-  margin: auto;
-  max-width: 100%;
-  height: 300px;
-  object-fit:scale-down;
-  transition: var(--transition);
-}
-
-.carousel-inner-b:hover img {
-  transform: scale(1.02);
-}
-
-.carousel-caption {
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 8px;
-  padding: 15px;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-}
-
-.carousel-caption h5 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-.carousel-control-prev, .carousel-control-next {
-  width: 8%;
-}
-
-.carousel-control-prev-icon, .carousel-control-next-icon {
-  background-color: rgba(106, 17, 203, 0.8);
-  border-radius: 50%;
-  padding: 15px;
-  width: 40px;
-  height: 40px;
-  background-size: 1.5rem;
-  transition: var(--transition);
-}
-
-.carousel-control-prev-icon:hover, .carousel-control-next-icon:hover {
-  background-color: var(--primary-color);
-  transform: scale(1.1);
-}
-
-/* Button Styles */
-.btn {
-  border-radius: 50px;
-  padding: 12px 25px;
-  font-weight: 500;
-  transition: var(--transition);
-  border: none;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
-}
-
-.btn-secondary {
-  background: #6c757d;
-  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-}
-
-.btn-secondary:hover {
-  transform: translateY(-3px);
-  background: #5a6268;
-  box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #28a745, #5cb85c);
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-}
-
-.btn-success:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
-}
-
-/* Subject Selection */
-#subjectSelection {
-  margin-top: 20px;
-}
-
-.form-check {
-  padding-left: 0;
-  margin-bottom: 15px;
-}
-
-.form-check-input {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  margin-top: 0.2em;
-  border: 2px solid #dee2e6;
-  transition: var(--transition);
-}
-
-.form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.form-check-label {
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  padding-left: 5px;
-}
-
-.form-check:hover .form-check-label {
-  color: var(--primary-color);
-}
-
-/* Fee Display */
-#totalFee {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--success-color);
-  display: inline-block;
-  margin-left: 10px;
-}
-
-/* Personal Info Form */
-.personal-info-form {
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: var(--border-radius);
-  margin-top: 20px;
-}
-
-.form-control {
-  border-radius: 8px;
-  padding: 12px 15px;
-  border: 2px solid #e9ecef;
-  transition: var(--transition);
-  height: calc(2.5em + 0.75rem + 2px);
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
-}
-
-.form-label {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-/* OTP Verification */
-.otp-container {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin: 2rem 0;
-}
-
-.otp-input {
-  width: 60px;
-  height: 60px;
-  text-align: center;
-  font-size: 1.8rem;
-  border-radius: 10px;
-  border: 2px solid #e9ecef;
-  transition: var(--transition);
-}
-
-.otp-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
-  transform: translateY(-2px);
-}
-
-/* Toast Notifications */
-.toast-container {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  z-index: 1050;
-}
-
-.toast {
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  border: none;
-  overflow: hidden;
-}
-
-.toast-body {
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-}
-
-/* Progress Steps */
-.progress-steps {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-.progress-steps::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: #e9ecef;
-  z-index: 1;
-  transform: translateY(-50%);
-}
-
-.progress-step {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #e9ecef;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  color: #6c757d;
-  position: relative;
-  z-index: 2;
-  transition: var(--transition);
-}
-
-.progress-step.active {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  transform: scale(1.1);
-  box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
-}
-
-.progress-step.completed {
-  background: var(--success-color);
-  color: white;
-}
-
-.progress-label {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap;
-  color: #6c757d;
-}
-
-.progress-step.active .progress-label,
-.progress-step.completed .progress-label {
-  color: var(--dark-color);
-  font-weight: 600;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
   .form-container {
-    padding: 25px;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    position: relative;
+    overflow: hidden;
   }
-  
-  h2 {
-    font-size: 1.8rem;
+
+  .form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
   }
-  
+
+  h2,
   h3 {
-    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--dark-color);
+    position: relative;
   }
-  
-  .carousel-inner img {
-    height: 200px;
-  }
-  
-  .otp-input {
-    width: 45px;
-    height: 45px;
-    font-size: 1.5rem;
-  }
-  
-  .btn {
-    padding: 10px 20px;
-    font-size: 0.8rem;
-  }
-}
 
-@media (max-width: 576px) {
-  .form-container {
-    padding: 20px;
-    margin: 15px auto;
+  h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
   }
-  
+
+  h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    margin: 10px auto 0;
+    border-radius: 2px;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    padding-bottom: 10px;
+  }
+
+  h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+  }
+
+  /* Carousel Styles */
+  .carousel {
+    margin: 30px 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .carousel-inner img {
+    border-radius: var(--border-radius);
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: var(--transition);
+  }
+
+  .carousel-inner:hover img {
+    transform: scale(1.02);
+  }
+
+  .carousel-inner-b img {
+    border-radius: var(--border-radius);
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: 300px;
+    object-fit: scale-down;
+    transition: var(--transition);
+  }
+
+  .carousel-inner-b:hover img {
+    transform: scale(1.02);
+  }
+
+  .carousel-caption {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 15px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+  }
+
   .carousel-caption h5 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 8%;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: rgba(106, 17, 203, 0.8);
+    border-radius: 50%;
+    padding: 15px;
+    width: 40px;
+    height: 40px;
+    background-size: 1.5rem;
+    transition: var(--transition);
+  }
+
+  .carousel-control-prev-icon:hover,
+  .carousel-control-next-icon:hover {
+    background-color: var(--primary-color);
+    transform: scale(1.1);
+  }
+
+  /* Button Styles */
+  .btn {
+    border-radius: 50px;
+    padding: 12px 25px;
+    font-weight: 500;
+    transition: var(--transition);
+    border: none;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     font-size: 0.9rem;
   }
-  
-  .otp-container {
-    gap: 8px;
-  }
-  
-  .otp-input {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-  }
-  
-  #totalFee {
-    font-size: 1.5rem;
-  }
-  
-  .progress-step {
-    width: 30px;
-    height: 30px;
-    font-size: 0.8rem;
-  }
-  
-  .progress-label {
-    font-size: 0.7rem;
-  }
-}
-/* Thank You Message Styles */
-#thankYouMessage, #registrationCompleteMessage {
-  animation: fadeIn 0.5s ease-out;
-}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-3px);
+    background: #5a6268;
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+  }
+
+  /* Subject Selection */
+  #subjectSelection {
+    margin-top: 20px;
+  }
+
+  .form-check {
+    padding-left: 0;
+    margin-bottom: 15px;
+  }
+
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    margin-top: 0.2em;
+    border: 2px solid #dee2e6;
+    transition: var(--transition);
+  }
+
+  .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  .form-check-label {
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    padding-left: 5px;
+  }
+
+  .form-check:hover .form-check-label {
+    color: var(--primary-color);
+  }
+
+  /* Fee Display */
+  #totalFee {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--success-color);
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  /* Personal Info Form */
+  .personal-info-form {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+  }
+
+  .form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    transition: var(--transition);
+    height: calc(2.5em + 0.75rem + 2px);
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  /* OTP Verification */
+  .otp-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .otp-input {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 1.8rem;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: var(--transition);
+  }
+
+  .otp-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Toast Notifications */
+  .toast-container {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1050;
+  }
+
+  .toast {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border: none;
+    overflow: hidden;
+  }
+
+  .toast-body {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Progress Steps */
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e9ecef;
+    z-index: 1;
+    transform: translateY(-50%);
+  }
+
+  .progress-step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #6c757d;
+    position: relative;
+    z-index: 2;
+    transition: var(--transition);
+  }
+
+  .progress-step.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+  }
+
+  .progress-step.completed {
+    background: var(--success-color);
+    color: white;
+  }
+
+  .progress-label {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #6c757d;
+  }
+
+  .progress-step.active .progress-label,
+  .progress-step.completed .progress-label {
+    color: var(--dark-color);
+    font-weight: 600;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 25px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+    }
+
+    .carousel-inner img {
+      height: 200px;
+    }
+
+    .otp-input {
+      width: 45px;
+      height: 45px;
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 20px;
+      margin: 15px auto;
+    }
+
+    .carousel-caption h5 {
+      font-size: 0.9rem;
+    }
+
+    .otp-container {
+      gap: 8px;
+    }
+
+    .otp-input {
+      width: 35px;
+      height: 35px;
+      font-size: 1.2rem;
+    }
+
+    #totalFee {
+      font-size: 1.5rem;
+    }
+
+    .progress-step {
+      width: 30px;
+      height: 30px;
+      font-size: 0.8rem;
+    }
+
+    .progress-label {
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Thank You Message Styles */
+  #thankYouMessage,
+  #registrationCompleteMessage {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>
 
 <section>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // Define premium subjects
-  const premiumSubjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Audit"];
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Define premium subjects
+    const premiumSubjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Audit"];
 
-  // Define area base fees
-  const areaBaseFees = {
-    "DHA": 5000,
-    "Gulshan-e-Iqbal": 4000,
-    "PECHS": 4000,
-    "Saddar": 4000,
-    "Gulistan-e-Johar": 3000,
-    "Gulberg": 4000,
-    "North Nazimabad": 3000,
-    "North Karachi": 3000
-  };
+    // Define area base fees
+    const areaBaseFees = {
+      "DHA": 5000,
+      "Gulshan-e-Iqbal": 4000,
+      "PECHS": 4000,
+      "Saddar": 4000,
+      "Gulistan-e-Johar": 3000,
+      "Gulberg": 4000,
+      "North Nazimabad": 3000,
+      "North Karachi": 3000
+    };
 
-  // Define board additional fees
-  const boardAdditionalFees = {
-    "Cambridge O'Levels": 4000,
-    "Cambridge A'Levels": 4000,
-    "ACCA": 4000,
-    "ICAP": 4000,
-    "Karachi Matric Board": 2000,
-    "Karachi Inter board": 2000,
-    "Federal Board": 2000,
-    "Aga Khan Board": 2000,
-    "ICMA": 3000,
-    "Sindh Technical Board": 2000
-  };
+    // Define board additional fees
+    const boardAdditionalFees = {
+      "Cambridge O'Levels": 4000,
+      "Cambridge A'Levels": 4000,
+      "ACCA": 4000,
+      "ICAP": 4000,
+      "Karachi Matric Board": 2000,
+      "Karachi Inter board": 2000,
+      "Federal Board": 2000,
+      "Aga Khan Board": 2000,
+      "ICMA": 3000,
+      "Sindh Technical Board": 2000
+    };
 
-  // Define subjects for each board
-  const boardSubjects = {
-    "Cambridge O'Levels": [
-      "Accounting - 7707", "Agriculture - 5038", "Art & Design - 6090", "Biology - 5090", "Business - 7081",
-      "Business Studies - 7115", "Chemistry - 5070", "Commerce - 7100", "Computer Science - 2210D",
-      "Design & Technology - 6043E", "Economics - 2281", "English Language - 1123",
-      "Environmental Management - 5014F", "Fashion & Textiles - 6130", "Food & Nutrition - 6065G",
-      "Geography - 2217", "Global Perspectives - 2069", "History - 2147I", "Islamic Studies – 2068",
-      "Islamiyat - 2058L", "Literature in English - 2010M", "Marine Science - 5180",
-      "Mathematics - Additional - 4037", "Mathematics (Syllabus D) - 4024P", "Pakistan Studies - 2059",
-      "Physics - 5054R", "Religious Studies - 2048S", "Science - Combined - 5129", "Sociology - 2251",
-      "Statistics - 4040T", "Travel & Tourism - 7096U", "Urdu - First Language - 3247",
-      "Urdu - Second Language - 3248"
-    ],
-    "Cambridge A'Levels": [
-      "Accounting - 9706", "Art & Design - 9479", "Biology - 9700", "Business - 9609", "Chemistry - 9701",
-      "Chinese - Language & Literature (A Level only) - 9868 New", "Chinese Language (AS Level only) - 8238 New",
-      "Classical Studies - 9274", "Computer Science - 9618", "Design & Technology - 9705",
-      "Digital Media & Design - 9481", "Drama - 9482", "Economics - 9708",
-      "English - Language and Literature (AS Level only) - 8695", "English - Literature - 9695",
-      "English General Paper (AS Level only) - 8021", "English Language - 9093",
-      "Environmental Management (AS only) - 8291", "European History - 9981 New", "Geography - 9696",
-      "Global Perspectives & Research - 9239", "Hinduism - 9487", "History - 9489I",
-      "Information Technology - 9626", "International History - 9982 New", "Islamic Studies - 9488", "Law - 9084",
-      "Marine Science - 9693", "Mathematics - 9709", "Mathematics - Further - 9231", "Media Studies - 9607",
-      "Music - 9483", "Physics - 9702", "Psychology - 9990", "Sociology - 9699",
-      "Sport & Physical Education (AS Level only) - 8386 New", "Thinking Skills - 9694", "Travel & Tourism - 9395",
-      "Urdu - Language (AS Level only) - 8686", "Urdu - Pakistan only (A Level only) - 9686",
-      "Urdu Language & Literature - 9866", "US History since 1877 - 8102 New", "US History to 1877 - 8101 New"
-    ],
-    "Karachi Matric Board": [
-      "English", "Urdu", "Mathematics", "Pakistan Studies", "Islamiyat", "Physics", "Chemistry", "Biology",
-      "Computer Science", "Civic", "Education"
-    ],
-    "Karachi Inter board": [
-      "English (Compulsory)", "Urdu (Compulsory)", "Geography of Pakistan for those who are foreign (Compulsory)",
-      "Islamiate Compulsory (Compulsory)", "Ethics for non-muslims (Compulsory)",
-      "Tarjuma tul Quran (New Subject) (Compulsory)", "Physics (Pre-Engineering)", "Chemistry (Pre-Engineering)",
-      "Mathematics (Pre-Engineering)", "Physics (Pre-Medical)", "Chemistry (Pre-Medical)", "Mathematics (Pre-Medical)",
-      "Physics (General)", "Mathematics (General)", "Statistics (General)", "Economics (General)",
-      "Computer Science (General)", "Principles of Accounting (Commerce)", "Principles of Economics (Commerce)",
-      "Principles of Commerce (Commerce)", "Business Mathematics (Commerce)"
-    ],
-    "Federal Board": [
-      "English", "Urdu OR Geography for Foreign Students", "Islamic Studies OR Ethics for Non-Muslims",
-      "Pakistan Studies OR Computer Science", "Physics", "Chemistry", "Biology", "Mathematics",
-      "General Mathematics", "Clothing & Textile", "Economics", "General Science",
-      "Essentials of Home Economics", "Education", "Islamiat Elective", "English Literature",
-      "Art & Model Drawing", "Civics", "Commercial Geography", "Food & Nutrition",
-      "Health and Physical Training", "Computer Science", "Islamic History", "Geography", "Arabic"
-    ],
-    "Aga Khan Board": [
-      "English", "Urdu", "Sindhi", "Mathematics", "Pakistan Culture", "Islamiyat", "Ethics",
-      "Pakistan Studies", "Physics", "Chemistry", "Biology", "Statistics", "Humanitarian", "Education",
-      "Civics", "Principles of Accounting", "Principles of Economics", "Principles of Commerce"
-    ],
-    "ICAP": [
-      "English Language", "Mathematics", "Analytical Reasoning", "Business Writing & Comprehension Skills",
-      "Quantitative Methods", "Principles of Economics", "Introduction to Accounting", "Introduction to Business",
-      "CAF-1 Financial Accounting and Reporting-I", "CAF-2 Tax Practices", "CAF-3 Cost and Management Accounting",
-      "CAF-4 Business Law", "CAF-5 Financial Accounting and Reporting-II", "CAF-6 Managerial and Financial Analysis",
-      "CAF-7 Company Law", "CAF-8 Audit and Assurance", "Presentation and Personal Effectiveness (PPE)", "MS Office",
-      "CFAP-1 Advanced Accounting and Financial Reporting", "CFAP-2 Advanced Corporate Laws and Practices",
-      "CFAP-3 Strategy and Performance Measurement", "CFAP-4 Business Finance Decisions", "CFAP-5 Tax Planning and Practices",
-      "CFAP-6 Audit, Assurance and Related Services", "Data Management and Analytics; or Fin-Tech",
-      "MSA-1 Financial Reporting and Assurance Professional Competence", "MSA-2 Management Professional Competence"
-    ],
-    "ACCA": [
-      "F1 Accountant in Business (AB)", "F2 Management Accounting (MA)", "F3 Financial Accounting (FA)",
-      "F4 Corporate and Business Law (LW)", "F5 Performance Management (PM)", "F6 Taxation (TX)",
-      "F7 Financial Reporting (FR)", "F8 Audit and Assurance (AA)", "F9 Financial Management (FM)",
-      "SBL Strategic Business Leader", "SBR Strategic Business Reporting", "P4 Advanced Financial Management (AFM)",
-      "P5 Advanced Performance Management (APM)", "P6 Advanced Taxation (ATX)", "P7 Advanced Audit and Assurance (AAA)"
-    ],
-    "ICMA": [
-      "Fundamentals of Financial Accounting", "Business Economics", "Business Communication & Report Writing",
-      "Fundamentals of Management", "Business Mathematics & Statistical Inference", "Commercial Laws",
-      "Fundamentals of Cost & Management Accounting", "Enterprise Management", "Management Information Systems",
-      "Financial Accounting & Corporate Reporting", "Advanced Management Accounting",
-      "Corporate Governance, Business Laws & Ethics", "Advanced Financial Accounting & Corporate Reporting",
-      "Audit & Assurance", "Business Taxation", "Strategic Management Accounting", "Strategic Financial Management",
-      "Strategic Management", "ERP Solutions and Practical Aspects of Accounting & Auditing Procedures",
-      "Financial Modeling and Management Reporting", "Practical Aspects of Banking and Finance",
-      "Practical Aspects of Taxation", "Practical Aspects of Business Laws", "Communication Skills"
-    ],
-    "Sindh Technical Board": [
-      "Technical Drawing", "Computer Applications", "Electrical Technology", "Mechanical Technology", "English"
-    ]
-  };
+    // Define subjects for each board
+    const boardSubjects = {
+      "Cambridge O'Levels": [
+        "Accounting - 7707", "Agriculture - 5038", "Art & Design - 6090", "Biology - 5090", "Business - 7081",
+        "Business Studies - 7115", "Chemistry - 5070", "Commerce - 7100", "Computer Science - 2210D",
+        "Design & Technology - 6043E", "Economics - 2281", "English Language - 1123",
+        "Environmental Management - 5014F", "Fashion & Textiles - 6130", "Food & Nutrition - 6065G",
+        "Geography - 2217", "Global Perspectives - 2069", "History - 2147I", "Islamic Studies – 2068",
+        "Islamiyat - 2058L", "Literature in English - 2010M", "Marine Science - 5180",
+        "Mathematics - Additional - 4037", "Mathematics (Syllabus D) - 4024P", "Pakistan Studies - 2059",
+        "Physics - 5054R", "Religious Studies - 2048S", "Science - Combined - 5129", "Sociology - 2251",
+        "Statistics - 4040T", "Travel & Tourism - 7096U", "Urdu - First Language - 3247",
+        "Urdu - Second Language - 3248"
+      ],
+      "Cambridge A'Levels": [
+        "Accounting - 9706", "Art & Design - 9479", "Biology - 9700", "Business - 9609", "Chemistry - 9701",
+        "Chinese - Language & Literature (A Level only) - 9868 New", "Chinese Language (AS Level only) - 8238 New",
+        "Classical Studies - 9274", "Computer Science - 9618", "Design & Technology - 9705",
+        "Digital Media & Design - 9481", "Drama - 9482", "Economics - 9708",
+        "English - Language and Literature (AS Level only) - 8695", "English - Literature - 9695",
+        "English General Paper (AS Level only) - 8021", "English Language - 9093",
+        "Environmental Management (AS only) - 8291", "European History - 9981 New", "Geography - 9696",
+        "Global Perspectives & Research - 9239", "Hinduism - 9487", "History - 9489I",
+        "Information Technology - 9626", "International History - 9982 New", "Islamic Studies - 9488", "Law - 9084",
+        "Marine Science - 9693", "Mathematics - 9709", "Mathematics - Further - 9231", "Media Studies - 9607",
+        "Music - 9483", "Physics - 9702", "Psychology - 9990", "Sociology - 9699",
+        "Sport & Physical Education (AS Level only) - 8386 New", "Thinking Skills - 9694", "Travel & Tourism - 9395",
+        "Urdu - Language (AS Level only) - 8686", "Urdu - Pakistan only (A Level only) - 9686",
+        "Urdu Language & Literature - 9866", "US History since 1877 - 8102 New", "US History to 1877 - 8101 New"
+      ],
+      "Karachi Matric Board": [
+        "English", "Urdu", "Mathematics", "Pakistan Studies", "Islamiyat", "Physics", "Chemistry", "Biology",
+        "Computer Science", "Civic", "Education"
+      ],
+      "Karachi Inter board": [
+        "English (Compulsory)", "Urdu (Compulsory)", "Geography of Pakistan for those who are foreign (Compulsory)",
+        "Islamiate Compulsory (Compulsory)", "Ethics for non-muslims (Compulsory)",
+        "Tarjuma tul Quran (New Subject) (Compulsory)", "Physics (Pre-Engineering)", "Chemistry (Pre-Engineering)",
+        "Mathematics (Pre-Engineering)", "Physics (Pre-Medical)", "Chemistry (Pre-Medical)", "Mathematics (Pre-Medical)",
+        "Physics (General)", "Mathematics (General)", "Statistics (General)", "Economics (General)",
+        "Computer Science (General)", "Principles of Accounting (Commerce)", "Principles of Economics (Commerce)",
+        "Principles of Commerce (Commerce)", "Business Mathematics (Commerce)"
+      ],
+      "Federal Board": [
+        "English", "Urdu OR Geography for Foreign Students", "Islamic Studies OR Ethics for Non-Muslims",
+        "Pakistan Studies OR Computer Science", "Physics", "Chemistry", "Biology", "Mathematics",
+        "General Mathematics", "Clothing & Textile", "Economics", "General Science",
+        "Essentials of Home Economics", "Education", "Islamiat Elective", "English Literature",
+        "Art & Model Drawing", "Civics", "Commercial Geography", "Food & Nutrition",
+        "Health and Physical Training", "Computer Science", "Islamic History", "Geography", "Arabic"
+      ],
+      "Aga Khan Board": [
+        "English", "Urdu", "Sindhi", "Mathematics", "Pakistan Culture", "Islamiyat", "Ethics",
+        "Pakistan Studies", "Physics", "Chemistry", "Biology", "Statistics", "Humanitarian", "Education",
+        "Civics", "Principles of Accounting", "Principles of Economics", "Principles of Commerce"
+      ],
+      "ICAP": [
+        "English Language", "Mathematics", "Analytical Reasoning", "Business Writing & Comprehension Skills",
+        "Quantitative Methods", "Principles of Economics", "Introduction to Accounting", "Introduction to Business",
+        "CAF-1 Financial Accounting and Reporting-I", "CAF-2 Tax Practices", "CAF-3 Cost and Management Accounting",
+        "CAF-4 Business Law", "CAF-5 Financial Accounting and Reporting-II", "CAF-6 Managerial and Financial Analysis",
+        "CAF-7 Company Law", "CAF-8 Audit and Assurance", "Presentation and Personal Effectiveness (PPE)", "MS Office",
+        "CFAP-1 Advanced Accounting and Financial Reporting", "CFAP-2 Advanced Corporate Laws and Practices",
+        "CFAP-3 Strategy and Performance Measurement", "CFAP-4 Business Finance Decisions", "CFAP-5 Tax Planning and Practices",
+        "CFAP-6 Audit, Assurance and Related Services", "Data Management and Analytics; or Fin-Tech",
+        "MSA-1 Financial Reporting and Assurance Professional Competence", "MSA-2 Management Professional Competence"
+      ],
+      "ACCA": [
+        "F1 Accountant in Business (AB)", "F2 Management Accounting (MA)", "F3 Financial Accounting (FA)",
+        "F4 Corporate and Business Law (LW)", "F5 Performance Management (PM)", "F6 Taxation (TX)",
+        "F7 Financial Reporting (FR)", "F8 Audit and Assurance (AA)", "F9 Financial Management (FM)",
+        "SBL Strategic Business Leader", "SBR Strategic Business Reporting", "P4 Advanced Financial Management (AFM)",
+        "P5 Advanced Performance Management (APM)", "P6 Advanced Taxation (ATX)", "P7 Advanced Audit and Assurance (AAA)"
+      ],
+      "ICMA": [
+        "Fundamentals of Financial Accounting", "Business Economics", "Business Communication & Report Writing",
+        "Fundamentals of Management", "Business Mathematics & Statistical Inference", "Commercial Laws",
+        "Fundamentals of Cost & Management Accounting", "Enterprise Management", "Management Information Systems",
+        "Financial Accounting & Corporate Reporting", "Advanced Management Accounting",
+        "Corporate Governance, Business Laws & Ethics", "Advanced Financial Accounting & Corporate Reporting",
+        "Audit & Assurance", "Business Taxation", "Strategic Management Accounting", "Strategic Financial Management",
+        "Strategic Management", "ERP Solutions and Practical Aspects of Accounting & Auditing Procedures",
+        "Financial Modeling and Management Reporting", "Practical Aspects of Banking and Finance",
+        "Practical Aspects of Taxation", "Practical Aspects of Business Laws", "Communication Skills"
+      ],
+      "Sindh Technical Board": [
+        "Technical Drawing", "Computer Applications", "Electrical Technology", "Mechanical Technology", "English"
+      ],
+      "Class 1-8": [
+        "English - Class 1", "English - Class 2", "English - Class 3", "English - Class 4", "English - Class 5", "English - Class 6", "English - Class 7", "English - Class 8",
+        "Urdu - Class 1", "Urdu - Class 2", "Urdu - Class 3", "Urdu - Class 4", "Urdu - Class 5", "Urdu - Class 6", "Urdu - Class 7", "Urdu - Class 8",
+        "Mathematics - Class 1", "Mathematics - Class 2", "Mathematics - Class 3", "Mathematics - Class 4", "Mathematics - Class 5", "Mathematics - Class 6", "Mathematics - Class 7", "Mathematics - Class 8",
+        "General Science - Class 3", "General Science - Class 4", "General Science - Class 5", "General Science - Class 6", "General Science - Class 7", "General Science - Class 8",
+        "Social Studies - Class 3", "Social Studies - Class 4", "Social Studies - Class 5", "Social Studies - Class 6", "Social Studies - Class 7", "Social Studies - Class 8",
+        "Computer Studies - Class 4", "Computer Studies - Class 5", "Computer Studies - Class 6", "Computer Studies - Class 7", "Computer Studies - Class 8",
+        "Islamiyat - Class 1", "Islamiyat - Class 2", "Islamiyat - Class 3", "Islamiyat - Class 4", "Islamiyat - Class 5", "Islamiyat - Class 6", "Islamiyat - Class 7", "Islamiyat - Class 8",
+        "Nazra Quran - Class 1", "Nazra Quran - Class 2", "Nazra Quran - Class 3", "Nazra Quran - Class 4", "Nazra Quran - Class 5",
+        "Sindhi - Class 4", "Sindhi - Class 5", "Sindhi - Class 6", "Sindhi - Class 7", "Sindhi - Class 8",
+        "Drawing - Class 1", "Drawing - Class 2", "Drawing - Class 3", "Drawing - Class 4", "Drawing - Class 5", "Drawing - Class 6", "Drawing - Class 7", "Drawing - Class 8",
+        "Physical Education - Class 1", "Physical Education - Class 2", "Physical Education - Class 3", "Physical Education - Class 4", "Physical Education - Class 5", "Physical Education - Class 6", "Physical Education - Class 7", "Physical Education - Class 8",
+        "Ethics - Class 1", "Ethics - Class 2", "Ethics - Class 3", "Ethics - Class 4", "Ethics - Class 5", "Ethics - Class 6", "Ethics - Class 7", "Ethics - Class 8"
+      ]
+      ,
+      "Other": [
+        "IELTS Preparation", "TOEFL Preparation", "SAT Preparation", "GRE Preparation",
+        "GMAT Preparation", "Coding Bootcamp (HTML, CSS, JS)", "Cyber Security Basics",
+        "AI & Machine Learning Basics", "Robotics for Beginners", "Spoken English",
+        "Creative Writing", "Calligraphy", "Entrepreneurship Basics", "Photography",
+        "Video Editing", "Digital Marketing", "3D Modeling (Blender)", "Financial Literacy for Teens"
+      ]
 
-  function updateSubjects(board) {
-    const subjectContainer = document.getElementById('subjectSelection');
-    subjectContainer.innerHTML = '';
-    const subjects = boardSubjects[board] || [];
-    subjects.forEach(subject => {
-      const div = document.createElement('div');
-      div.className = 'col-md-4 col-sm-6 mb-3';
-      div.innerHTML = `
+    };
+
+    function updateSubjects(board) {
+      const subjectContainer = document.getElementById('subjectSelection');
+      subjectContainer.innerHTML = '';
+      const subjects = boardSubjects[board] || [];
+      subjects.forEach(subject => {
+        const div = document.createElement('div');
+        div.className = 'col-md-4 col-sm-6 mb-3';
+        div.innerHTML = `
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="subjects" value="${subject}" id="sub${subject.replace(/\s|[-()]/g, '')}" onchange="calculateFee(); checkSubmitButton()">
           <label class="form-check-label" for="sub${subject.replace(/\s|[-()]/g, '')}">${subject}</label>
         </div>
       `;
-      subjectContainer.appendChild(div);
-    });
-    calculateFee();
-    checkSubmitButton();
-  }
-
-  function calculateFee() {
-    const selectedArea = document.getElementById('area').value;
-    const selectedBoard = document.getElementById('board').value;
-    let areaFee = areaBaseFees[selectedArea] || 2000;
-    let boardFee = boardAdditionalFees[selectedBoard] || 2000;
-    const perSubjectCap = areaFee + boardFee;
-    let totalFee = areaFee + boardFee;
-    const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
-    selectedSubjects.forEach(subject => {
-      const subjectName = subject.value.split(' - ')[0];
-      let subjectFee = premiumSubjects.includes(subjectName) ? 6000 : 5000;
-      totalFee += Math.min(subjectFee, perSubjectCap);
-    });
-    document.getElementById('totalFee').textContent = totalFee;
-  }
-
-  function checkSubmitButton() {
-    const nextButton = document.getElementById('subjectsNextBtn');
-    if (nextButton) {
-      nextButton.disabled = document.querySelectorAll('input[name="subjects"]:checked').length === 0;
-    }
-  }
-
-  function nextStep(currentStep) {
-    document.getElementById(`step${currentStep}`).style.display = 'none';
-    const nextStepElement = document.getElementById(`step${currentStep + 1}`);
-    if(nextStepElement) nextStepElement.style.display = 'block';
-    updateProgress(currentStep + 1);
-    if (currentStep + 1 === 3) {
-      const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
-      updateSubjects(activeBoard);
+        subjectContainer.appendChild(div);
+      });
+      calculateFee();
       checkSubmitButton();
     }
-  }
 
-  function prevStep(step) {
-    document.getElementById(`step${step}`).style.display = 'none';
-    const prevStepElement = document.getElementById(`step${step - 1}`);
-    if(prevStepElement) prevStepElement.style.display = 'block';
-    updateProgress(step - 1);
-  }
-
-  function updateProgress(currentStep) {
-    const steps = document.querySelectorAll('.progress-step');
-    steps.forEach((step, index) => {
-      const stepNumber = index + 1;
-      if (stepNumber < currentStep) {
-        step.classList.add('completed');
-        step.classList.remove('active');
-      } else if (stepNumber === currentStep) {
-        step.classList.add('active');
-        step.classList.remove('completed');
-      } else {
-        step.classList.remove('active', 'completed');
-      }
-    });
-  }
-
-  let studentData = { area: '', board: '', subjects: [], personalInfo: {} };
-
-  function proceedToPersonalInfo() {
-    studentData.area = document.getElementById('area').value;
-    studentData.board = document.getElementById('board').value;
-    studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
-    nextStep(3);
-  }
-
-  function proceedToOTPVerification() {
-    studentData.personalInfo = {
-      name: document.getElementById('studentName').value,
-      phone: document.getElementById('studentPhone').value,
-      email: document.getElementById('studentEmail').value,
-      address: document.getElementById('studentAddress').value
-    };
-
-    if (!studentData.personalInfo.name || !studentData.personalInfo.phone || !studentData.personalInfo.email) {
-      showToast('error', 'Please fill all personal information fields');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('area', studentData.area);
-    formData.append('board', studentData.board);
-    studentData.subjects.forEach(subject => formData.append('subjects', subject));
-    formData.append('full_name', studentData.personalInfo.name);
-    formData.append('phone_number', studentData.personalInfo.phone);
-    formData.append('email', studentData.personalInfo.email);
-    formData.append('address', studentData.personalInfo.address);
-    const feeText = document.getElementById('totalFee').textContent;
-    const totalFee = parseFloat(feeText.replace(/[^\d.-]/g, '')) || 0;
-    formData.append('total_fee', totalFee);
-
-    fetch('/student/submit', { method: 'POST', body: formData })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          showToast('success', 'OTP sent successfully');
-          nextStep(4);
-          document.getElementById('userEmail').textContent = studentData.personalInfo.email;
-          // MODIFICATION: Populate the total fee on the OTP screen
-          document.getElementById('otpTotalFee').textContent = feeText;
-        } else {
-          showToast('error', data.detail || 'Submission failed');
-        }
-      })
-      .catch(error => {
-        showToast('error', 'Error during submission');
-        console.error('Error:', error);
+    function calculateFee() {
+      const selectedArea = document.getElementById('area').value;
+      const selectedBoard = document.getElementById('board').value;
+      let areaFee = areaBaseFees[selectedArea] || 2000;
+      let boardFee = boardAdditionalFees[selectedBoard] || 2000;
+      const perSubjectCap = areaFee + boardFee;
+      let totalFee = areaFee + boardFee;
+      const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
+      selectedSubjects.forEach(subject => {
+        const subjectName = subject.value.split(' - ')[0];
+        let subjectFee = premiumSubjects.includes(subjectName) ? 6000 : 5000;
+        totalFee += Math.min(subjectFee, perSubjectCap);
       });
-  }
-
-  function resendStudentOTP(event) {
-    event.preventDefault();
-    const email = studentData.personalInfo.email;
-    fetch('/student/resend-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${encodeURIComponent(email)}`
-    })
-    .then(response => response.json())
-    .then(data => showToast(data.status === 'success' ? 'success' : 'error', data.message || 'Failed to resend OTP'))
-    .catch(error => {
-      showToast('error', 'Error resending OTP');
-      console.error('Error:', error);
-    });
-  }
-
-  // In frontend/templates/student.html, inside the <script> tag
-
-function verifyStudentOTP() {
-    const otp = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
-    if (otp.length !== 6) {
-      showToast('error', 'Please enter the complete OTP');
-      return;
+      document.getElementById('totalFee').textContent = totalFee;
     }
 
-    const email = studentData.personalInfo.email;
-    
-    // Create the form data to send to the backend
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('otp', otp);
-
-    fetch('/student/verify-otp', {
-      method: 'POST',
-      body: formData // Use FormData instead of URL encoding
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'verified') {
-        showToast('success', 'Verification successful! Redirecting...');
-        
-        // Hide the OTP form and show the final completion message
-        document.getElementById('step5').style.display = 'none';
-        document.getElementById('registrationCompleteMessage').style.display = 'block';
-
-        // Update the progress bar to show completion
-        document.querySelectorAll('.progress-step').forEach(step => {
-            step.classList.add('completed');
-            step.classList.remove('active');
-        });
-
-        // **The Important Fix:** Wait a couple of seconds before redirecting
-        // This gives the user time to see the success message.
-        setTimeout(() => {
-          window.location.href = '/student/summary';
-        }, 2000); // 2-second delay
-
-      } else {
-        showToast('error', data.detail || 'Verification failed');
+    function checkSubmitButton() {
+      const nextButton = document.getElementById('subjectsNextBtn');
+      if (nextButton) {
+        nextButton.disabled = document.querySelectorAll('input[name="subjects"]:checked').length === 0;
       }
-    })
-    .catch(error => {
-      showToast('error', 'An error occurred during verification.');
-      console.error('Error:', error);
-    });
-}
-
-  function moveToNext(currentInput, nextInputId) {
-    if (currentInput.value.length === currentInput.maxLength) {
-      const next = document.getElementById(nextInputId);
-      if(next) next.focus();
     }
-  }
 
-  function moveToPrev(currentInput, prevInputId, event) {
-    if (event.key === 'Backspace' && currentInput.value.length === 0) {
-      const prev = document.getElementById(prevInputId);
-      if(prev) prev.focus();
+    function nextStep(currentStep) {
+      document.getElementById(`step${currentStep}`).style.display = 'none';
+      const nextStepElement = document.getElementById(`step${currentStep + 1}`);
+      if (nextStepElement) nextStepElement.style.display = 'block';
+      updateProgress(currentStep + 1);
+      if (currentStep + 1 === 3) {
+        const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
+        updateSubjects(activeBoard);
+        checkSubmitButton();
+      }
     }
-  }
 
-  function showToast(type, message) {
-    const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
-    const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : 'errorToastMessage');
-    messageElement.textContent = message;
-    const toast = new bootstrap.Toast(toastElement);
-    toast.show();
-  }
-  
-  function newCalculation() {
+    function prevStep(step) {
+      document.getElementById(`step${step}`).style.display = 'none';
+      const prevStepElement = document.getElementById(`step${step - 1}`);
+      if (prevStepElement) prevStepElement.style.display = 'block';
+      updateProgress(step - 1);
+    }
+
+    function updateProgress(currentStep) {
+      const steps = document.querySelectorAll('.progress-step');
+      steps.forEach((step, index) => {
+        const stepNumber = index + 1;
+        if (stepNumber < currentStep) {
+          step.classList.add('completed');
+          step.classList.remove('active');
+        } else if (stepNumber === currentStep) {
+          step.classList.add('active');
+          step.classList.remove('completed');
+        } else {
+          step.classList.remove('active', 'completed');
+        }
+      });
+    }
+
+    let studentData = { area: '', board: '', subjects: [], personalInfo: {} };
+
+    function proceedToPersonalInfo() {
+      studentData.area = document.getElementById('area').value;
+      studentData.board = document.getElementById('board').value;
+      studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
+      nextStep(3);
+    }
+
+    function proceedToOTPVerification() {
+      studentData.personalInfo = {
+        name: document.getElementById('studentName').value,
+        phone: document.getElementById('studentPhone').value,
+        email: document.getElementById('studentEmail').value,
+        address: document.getElementById('studentAddress').value
+      };
+
+      if (!studentData.personalInfo.name || !studentData.personalInfo.phone || !studentData.personalInfo.email) {
+        showToast('error', 'Please fill all personal information fields');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('area', studentData.area);
+      formData.append('board', studentData.board);
+      studentData.subjects.forEach(subject => formData.append('subjects', subject));
+      formData.append('full_name', studentData.personalInfo.name);
+      formData.append('phone_number', studentData.personalInfo.phone);
+      formData.append('email', studentData.personalInfo.email);
+      formData.append('address', studentData.personalInfo.address);
+      const feeText = document.getElementById('totalFee').textContent;
+      const totalFee = parseFloat(feeText.replace(/[^\d.-]/g, '')) || 0;
+      formData.append('total_fee', totalFee);
+
+      fetch('/student/submit', { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showToast('success', 'OTP sent successfully');
+            nextStep(4);
+            document.getElementById('userEmail').textContent = studentData.personalInfo.email;
+            // MODIFICATION: Populate the total fee on the OTP screen
+            document.getElementById('otpTotalFee').textContent = feeText;
+          } else {
+            showToast('error', data.detail || 'Submission failed');
+          }
+        })
+        .catch(error => {
+          showToast('error', 'Error during submission');
+          console.error('Error:', error);
+        });
+    }
+
+    function resendStudentOTP(event) {
+      event.preventDefault();
+      const email = studentData.personalInfo.email;
+      fetch('/student/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `email=${encodeURIComponent(email)}`
+      })
+        .then(response => response.json())
+        .then(data => showToast(data.status === 'success' ? 'success' : 'error', data.message || 'Failed to resend OTP'))
+        .catch(error => {
+          showToast('error', 'Error resending OTP');
+          console.error('Error:', error);
+        });
+    }
+
+    // In frontend/templates/student.html, inside the <script> tag
+
+    function verifyStudentOTP() {
+      const otp = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
+      if (otp.length !== 6) {
+        showToast('error', 'Please enter the complete OTP');
+        return;
+      }
+
+      const email = studentData.personalInfo.email;
+
+      // Create the form data to send to the backend
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('otp', otp);
+
+      fetch('/student/verify-otp', {
+        method: 'POST',
+        body: formData // Use FormData instead of URL encoding
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'verified') {
+            showToast('success', 'Verification successful! Redirecting...');
+
+            // Hide the OTP form and show the final completion message
+            document.getElementById('step5').style.display = 'none';
+            document.getElementById('registrationCompleteMessage').style.display = 'block';
+
+            // Update the progress bar to show completion
+            document.querySelectorAll('.progress-step').forEach(step => {
+              step.classList.add('completed');
+              step.classList.remove('active');
+            });
+
+            // **The Important Fix:** Wait a couple of seconds before redirecting
+            // This gives the user time to see the success message.
+            setTimeout(() => {
+              window.location.href = '/student/summary';
+            }, 2000); // 2-second delay
+
+          } else {
+            showToast('error', data.detail || 'Verification failed');
+          }
+        })
+        .catch(error => {
+          showToast('error', 'An error occurred during verification.');
+          console.error('Error:', error);
+        });
+    }
+
+    function moveToNext(currentInput, nextInputId) {
+      if (currentInput.value.length === currentInput.maxLength) {
+        const next = document.getElementById(nextInputId);
+        if (next) next.focus();
+      }
+    }
+
+    function moveToPrev(currentInput, prevInputId, event) {
+      if (event.key === 'Backspace' && currentInput.value.length === 0) {
+        const prev = document.getElementById(prevInputId);
+        if (prev) prev.focus();
+      }
+    }
+
+    function showToast(type, message) {
+      const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+      const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : 'errorToastMessage');
+      messageElement.textContent = message;
+      const toast = new bootstrap.Toast(toastElement);
+      toast.show();
+    }
+
+    function newCalculation() {
       fetch('/student/new-calculation', { method: 'POST' })
-          .then(() => window.location.reload());
-  }
+        .then(() => window.location.reload());
+    }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const initialBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
-    document.getElementById('board').value = initialBoard;
-    const initialArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
-    document.getElementById('area').value = initialArea;
+    document.addEventListener('DOMContentLoaded', function () {
+      const initialBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
+      document.getElementById('board').value = initialBoard;
+      const initialArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
+      document.getElementById('area').value = initialArea;
 
-    document.getElementById('areaCarousel').addEventListener('slid.bs.carousel', function () {
-      const activeArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
-      document.getElementById('area').value = activeArea;
-      calculateFee();
+      document.getElementById('areaCarousel').addEventListener('slid.bs.carousel', function () {
+        const activeArea = document.querySelector('#areaCarousel .carousel-item.active').dataset.area;
+        document.getElementById('area').value = activeArea;
+        calculateFee();
+      });
+
+      document.getElementById('boardCarousel').addEventListener('slid.bs.carousel', function () {
+        const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
+        document.getElementById('board').value = activeBoard;
+        updateSubjects(activeBoard);
+      });
+
+      updateSubjects(initialBoard);
+      updateProgress(1);
     });
+  </script>
 
-    document.getElementById('boardCarousel').addEventListener('slid.bs.carousel', function () {
-      const activeBoard = document.querySelector('#boardCarousel .carousel-item.active').dataset.board;
-      document.getElementById('board').value = activeBoard;
-      updateSubjects(activeBoard);
-    });
+  <div class="form-container">
+    <h2>Student Portal</h2>
 
-    updateSubjects(initialBoard);
-    updateProgress(1);
-  });
-</script>
-
-<div class="form-container">
-  <h2>Student Portal</h2>
-  
-  <div class="progress-steps">
-    <div class="progress-step"><span>1</span><span class="progress-label">Area</span></div>
-    <div class="progress-step"><span>2</span><span class="progress-label">Board</span></div>
-    <div class="progress-step"><span>3</span><span class="progress-label">Subjects</span></div>
-    <div class="progress-step"><span>4</span><span class="progress-label">Details</span></div>
-    <div class="progress-step"><span>5</span><span class="progress-label">Verify</span></div>
-    <div class="progress-step"><span><i class="fas fa-check"></i></span><span class="progress-label">Complete</span></div>
-  </div>
-
-<form method="post" id="studentForm" action="/student/submit">
-  <div id="step1">
-    <h3>Select Your Area</h3>
-    <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        {% set area_images = {
-          "DHA": "images/dha.png",
-          "Gulshan-e-Iqbal": "images/gulshan.png",
-          "PECHS": "images/pechs.png",
-          "Gulistan-e-Johar": "images/johar.png",
-          "Gulberg": "images/gulberg.png",
-          "North Nazimabad": "images/north_nazimabad.jpg",
-          "North Karachi": "images/north_karachi.jpg",
-          "Saddar": "images/sadar.jpg"
-        } %}
-        {% for area, img in area_images.items() %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
-          <img src="/static/{{ img }}" alt="{{ area }}" class="d-block w-100">
-          <div class="carousel-caption">
-            <h5>{{ area }}</h5>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-    <input type="hidden" id="area" name="area">
-    <div class="text-center mt-4">
-      <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next <i class="fas fa-arrow-right ms-2"></i></button>
-    </div>
-  </div>
-
-  <div id="step2" style="display: none;">
-    <h3>Select Your Board</h3>
-    <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner-b">
-        {% set board_images = {
-          "Cambridge O'Levels": "images/ciae.png",
-          "Cambridge A'Levels": "images/ciae.png",
-          "Karachi Matric Board": "images/bsek.jpg",
-          "Karachi Inter board": "images/biek.png",
-          "Federal Board": "images/fbis.png",
-          "Aga Khan Board": "images/akub.png",
-          "ICAP": "images/icap.jpg",
-          "ACCA": "images/acca.png",
-          "ICMA": "images/icma.jpg",
-          "Sindh Technical Board": "images/stb.png"
-        } %}
-        {% for board, img in board_images.items() %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
-          <img src="/static/{{ img }}" alt="{{ board }}" class="d-block w-100">
-          <div class="carousel-caption">
-            <h5>{{ board }}</h5>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-    <input type="hidden" id="board" name="board">
-    <div class="text-center mt-4">
-      <button type="button" class="btn btn-secondary me-2" onclick="prevStep(2)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-      <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i class="fas fa-arrow-right ms-2"></i></button>
-    </div>
-  </div>
-
-  <div id="step3" style="display: none;">
-    <h3>Select Your Subjects</h3>
-    <div class="alert alert-info">
-      <i class="fas fa-info-circle me-2"></i>
-      Please select at least one subject to continue
-    </div>
-    <div class="row" id="subjectSelection" ></div>
-    <div class="mt-4 p-3 bg-light rounded" style="display: none;">
-      <h4 class="mb-0 text-center">
-        Total Fee: 
-        <span id="totalFee" class="fw-bold text-success">0</span> PKR
-      </h4>
-    </div>
-    <div class="text-center mt-4">
-      <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-      <button type="button" id="subjectsNextBtn" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i class="fas fa-arrow-right ms-2"></i></button>
-    </div>
-  </div>
-
-  <div id="step4" style="display: none;">
-    <h3>Your Information</h3>
-    <div class="alert alert-info">
-      <i class="fas fa-info-circle me-2"></i>
-      Please provide your personal details for registration
-    </div>
-    <div class="personal-info-form">
-      <div class="mb-4">
-        <label for="studentName" class="form-label">Full Name*</label>
-        <input type="text" class="form-control" id="studentName" name="full_name" placeholder="Enter your full name" required>
-      </div>
-      <div class="mb-4">
-        <label for="studentPhone" class="form-label">Phone Number*</label>
-        <input type="tel" class="form-control" id="studentPhone" name="phone_number" placeholder="Enter your phone number" required>
-      </div>
-      <div class="mb-4">
-        <label for="studentEmail" class="form-label">Email Address*</label>
-        <input type="email" class="form-control" id="studentEmail" name="email" placeholder="Enter your email address" required>
-      </div>
-      <div class="mb-4">
-        <label for="studentAddress" class="form-label">Address*</label>
-        <input type="text" class="form-control" id="studentAddress" name="address" placeholder="Enter your full address" required>
-      </div>
-      <div class="text-center mt-4">
-        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(4)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="button" class="btn btn-primary" onclick="proceedToOTPVerification()">Send OTP <i class="fas fa-paper-plane ms-2"></i></button>
+    <div class="progress-steps">
+      <div class="progress-step"><span>1</span><span class="progress-label">Area</span></div>
+      <div class="progress-step"><span>2</span><span class="progress-label">Board</span></div>
+      <div class="progress-step"><span>3</span><span class="progress-label">Subjects</span></div>
+      <div class="progress-step"><span>4</span><span class="progress-label">Details</span></div>
+      <div class="progress-step"><span>5</span><span class="progress-label">Verify</span></div>
+      <div class="progress-step"><span><i class="fas fa-check"></i></span><span class="progress-label">Complete</span>
       </div>
     </div>
-  </div>
 
-<div id="step5" style="display: none;">
-    <h3>Verify Your Email</h3>
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        We've sent a 6-digit verification code to <strong id="userEmail"></strong>. Please enter it below.
-    </div>
-    <div class="mt-4 p-3 bg-light rounded text-center mb-4">
-      <h4 class="mb-0">
-        Total Payable Fee: 
-        <span id="otpTotalFee" class="fw-bold text-success">0</span> PKR
-      </h4>
-    </div>
-    <div class="mb-4">
-        <label class="form-label text-center d-block">Enter OTP</label>
-        <div class="otp-container">
-            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp2')">
-            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
-            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
-            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
-            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]" oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
-            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]" onkeydown="moveToPrev(this, 'studentOtp5', event)">
-        </div>
-        <div class="text-center mt-2">
-            <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none"><i class="fas fa-redo me-1"></i> Resend OTP</a>
-        </div>
-    </div>
-    <div class="text-center">
-        <button type="button" class="btn btn-secondary me-2" onclick="prevStep(5)"><i class="fas fa-arrow-left me-2"></i> Previous</button>
-        <button type="button" class="btn btn-success" onclick="verifyStudentOTP()">Verify & Submit <i class="fas fa-check-circle me-2"></i></button>
-    </div>
-</div>
-
-<div id="registrationCompleteMessage" style="display: none;">
-    <div class="text-center py-5">
-      <div class="mb-4">
-        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-      </div>
-      <h2 class="mb-3">Thank You For Registering!</h2>
-      <p class="lead mb-4">Your account has been successfully verified. You will be redirected to your summary page shortly.</p>
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-</div>
-
-  <div id="thankYouMessage" style="display: none;">
-    <div class="text-center py-5">
-      <div class="mb-4">
-        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-      </div>
-      <h2 class="mb-3">Fee Calculation Complete!</h2>
-      <p class="lead mb-4">Thank you for using our fee calculator. Here's a summary of your information:</p>
-      <div class="card mx-auto mb-4" style="max-width: 600px;">
-        <div class="card-body">
-          <h5 class="card-title">Fee Summary</h5>
-          <div class="row">
-            <div class="col-md-6">
-              <p><strong>Area:</strong> <span id="summaryArea"></span></p>
-              <p><strong>Board:</strong> <span id="summaryBoard"></span></p>
+    <form method="post" id="studentForm" action="/student/submit">
+      <div id="step1">
+        <h3>Select Your Area</h3>
+        <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% set area_images = {
+            "DHA": "images/dha.png",
+            "Gulshan-e-Iqbal": "images/gulshan.png",
+            "PECHS": "images/pechs.png",
+            "Gulistan-e-Johar": "images/johar.png",
+            "Gulberg": "images/gulberg.png",
+            "North Nazimabad": "images/north_nazimabad.jpg",
+            "North Karachi": "images/north_karachi.jpg",
+            "Saddar": "images/sadar.jpg"
+            } %}
+            {% for area, img in area_images.items() %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
+              <img src="/static/{{ img }}" alt="{{ area }}" class="d-block w-100">
+              <div class="carousel-caption">
+                <h5>{{ area }}</h5>
+              </div>
             </div>
-            <div class="col-md-6">
-              <p><strong>Selected Subjects:</strong> <span id="summarySubjects"></span></p>
-              <p><strong>Total Fee:</strong> <span id="summaryFee" class="text-success fw-bold"></span> PKR</p>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#areaCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#areaCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <input type="hidden" id="area" name="area">
+        <div class="text-center mt-4">
+          <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next <i
+              class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <div id="step2" style="display: none;">
+        <h3>Select Your Board</h3>
+        <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner-b">
+            {% set board_images = {
+            "Cambridge O'Levels": "images/ciae.png",
+            "Cambridge A'Levels": "images/ciae.png",
+            "Karachi Matric Board": "images/bsek.jpg",
+            "Karachi Inter board": "images/biek.png",
+            "Federal Board": "images/fbis.png",
+            "Aga Khan Board": "images/akub.png",
+            "ICAP": "images/icap.jpg",
+            "ACCA": "images/acca.png",
+            "ICMA": "images/icma.jpg",
+            "Sindh Technical Board": "images/stb.png",
+            "Class 1-8": "images/class1-8.jpg",
+            "Others": "images/others.jpg"
+            } %}
+            {% for board, img in board_images.items() %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}" data-board="{{ board }}">
+              <img src="/static/{{ img }}" alt="{{ board }}" class="d-block w-100">
+              <div class="carousel-caption">
+                <h5>{{ board }}</h5>
+              </div>
             </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#boardCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#boardCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <input type="hidden" id="board" name="board">
+        <div class="text-center mt-4">
+          <button type="button" class="btn btn-secondary me-2" onclick="prevStep(2)"><i
+              class="fas fa-arrow-left me-2"></i> Previous</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i
+              class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <div id="step3" style="display: none;">
+        <h3>Select Your Subjects</h3>
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          Please select at least one subject to continue
+        </div>
+        <div class="row" id="subjectSelection"></div>
+        <div class="mt-4 p-3 bg-light rounded" style="display: none;">
+          <h4 class="mb-0 text-center">
+            Total Fee:
+            <span id="totalFee" class="fw-bold text-success">0</span> PKR
+          </h4>
+        </div>
+        <div class="text-center mt-4">
+          <button type="button" class="btn btn-secondary me-2" onclick="prevStep(3)"><i
+              class="fas fa-arrow-left me-2"></i> Previous</button>
+          <button type="button" id="subjectsNextBtn" class="btn btn-primary" onclick="proceedToPersonalInfo()">Next <i
+              class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+
+      <div id="step4" style="display: none;">
+        <h3>Your Information</h3>
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          Please provide your personal details for registration
+        </div>
+        <div class="personal-info-form">
+          <div class="mb-4">
+            <label for="studentName" class="form-label">Full Name*</label>
+            <input type="text" class="form-control" id="studentName" name="full_name" placeholder="Enter your full name"
+              required>
+          </div>
+          <div class="mb-4">
+            <label for="studentPhone" class="form-label">Phone Number*</label>
+            <input type="tel" class="form-control" id="studentPhone" name="phone_number"
+              placeholder="Enter your phone number" required>
+          </div>
+          <div class="mb-4">
+            <label for="studentEmail" class="form-label">Email Address*</label>
+            <input type="email" class="form-control" id="studentEmail" name="email"
+              placeholder="Enter your email address" required>
+          </div>
+          <div class="mb-4">
+            <label for="studentAddress" class="form-label">Address*</label>
+            <input type="text" class="form-control" id="studentAddress" name="address"
+              placeholder="Enter your full address" required>
+          </div>
+          <div class="text-center mt-4">
+            <button type="button" class="btn btn-secondary me-2" onclick="prevStep(4)"><i
+                class="fas fa-arrow-left me-2"></i> Previous</button>
+            <button type="button" class="btn btn-primary" onclick="proceedToOTPVerification()">Send OTP <i
+                class="fas fa-paper-plane ms-2"></i></button>
           </div>
         </div>
       </div>
-      <div class="alert alert-info mx-auto" style="max-width: 600px;">
-        <h5 class="alert-heading">Next Steps:</h5>
-        <ul class="mb-0">
-          <li>This is an estimated fee calculation</li>
-          <li>Contact us for exact fee structure and enrollment</li>
-          <li>We'll reach out to you at <strong id="summaryContact"></strong> if you provided details</li>
-        </ul>
+
+      <div id="step5" style="display: none;">
+        <h3>Verify Your Email</h3>
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          We've sent a 6-digit verification code to <strong id="userEmail"></strong>. Please enter it below.
+        </div>
+        <div class="mt-4 p-3 bg-light rounded text-center mb-4">
+          <h4 class="mb-0">
+            Total Payable Fee:
+            <span id="otpTotalFee" class="fw-bold text-success">0</span> PKR
+          </h4>
+        </div>
+        <div class="mb-4">
+          <label class="form-label text-center d-block">Enter OTP</label>
+          <div class="otp-container">
+            <input type="text" class="otp-input" id="studentOtp1" maxlength="1" pattern="[0-9]"
+              oninput="moveToNext(this, 'studentOtp2')">
+            <input type="text" class="otp-input" id="studentOtp2" maxlength="1" pattern="[0-9]"
+              oninput="moveToNext(this, 'studentOtp3')" onkeydown="moveToPrev(this, 'studentOtp1', event)">
+            <input type="text" class="otp-input" id="studentOtp3" maxlength="1" pattern="[0-9]"
+              oninput="moveToNext(this, 'studentOtp4')" onkeydown="moveToPrev(this, 'studentOtp2', event)">
+            <input type="text" class="otp-input" id="studentOtp4" maxlength="1" pattern="[0-9]"
+              oninput="moveToNext(this, 'studentOtp5')" onkeydown="moveToPrev(this, 'studentOtp3', event)">
+            <input type="text" class="otp-input" id="studentOtp5" maxlength="1" pattern="[0-9]"
+              oninput="moveToNext(this, 'studentOtp6')" onkeydown="moveToPrev(this, 'studentOtp4', event)">
+            <input type="text" class="otp-input" id="studentOtp6" maxlength="1" pattern="[0-9]"
+              onkeydown="moveToPrev(this, 'studentOtp5', event)">
+          </div>
+          <div class="text-center mt-2">
+            <a href="#" onclick="resendStudentOTP(event)" class="text-decoration-none"><i class="fas fa-redo me-1"></i>
+              Resend OTP</a>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-secondary me-2" onclick="prevStep(5)"><i
+              class="fas fa-arrow-left me-2"></i> Previous</button>
+          <button type="button" class="btn btn-success" onclick="verifyStudentOTP()">Verify & Submit <i
+              class="fas fa-check-circle me-2"></i></button>
+        </div>
       </div>
-      <div class="d-flex justify-content-center gap-3 mt-4">
-        <button type="button" class="btn btn-primary" onclick="newCalculation()">New Calculation <i class="fas fa-calculator me-2"></i></button>
-        <button type="button" class="btn btn-outline-secondary" onclick="window.print()">Print Summary <i class="fas fa-print me-2"></i></button>
+
+      <div id="registrationCompleteMessage" style="display: none;">
+        <div class="text-center py-5">
+          <div class="mb-4">
+            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+          </div>
+          <h2 class="mb-3">Thank You For Registering!</h2>
+          <p class="lead mb-4">Your account has been successfully verified. You will be redirected to your summary page
+            shortly.</p>
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="thankYouMessage" style="display: none;">
+        <div class="text-center py-5">
+          <div class="mb-4">
+            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+          </div>
+          <h2 class="mb-3">Fee Calculation Complete!</h2>
+          <p class="lead mb-4">Thank you for using our fee calculator. Here's a summary of your information:</p>
+          <div class="card mx-auto mb-4" style="max-width: 600px;">
+            <div class="card-body">
+              <h5 class="card-title">Fee Summary</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <p><strong>Area:</strong> <span id="summaryArea"></span></p>
+                  <p><strong>Board:</strong> <span id="summaryBoard"></span></p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Selected Subjects:</strong> <span id="summarySubjects"></span></p>
+                  <p><strong>Total Fee:</strong> <span id="summaryFee" class="text-success fw-bold"></span> PKR</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mx-auto" style="max-width: 600px;">
+            <h5 class="alert-heading">Next Steps:</h5>
+            <ul class="mb-0">
+              <li>This is an estimated fee calculation</li>
+              <li>Contact us for exact fee structure and enrollment</li>
+              <li>We'll reach out to you at <strong id="summaryContact"></strong> if you provided details</li>
+            </ul>
+          </div>
+          <div class="d-flex justify-content-center gap-3 mt-4">
+            <button type="button" class="btn btn-primary" onclick="newCalculation()">New Calculation <i
+                class="fas fa-calculator me-2"></i></button>
+            <button type="button" class="btn btn-outline-secondary" onclick="window.print()">Print Summary <i
+                class="fas fa-print me-2"></i></button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+  </div>
+
+  <div class="toast-container">
+    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
+      aria-atomic="true" id="successToast">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="fas fa-check-circle me-2"></i>
+          <span id="successToastMessage">Operation successful!</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+
+    <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive"
+      aria-atomic="true" id="errorToast">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          <span id="errorToastMessage">An error occurred.</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
       </div>
     </div>
   </div>
-</form>
-
-
-</div>
-
-<div class="toast-container">
-  <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-    <div class="d-flex">
-      <div class="toast-body">
-        <i class="fas fa-check-circle me-2"></i>
-        <span id="successToastMessage">Operation successful!</span>
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-  
-  <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
-    <div class="d-flex">
-      <div class="toast-body">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        <span id="errorToastMessage">An error occurred.</span>
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
 
 </section>
 {% endblock %}
