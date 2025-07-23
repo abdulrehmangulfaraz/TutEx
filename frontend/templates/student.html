@@ -653,7 +653,6 @@
       let areaFee = areaBaseFees[selectedArea] || 2000;
       let boardFee = boardAdditionalFees[selectedBoard] || 2000;
       let totalFee = areaFee + boardFee;
-      let feeCapped = false;
 
       if (selectedBoard === 'Others') {
         const otherSubjects = document.getElementById('otherSubjects').value.split(',').map(s => s.trim()).filter(Boolean);
@@ -670,18 +669,9 @@
 
       if (selectedBoard === "Class 1-8" && totalFee > 25000) {
         totalFee = 25000;
-        feeCapped = true;
-        showToast('warning', 'Maximum fee for Class 1-8 is capped at 25,000 PKR');
       }
 
       document.getElementById('totalFee').textContent = totalFee;
-
-      const allSubjectCheckboxes = document.querySelectorAll('input[name="subjects"]');
-      allSubjectCheckboxes.forEach(checkbox => {
-        if (!checkbox.checked) {
-          checkbox.disabled = feeCapped;
-        }
-      });
     }
 
     function checkSubmitButton() {
@@ -806,8 +796,6 @@
         });
     }
 
-    // In frontend/templates/student.html, inside the <script> tag
-
     function verifyStudentOTP() {
       const otp = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
       if (otp.length !== 6) {
@@ -817,36 +805,27 @@
 
       const email = studentData.personalInfo.email;
 
-      // Create the form data to send to the backend
       const formData = new FormData();
       formData.append('email', email);
       formData.append('otp', otp);
 
       fetch('/student/verify-otp', {
         method: 'POST',
-        body: formData // Use FormData instead of URL encoding
+        body: formData
       })
         .then(response => response.json())
         .then(data => {
           if (data.status === 'verified') {
             showToast('success', 'Verification successful! Redirecting...');
-
-            // Hide the OTP form and show the final completion message
             document.getElementById('step5').style.display = 'none';
             document.getElementById('registrationCompleteMessage').style.display = 'block';
-
-            // Update the progress bar to show completion
             document.querySelectorAll('.progress-step').forEach(step => {
               step.classList.add('completed');
               step.classList.remove('active');
             });
-
-            // **The Important Fix:** Wait a couple of seconds before redirecting
-            // This gives the user time to see the success message.
             setTimeout(() => {
               window.location.href = '/student/summary';
-            }, 2000); // 2-second delay
-
+            }, 2000); 
           } else {
             showToast('error', data.detail || 'Verification failed');
           }
@@ -872,8 +851,8 @@
     }
 
     function showToast(type, message) {
-      const toastElement = document.getElementById(type === 'success' ? 'successToast' : (type === 'warning' ? 'warningToast' : 'errorToast'));
-      const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : (type === 'warning' ? 'warningToastMessage' : 'errorToastMessage'));
+      const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+      const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : 'errorToastMessage');
       messageElement.textContent = message;
       const toast = new bootstrap.Toast(toastElement);
       toast.show();
