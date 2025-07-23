@@ -604,31 +604,45 @@
         "Ethics - Class 1", "Ethics - Class 2", "Ethics - Class 3", "Ethics - Class 4", "Ethics - Class 5", "Ethics - Class 6", "Ethics - Class 7", "Ethics - Class 8"
       ]
       ,
-      "Other": [
-        "IELTS Preparation", "TOEFL Preparation", "SAT Preparation", "GRE Preparation",
-        "GMAT Preparation", "Coding Bootcamp (HTML, CSS, JS)", "Cyber Security Basics",
-        "AI & Machine Learning Basics", "Robotics for Beginners", "Spoken English",
-        "Creative Writing", "Calligraphy", "Entrepreneurship Basics", "Photography",
-        "Video Editing", "Digital Marketing", "3D Modeling (Blender)", "Financial Literacy for Teens"
-      ]
+      "Others": []
 
     };
 
     function updateSubjects(board) {
       const subjectContainer = document.getElementById('subjectSelection');
       subjectContainer.innerHTML = '';
-      const subjects = boardSubjects[board] || [];
-      subjects.forEach(subject => {
+      if (board === 'Others') {
         const div = document.createElement('div');
-        div.className = 'col-md-4 col-sm-6 mb-3';
+        div.className = 'col-12';
         div.innerHTML = `
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="subjects" value="${subject}" id="sub${subject.replace(/\s|[-()]/g, '')}" onchange="calculateFee(); checkSubmitButton()">
-          <label class="form-check-label" for="sub${subject.replace(/\s|[-()]/g, '')}">${subject}</label>
-        </div>
-      `;
+          <div class="mb-3">
+            <label for="otherBoard" class="form-label">Board Name</label>
+            <input type="text" class="form-control" id="otherBoard" name="otherBoard" placeholder="Enter your board name">
+          </div>
+          <div class="mb-3">
+            <label for="otherSubjects" class="form-label">Subjects (comma-separated)</label>
+            <textarea class="form-control" id="otherSubjects" name="otherSubjects" rows="3" placeholder="e.g., Math, Physics, Chemistry"></textarea>
+          </div>
+        `;
         subjectContainer.appendChild(div);
-      });
+        document.getElementById('otherSubjects').addEventListener('input', () => {
+          calculateFee();
+          checkSubmitButton();
+        });
+      } else {
+        const subjects = boardSubjects[board] || [];
+        subjects.forEach(subject => {
+          const div = document.createElement('div');
+          div.className = 'col-md-4 col-sm-6 mb-3';
+          div.innerHTML = `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="subjects" value="${subject}" id="sub${subject.replace(/\s|[-()]/g, '')}" onchange="calculateFee(); checkSubmitButton()">
+              <label class="form-check-label" for="sub${subject.replace(/\s|[-()]/g, '')}">${subject}</label>
+            </div>
+          `;
+          subjectContainer.appendChild(div);
+        });
+      }
       calculateFee();
       checkSubmitButton();
     }
@@ -638,21 +652,47 @@
       const selectedBoard = document.getElementById('board').value;
       let areaFee = areaBaseFees[selectedArea] || 2000;
       let boardFee = boardAdditionalFees[selectedBoard] || 2000;
-      const perSubjectCap = areaFee + boardFee;
       let totalFee = areaFee + boardFee;
-      const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
-      selectedSubjects.forEach(subject => {
-        const subjectName = subject.value.split(' - ')[0];
-        let subjectFee = premiumSubjects.includes(subjectName) ? 6000 : 5000;
-        totalFee += Math.min(subjectFee, perSubjectCap);
-      });
+      let feeCapped = false;
+
+      if (selectedBoard === 'Others') {
+        const otherSubjects = document.getElementById('otherSubjects').value.split(',').map(s => s.trim()).filter(Boolean);
+        totalFee += otherSubjects.length * 5000;
+      } else {
+        const perSubjectCap = areaFee + boardFee;
+        const selectedSubjects = document.querySelectorAll('input[name="subjects"]:checked');
+        selectedSubjects.forEach(subject => {
+          const subjectName = subject.value.split(' - ')[0];
+          let subjectFee = premiumSubjects.includes(subjectName) ? 6000 : 5000;
+          totalFee += Math.min(subjectFee, perSubjectCap);
+        });
+      }
+
+      if (selectedBoard === "Class 1-8" && totalFee > 25000) {
+        totalFee = 25000;
+        feeCapped = true;
+        showToast('warning', 'Maximum fee for Class 1-8 is capped at 25,000 PKR');
+      }
+
       document.getElementById('totalFee').textContent = totalFee;
+
+      const allSubjectCheckboxes = document.querySelectorAll('input[name="subjects"]');
+      allSubjectCheckboxes.forEach(checkbox => {
+        if (!checkbox.checked) {
+          checkbox.disabled = feeCapped;
+        }
+      });
     }
 
     function checkSubmitButton() {
       const nextButton = document.getElementById('subjectsNextBtn');
       if (nextButton) {
-        nextButton.disabled = document.querySelectorAll('input[name="subjects"]:checked').length === 0;
+        if (document.getElementById('board').value === 'Others') {
+          const otherSubjects = document.getElementById('otherSubjects').value.trim();
+          nextButton.disabled = !otherSubjects;
+        } else {
+          nextButton.disabled = document.querySelectorAll('input[name="subjects"]:checked').length === 0;
+        }
       }
     }
 
@@ -695,8 +735,14 @@
 
     function proceedToPersonalInfo() {
       studentData.area = document.getElementById('area').value;
-      studentData.board = document.getElementById('board').value;
-      studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
+      const selectedBoard = document.getElementById('board').value;
+      if (selectedBoard === 'Others') {
+        studentData.board = document.getElementById('otherBoard').value || 'Others';
+        studentData.subjects = document.getElementById('otherSubjects').value.split(',').map(s => s.trim()).filter(Boolean);
+      } else {
+        studentData.board = selectedBoard;
+        studentData.subjects = Array.from(document.querySelectorAll('input[name="subjects"]:checked')).map(el => el.value);
+      }
       nextStep(3);
     }
 
@@ -826,8 +872,8 @@
     }
 
     function showToast(type, message) {
-      const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
-      const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : 'errorToastMessage');
+      const toastElement = document.getElementById(type === 'success' ? 'successToast' : (type === 'warning' ? 'warningToast' : 'errorToast'));
+      const messageElement = document.getElementById(type === 'success' ? 'successToastMessage' : (type === 'warning' ? 'warningToastMessage' : 'errorToastMessage'));
       messageElement.textContent = message;
       const toast = new bootstrap.Toast(toastElement);
       toast.show();
@@ -1121,6 +1167,18 @@
         <div class="toast-body">
           <i class="fas fa-check-circle me-2"></i>
           <span id="successToastMessage">Operation successful!</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+    
+    <div class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive"
+      aria-atomic="true" id="warningToast">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <span id="warningToastMessage"></span>
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
           aria-label="Close"></button>
