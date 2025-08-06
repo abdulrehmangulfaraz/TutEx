@@ -1183,3 +1183,93 @@ async def get_termandconditions_page(request: Request):
     return templates.TemplateResponse("termandconditions.html", {"request": request, "session": request.session})
 
 
+# --- NEW: Admin User Management API Endpoints ---
+
+@app.get("/api/user/{username}", name="get_user_details")
+async def get_user_details(
+    username: str, 
+    db: Session = Depends(get_db), 
+    request: Request = None
+):
+    """
+    API endpoint to fetch the details of a specific user (tutor or admin) by username.
+    This is for internal admin use.
+    """
+    # Security Check: Ensure an admin is logged in
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    return {
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "phone_number": user.phone_number,
+        "last_qualification": user.last_qualification,
+        "is_verified": user.is_verified,
+        "user_type": user.user_type,
+    }
+
+@app.post("/api/user/update", name="update_user_details")
+async def update_user_details(
+    request: Request,
+    db: Session = Depends(get_db),
+    user_id: int = Form(...),
+    full_name: str = Form(...),
+    email: str = Form(...),
+    phone_number: str = Form(...),
+    last_qualification: str = Form(...)
+):
+    """
+    API endpoint for an admin to update a user's details.
+    """
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    user_to_update = db.query(User).filter(User.id == user_id).first()
+    if not user_to_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # Update the user's data
+    user_to_update.full_name = full_name
+    user_to_update.email = email
+    user_to_update.phone_number = phone_number
+    user_to_update.last_qualification = last_qualification
+    
+    db.commit()
+    
+    flash(request, f"Successfully updated details for user: {user_to_update.username}", "success")
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/api/user/delete", name="delete_user")
+async def delete_user(
+    request: Request,
+    db: Session = Depends(get_db),
+    user_id: int = Form(...)
+):
+    """
+    API endpoint for an admin to delete a user.
+    """
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    user_to_delete = db.query(User).filter(User.id == user_id).first()
+    if not user_to_delete:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # Prevent admin from deleting themselves
+    current_admin_username = request.session.get('user', {}).get('username')
+    if user_to_delete.username == current_admin_username:
+        flash(request, "Error: You cannot delete your own admin account.", "danger")
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+        
+    db.delete(user_to_delete)
+    db.commit()
+
+    flash(request, f"Successfully deleted user: {user_to_delete.username}", "success")
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
