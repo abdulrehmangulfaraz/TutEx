@@ -116,23 +116,15 @@ TutEx ensures account authenticity through:
 
 ## ⚙️ Tech Stack
 
-  
-
-| Category | Technologies Used |
-
-|----------------|-------------------------------------------------------------------------------------|
-
-| **Framework** | FastAPI, Jinja2 Templates, Bootstrap 5 |
-
-| **Backend** | Python, SQLAlchemy ORM, Passlib, aiosmtplib |
-
-| **Database** | PostgreSQL (`psycopg2`) |
-
-| **Form Handling** | python-multipart, email-validator |
-
-| **Security** | itsdangerous, python-jose, bcrypt |
-
+| Category       | Technologies Used                                                       |
+| -------------- | --------------------------------------------------------------------- |
+| **Framework**  | FastAPI, Jinja2 Templates, Bootstrap 5                               |
+| **Backend**    | Python, SQLAlchemy ORM, Passlib, aiosmtplib                          |
+| **Database**   | PostgreSQL (`psycopg2`)                                               |
+| **Form Handling** | python-multipart, email-validator                                   |
+| **Security**   | itsdangerous, python-jose, bcrypt                                     |
 | **Other Libraries** | uvicorn, slowapi, aiofiles, requests, Chart.js, Swiper.js, AOS.js |
+
 
   
 
