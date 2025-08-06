@@ -425,6 +425,7 @@ async def get_admin_page(request: Request, db: Session = Depends(get_db)):
     
     # Fetch all student registrations
     all_students = db.query(StudentRegistration).all()
+    all_tutors = db.query(User).filter(User.user_type == 'Tutor').all()
     # --- END NEW QUERIES ---
 
     context = {
@@ -1187,21 +1188,19 @@ async def get_termandconditions_page(request: Request):
 
 @app.get("/api/user/{username}", name="get_user_details")
 async def get_user_details(
-    username: str, 
-    db: Session = Depends(get_db), 
+    username: str,
+    db: Session = Depends(get_db),
     request: Request = None
 ):
     """
-    API endpoint to fetch the details of a specific user (tutor or admin) by username.
-    This is for internal admin use.
+    API endpoint to fetch a tutor's details by username.
     """
-    # Security Check: Ensure an admin is logged in
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
 
     user = db.query(User).filter(User.username == username).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if not user or user.user_type != 'Tutor':
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tutor not found")
 
     return {
         "id": user.id,
@@ -1210,8 +1209,6 @@ async def get_user_details(
         "email": user.email,
         "phone_number": user.phone_number,
         "last_qualification": user.last_qualification,
-        "is_verified": user.is_verified,
-        "user_type": user.user_type,
     }
 
 @app.post("/api/user/update", name="update_user_details")
@@ -1225,7 +1222,7 @@ async def update_user_details(
     last_qualification: str = Form(...)
 ):
     """
-    API endpoint for an admin to update a user's details.
+    API endpoint for an admin to update a tutor's details.
     """
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
@@ -1234,15 +1231,13 @@ async def update_user_details(
     if not user_to_update:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    # Update the user's data
     user_to_update.full_name = full_name
     user_to_update.email = email
     user_to_update.phone_number = phone_number
     user_to_update.last_qualification = last_qualification
-    
     db.commit()
     
-    flash(request, f"Successfully updated details for user: {user_to_update.username}", "success")
+    flash(request, f"Successfully updated details for tutor: {user_to_update.username}", "success")
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -1253,7 +1248,7 @@ async def delete_user(
     user_id: int = Form(...)
 ):
     """
-    API endpoint for an admin to delete a user.
+    API endpoint for an admin to delete a tutor.
     """
     if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
@@ -1262,14 +1257,13 @@ async def delete_user(
     if not user_to_delete:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    # Prevent admin from deleting themselves
-    current_admin_username = request.session.get('user', {}).get('username')
-    if user_to_delete.username == current_admin_username:
-        flash(request, "Error: You cannot delete your own admin account.", "danger")
+    # Prevent admin from deleting admins
+    if user_to_delete.user_type == 'Admin':
+        flash(request, "Error: Admin accounts cannot be deleted.", "danger")
         return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
         
     db.delete(user_to_delete)
     db.commit()
 
-    flash(request, f"Successfully deleted user: {user_to_delete.username}", "success")
+    flash(request, f"Successfully deleted tutor: {user_to_delete.username}", "success")
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
