@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TutEx Admin Dashboard</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,14 +16,17 @@
 
     <style>
         :root {
-            --primary-color: #6366f1; /* Indigo */
+            --primary-color: #6366f1;
+            /* Indigo */
             --primary-light: #eef2ff;
             --success-color: #22c55e;
             --success-light: #dcfce7;
             --danger-color: #ef4444;
             --danger-light: #fee2e2;
-            --sidebar-bg: #1e293b; /* Dark Slate */
-            --content-bg: #f0f2f5; /* Light Gray */
+            --sidebar-bg: #1e293b;
+            /* Dark Slate */
+            --content-bg: #f0f2f5;
+            /* Light Gray */
             --card-bg: #ffffff;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
@@ -36,67 +40,317 @@
             color: var(--text-secondary);
         }
 
-        .admin-sidebar { width: 260px; background: var(--sidebar-bg); position: fixed; height: 100vh; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 1.75rem 1.5rem; text-align: center; }
-        .sidebar-header h3 { color: #fff; margin: 0; font-weight: 700; font-size: 1.5rem; }
-        .sidebar-header .fa-shield-alt { color: var(--primary-color); }
-        .admin-sidebar-nav { flex-grow: 1; padding: 1rem 0; }
-        .admin-sidebar-nav a { padding: 1rem 1.75rem; font-size: 0.95rem; display: flex; align-items: center; color: #cbd5e1; text-decoration: none; transition: all 0.2s; margin: 0.25rem 0.75rem; border-radius: 8px; font-weight: 500; }
-        .admin-sidebar-nav a .fas { margin-right: 1rem; width: 20px; text-align: center; }
-        .admin-sidebar-nav a:hover { background: var(--primary-color); color: #ffffff; }
-        .admin-sidebar-nav li.active > a { background: var(--primary-color); color: #ffffff; font-weight: 600; }
-        .sidebar-footer { padding: 1.5rem; }
+        .admin-sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .admin-content { width: calc(100% - 260px); margin-left: 260px; }
-        .top-navbar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 999; }
-        .top-navbar h1 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); }
-        main { padding: 2.5rem; }
-        
-        .stat-card, .main-card { background: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
-        .stat-card { display: flex; align-items: center; padding: 1.5rem; transition: all 0.3s ease; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .stat-icon { font-size: 1.75rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; margin-right: 1.5rem; }
-        .bg-warning-gradient { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
-        .bg-info-gradient { background: linear-gradient(45deg, #38bdf8, #0ea5e9); }
-        .bg-primary-gradient { background: linear-gradient(45deg, #818cf8, #6366f1); }
-        .bg-success-gradient { background: linear-gradient(45deg, #4ade80, #22c55e); }
-        .stat-info h5 { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
-        .stat-info p { margin: 0; color: var(--text-secondary); }
-        .main-card .card-header { background-color: #f8fafc; border-bottom: 1px solid var(--border-color); font-weight: 600; padding: 1rem 1.5rem; color: var(--text-primary); }
-        .card-header .fas { margin-right: 0.75rem; }
-        .main-card .card-body { padding: 1.5rem; }
-        
-        .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1.5rem 0; }
-        .dataTables_length, .dataTables_filter { display: flex; align-items: center; }
-        .dataTables_length label { display: flex; align-items: center; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0 0.75rem; font-weight: 500; }
-        .dataTables_length select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding: 0.6rem 2.5rem 0.6rem 0.5rem !important; font-weight: 500; border: none !important; background-color: transparent !important; margin: 0 0.5rem; }
-        .dataTables_filter input { border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem 1rem; background-color: #f8fafc; transition: all 0.2s ease; }
-        .dataTables_wrapper .paginate_button { border-radius: 0.5rem !important; margin: 0 0.25rem !important; min-width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color) !important; box-shadow: none !important; }
-        table.dataTable tbody tr:hover { background-color: #f8fafc; cursor: pointer; }
-        table.dataTable tbody td { vertical-align: middle; padding: 0.9rem 1rem; }
-        .btn-action { padding: 0.35rem 0.9rem; border-radius: 50rem; font-size: 0.8rem; font-weight: 600; border: none; transition: all 0.2s ease; }
-        .btn-action .fas { margin-right: 5px; }
-        .btn-action.btn-verify { background-color: var(--primary-light); color: var(--primary-color); }
-        .btn-action.btn-verify:hover { background-color: var(--primary-color); color: #fff; }
-        .btn-action.btn-approve { background-color: var(--success-light); color: var(--success-color); }
-        .btn-action.btn-approve:hover { background-color: var(--success-color); color: #fff; }
-        .btn-action.btn-reject { background-color: var(--danger-light); color: var(--danger-color); }
-        .btn-action.btn-reject:hover { background-color: var(--danger-color); color: #fff; }
+        .sidebar-header {
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+        }
 
-        .modal-header { border-bottom: 1px solid var(--border-color); }
-        .modal-title { font-weight: 600; color: var(--text-primary); }
+        .sidebar-header h3 {
+            color: #fff;
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
 
-        .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar-header .fa-shield-alt {
+            color: var(--primary-color);
+        }
+
+        .admin-sidebar-nav {
+            flex-grow: 1;
+            padding: 1rem 0;
+        }
+
+        .admin-sidebar-nav a {
+            padding: 1rem 1.75rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .admin-sidebar-nav a .fas {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-sidebar-nav a:hover {
+            background: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .admin-sidebar-nav li.active>a {
+            background: var(--primary-color);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+        }
+
+        .admin-content {
+            width: calc(100% - 260px);
+            margin-left: 260px;
+        }
+
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .top-navbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        main {
+            padding: 2.5rem;
+        }
+
+        .stat-card,
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            font-size: 1.75rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            margin-right: 1.5rem;
+        }
+
+        .bg-warning-gradient {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+        }
+
+        .bg-info-gradient {
+            background: linear-gradient(45deg, #38bdf8, #0ea5e9);
+        }
+
+        .bg-primary-gradient {
+            background: linear-gradient(45deg, #818cf8, #6366f1);
+        }
+
+        .bg-success-gradient {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+        }
+
+        .stat-info h5 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .main-card .card-header {
+            background-color: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .card-header .fas {
+            margin-right: 0.75rem;
+        }
+
+        .main-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .dataTables_wrapper .row:first-of-type {
+            padding: 0.5rem 0 1.5rem 0;
+        }
+
+        .dataTables_length,
+        .dataTables_filter {
+            display: flex;
+            align-items: center;
+        }
+
+        .dataTables_length label {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0 0.75rem;
+            font-weight: 500;
+        }
+
+        .dataTables_length select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding: 0.6rem 2.5rem 0.6rem 0.5rem !important;
+            font-weight: 500;
+            border: none !important;
+            background-color: transparent !important;
+            margin: 0 0.5rem;
+        }
+
+        .dataTables_filter input {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.6rem 1rem;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .dataTables_wrapper .paginate_button {
+            border-radius: 0.5rem !important;
+            margin: 0 0.25rem !important;
+            min-width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: none !important;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+
+        table.dataTable tbody td {
+            vertical-align: middle;
+            padding: 0.9rem 1rem;
+        }
+
+        .btn-action {
+            padding: 0.35rem 0.9rem;
+            border-radius: 50rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action .fas {
+            margin-right: 5px;
+        }
+
+        .btn-action.btn-verify {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .btn-action.btn-verify:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-action.btn-approve {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .btn-action.btn-approve:hover {
+            background-color: var(--success-color);
+            color: #fff;
+        }
+
+        .btn-action.btn-reject {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+        }
+
+        .btn-action.btn-reject:hover {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         #verifyLeadModal .modal-content {
             background-color: #f8fafc;
-            border-radius: 19.2px; 
+            border-radius: 19.2px;
             border: none;
             box-shadow: 0 20px 40px -9.6px rgba(30, 41, 59, 0.15);
             overflow: hidden;
         }
+
         #verifyLeadModal .modal-header {
             background: linear-gradient(135deg, #5D3FD3, #2563eb);
             color: white;
@@ -105,33 +359,40 @@
             text-align: center;
             display: block;
         }
+
         #verifyLeadModal .header-icon {
             font-size: 2rem;
             margin-bottom: 0.8rem;
             display: inline-block;
         }
+
         #verifyLeadModal .modal-title {
             font-weight: 600;
             margin: 0;
             font-size: 1.2rem;
             color: white;
         }
+
         #verifyLeadModal .modal-body {
             padding: 2rem;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
+
         #verifyLeadModal .modal-body.visible {
             opacity: 1;
         }
+
         #verifyLeadModal .details-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 0.8rem 1.6rem;
         }
+
         #verifyLeadModal .details-item {
             margin-bottom: 1rem;
         }
+
         #verifyLeadModal .details-item strong {
             display: block;
             font-weight: 500;
@@ -139,20 +400,24 @@
             font-size: 0.72rem;
             margin-bottom: 0.2rem;
         }
+
         #verifyLeadModal .details-item span,
         #verifyLeadModal .details-item ul {
             font-weight: 600;
             color: #1e293b;
             font-size: 0.8rem;
         }
+
         #verifyLeadModal .subjects-list {
             list-style: none;
             padding-left: 0;
             margin-top: 4px;
         }
+
         #verifyLeadModal .subjects-list li {
             padding: 1.6px 0;
         }
+
         #verifyLeadModal .fee-section {
             background: linear-gradient(135deg, #f5f3ff, #eef2f7);
             padding: 1.2rem;
@@ -161,249 +426,605 @@
             text-align: center;
             margin-top: 1.6rem;
         }
+
         #verifyLeadModal .fee-display {
             font-size: 1.6rem;
             font-weight: 700;
             color: #5D3FD3;
         }
+
         #verifyLeadModal .modal-footer {
             background-color: #fff;
             border-top: 1px solid var(--border-color);
             padding: 1rem 2rem;
         }
+
         #verifyLeadModal .modal-footer .btn {
             border-radius: 40px;
             padding: 9.6px 24px;
             font-weight: 600;
             border: none;
         }
+
         #verifyLeadModal .modal-footer .btn-primary {
             background-color: #5D3FD3;
         }
+
         #verifyLeadModal .modal-footer .btn-primary:hover {
             background-color: #4c2db3;
         }
     </style>
 </head>
+
 <body>
 
-<div class="admin-wrapper">
-    <nav class="admin-sidebar">
-        <div class="sidebar-header"><h3><i class="fas fa-shield-alt"></i> TutEx</h3></div>
-        <ul class="nav flex-column admin-sidebar-nav">
-            <li class="nav-item active" id="dashboardTab"><a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li class="nav-item" id="tutorsTab"><a class="nav-link" href="#"><i class="fas fa-chalkboard-teacher"></i> Tutors</a></li>
-            <li class="nav-item" id="studentsTab"><a class="nav-link" href="#"><i class="fas fa-user-graduate"></i> Students</a></li>
-        </ul>
-        <div class="sidebar-footer"><a href="{{ url_for('admin_logout') }}" class="btn btn-dark w-100"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
-    </nav>
+    <div class="admin-wrapper">
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-shield-alt"></i> TutEx</h3>
+            </div>
+            <ul class="nav flex-column admin-sidebar-nav">
+                <li class="nav-item active" id="dashboardTab"><a class="nav-link" href="#"><i
+                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="nav-item" id="manageTutorsTab"><a class="nav-link" href="#"><i
+                            class="fas fa-users-cog"></i> Manage Tutors</a></li>
+                <li class="nav-item" id="tutorsTab"><a class="nav-link" href="#"><i
+                            class="fas fa-chalkboard-teacher"></i> All Tutors</a></li>
+                <li class="nav-item" id="studentsTab"><a class="nav-link" href="#"><i class="fas fa-user-graduate"></i>
+                        All Students</a></li>
+            </ul>
+            <div class="sidebar-footer"><a href="{{ url_for('admin_logout') }}" class="btn btn-dark w-100"><i
+                        class="fas fa-sign-out-alt"></i> Logout</a></div>
+        </nav>
 
-    <div class="admin-content">
-        <header class="top-navbar"><h1 id="page-title">Dashboard</h1></header>
+        <div class="admin-content">
+            <header class="top-navbar">
+                <h1 id="page-title">Dashboard</h1>
+            </header>
 
-        <main>
-            <div id="dashboardContent" class="content-section active">
-                <div class="row g-4 mb-4">
-                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-warning-gradient"><i class="fas fa-bell"></i></div><div class="stat-info"><h5>{{ unverified_leads|length }}</h5><p>New Leads</p></div></div></div>
-                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-info-gradient"><i class="fas fa-hourglass-half"></i></div><div class="stat-info"><h5>{{ pending_requests|length }}</h5><p>Pending</p></div></div></div>
-                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-primary-gradient"><i class="fas fa-chalkboard-teacher"></i></div><div class="stat-info"><h5>{{ all_tutors|length }}</h5><p>Tutors</p></div></div></div>
-                    <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-icon bg-success-gradient"><i class="fas fa-user-graduate"></i></div><div class="stat-info"><h5>{{ all_students|length }}</h5><p>Students</p></div></div></div>
-                </div>
+            <main>
+                <div id="dashboardContent" class="content-section active">
+                    <div class="row g-4 mb-4">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-warning-gradient"><i class="fas fa-bell"></i></div>
+                                <div class="stat-info">
+                                    <h5>{{ unverified_leads|length }}</h5>
+                                    <p>New Leads</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-info-gradient"><i class="fas fa-hourglass-half"></i></div>
+                                <div class="stat-info">
+                                    <h5>{{ pending_requests|length }}</h5>
+                                    <p>Pending</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-primary-gradient"><i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h5>{{ all_tutors|length }}</h5>
+                                    <p>Tutors</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-success-gradient"><i class="fas fa-user-graduate"></i></div>
+                                <div class="stat-info">
+                                    <h5>{{ all_students|length }}</h5>
+                                    <p>Students</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="row g-4">
-                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-bell text-warning"></i> New Unverified Leads</div><div class="card-body"><table id="unverifiedLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Action</th></tr></thead><tbody>
-                        {% for lead in unverified_leads %}
-                        <tr>
-                            <td>{{ lead.full_name }}</td>
-                            <td>{{ lead.area }}</td>
-                            <td><button type="button" class="btn-action btn-verify" data-bs-toggle="modal" data-bs-target="#verifyLeadModal" data-lead-id="{{ lead.id }}"><i class="fas fa-check"></i> Verify</button></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody></table></div></div></div>
-                    <div class="col-lg-6"><div class="main-card h-100"><div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor Requests</div><div class="card-body"><table id="pendingRequestsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Tutor</th><th>Action</th></tr></thead><tbody>{% for lead, tutor in pending_requests %}<tr><td>{{ lead.full_name }}</td><td>{{ tutor.full_name }}</td><td><form method="POST" action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}" class="d-inline"><button type="submit" class="btn-action btn-approve"><i class="fas fa-check-circle"></i> Approve</button></form><form method="POST" action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}" class="d-inline ms-1"><button type="submit" class="btn-action btn-reject"><i class="fas fa-times-circle"></i> Reject</button></form></td></tr>{% endfor %}</tbody></table></div></div></div>
-                    <div class="col-lg-6 mt-4"><div class="main-card h-100"><div class="card-header"><i class="fas fa-list-alt text-secondary"></i> Approved & Available</div><div class="card-body"><table id="availableLeadsTable" class="table" style="width:100%"><thead><tr><th>Student</th><th>Area</th><th>Fee</th></tr></thead><tbody>{% for lead in available_leads %}<tr><td>{{ lead.full_name }}</td><td>{{ lead.area }}</td><td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td></tr>{% endfor %}</tbody></table></div></div></div>
-                    <div class="col-lg-6 mt-4">
-                        <div class="main-card h-100">
-                            <div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed Matches</div>
-                            <div class="card-body">
-                                <table id="matchedLeadsTable" class="table" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Student</th>
-                                            <th>Tutor</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for lead, tutor in matched_leads %}
-                                        <tr>
-                                            <td>{{ lead.full_name }}</td>
-                                            <td>{{ tutor.full_name }}</td>
-                                            <td>
-                                                <span class="badge rounded-pill 
-                                                    {% if lead.tuition_status == 'completed' %}bg-success-light text-success
-                                                    {% elif lead.tuition_status == 'dropped' %}bg-danger-light text-danger
-                                                    {% elif lead.tuition_status == 'ongoing' %}bg-info-light text-info
-                                                    {% else %}bg-secondary-light text-secondary{% endif %}">
-                                                    
-                                                    {% if lead.tuition_status %}
-                                                        {{ lead.tuition_status.capitalize() }}
-                                                    {% else %}
-                                                        Ongoing
-                                                    {% endif %}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="main-card h-100">
+                                <div class="card-header"><i class="fas fa-bell text-warning"></i> New Unverified Leads
+                                </div>
+                                <div class="card-body">
+                                    <table id="unverifiedLeadsTable" class="table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Area</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for lead in unverified_leads %}
+                                            <tr>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ lead.area }}</td>
+                                                <td><button type="button" class="btn-action btn-verify"
+                                                        data-bs-toggle="modal" data-bs-target="#verifyLeadModal"
+                                                        data-lead-id="{{ lead.id }}"><i class="fas fa-check"></i>
+                                                        Verify</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="main-card h-100">
+                                <div class="card-header"><i class="fas fa-hourglass-half text-info"></i> Pending Tutor
+                                    Requests</div>
+                                <div class="card-body">
+                                    <table id="pendingRequestsTable" class="table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Tutor</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{% for lead, tutor in pending_requests %}<tr>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ tutor.full_name }}</td>
+                                                <td>
+                                                    <form method="POST"
+                                                        action="{{ url_for('approve_tutor_match', lead_id=lead.id) }}"
+                                                        class="d-inline"><button type="submit"
+                                                            class="btn-action btn-approve"><i
+                                                                class="fas fa-check-circle"></i> Approve</button></form>
+                                                    <form method="POST"
+                                                        action="{{ url_for('reject_tutor_match', lead_id=lead.id) }}"
+                                                        class="d-inline ms-1"><button type="submit"
+                                                            class="btn-action btn-reject"><i
+                                                                class="fas fa-times-circle"></i> Reject</button></form>
+                                                </td>
+                                            </tr>{% endfor %}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-4">
+                            <div class="main-card h-100">
+                                <div class="card-header"><i class="fas fa-list-alt text-secondary"></i> Approved &
+                                    Available</div>
+                                <div class="card-body">
+                                    <table id="availableLeadsTable" class="table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Area</th>
+                                                <th>Fee</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{% for lead in available_leads %}<tr>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ lead.area }}</td>
+                                                <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
+                                            </tr>{% endfor %}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-4">
+                            <div class="main-card h-100">
+                                <div class="card-header"><i class="fas fa-check-circle text-success"></i> Completed
+                                    Matches</div>
+                                <div class="card-body">
+                                    <table id="matchedLeadsTable" class="table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Tutor</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for lead, tutor in matched_leads %}
+                                            <tr>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ tutor.full_name }}</td>
+                                                <td>
+                                                    <span
+                                                        class="badge rounded-pill {% if lead.tuition_status == 'completed' %}bg-success-light text-success{% elif lead.tuition_status == 'dropped' %}bg-danger-light text-danger{% elif lead.tuition_status == 'ongoing' %}bg-info-light text-info{% else %}bg-secondary-light text-secondary{% endif %}">
+                                                        {{ lead.tuition_status.capitalize() if lead.tuition_status else 'Ongoing' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div id="manageTutorsContent" class="content-section">
+                    <div class="main-card">
+                        <div class="card-header">
+                            <i class="fas fa-users-cog text-primary"></i>
+                            Manage Tutors & Admins
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" id="searchUsername" class="form-control"
+                                            placeholder="Enter username to find a user...">
+                                        <button class="btn btn-primary" type="button" id="searchUserBtn">
+                                            <i class="fas fa-search me-1"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="editUserSection" class="mt-4" style="display: none;">
+                                <hr>
+                                <h5 class="mb-3">Edit User Details</h5>
+                                <div id="search-error" class="alert alert-danger" style="display: none;"></div>
+
+                                <form id="editUserForm" method="POST">
+                                    <input type="hidden" id="editUserId" name="user_id">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editUsername" class="form-label">Username (Read-only)</label>
+                                            <input type="text" id="editUsername" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editFullName" class="form-label">Full Name</label>
+                                            <input type="text" id="editFullName" name="full_name" class="form-control"
+                                                required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editEmail" class="form-label">Email</label>
+                                            <input type="email" id="editEmail" name="email" class="form-control"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editPhoneNumber" class="form-label">Phone Number</label>
+                                            <input type="tel" id="editPhoneNumber" name="phone_number"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editLastQualification" class="form-label">Last
+                                                Qualification</label>
+                                            <input type="text" id="editLastQualification" name="last_qualification"
+                                                class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end gap-2 mt-3">
+                                        <button type="submit" formaction="{{ url_for('update_user_details') }}"
+                                            class="btn btn-success">
+                                            <i class="fas fa-save me-1"></i> Update User
+                                        </button>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteUserModal">
+                                            <i class="fas fa-trash-alt me-1"></i> Delete User
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tutorsContent" class="content-section">
+                    <div class="main-card">
+                        <div class="card-header"><i class="fas fa-chalkboard-teacher text-primary"></i> All Registered
+                            Tutors</div>
+                        <div class="card-body">
+                            <table id="allTutorsTable" class="table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Qualification</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tutor in all_tutors %}
+                                    <tr>
+                                        <td>{{ tutor.username }}</td>
+                                        <td>{{ tutor.full_name }}</td>
+                                        <td>{{ tutor.email }}</td>
+                                        <td>{{ tutor.phone_number }}</td>
+                                        <td>{{ tutor.last_qualification }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="studentsContent" class="content-section">
+                    <div class="main-card">
+                        <div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered
+                            Students</div>
+                        <div class="card-body">
+                            <table id="allStudentsTable" class="table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Area</th>
+                                        <th>Board</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in all_students %}
+                                    <tr>
+                                        <td>{{ student.full_name }}</td>
+                                        <td>{{ student.email }}</td>
+                                        <td>{{ student.phone_number }}</td>
+                                        <td>{{ student.area }}</td>
+                                        <td>{{ student.board }}</td>
+                                        <td><span class="badge rounded-pill bg-secondary-light text-secondary">{{
+                                                student.status.value }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="verifyLeadModal" tabindex="-1" aria-labelledby="verifyLeadModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="header-icon"><i class="fas fa-user-check"></i></div>
+                    <h2 class="modal-title" id="verifyLeadModalLabel">Lead Verification Summary</h2>
+                </div>
+                <form id="verify-form" method="POST" action="">
+                    <div class="modal-body">
+                        <div id="modal-loader" class="text-center p-5">
+                            <div class="spinner-border" style="width: 3rem; height: 3rem; color: #5D3FD3;"
+                                role="status"><span class="visually-hidden">Loading...</span></div>
+                        </div>
+                        <div id="modal-content-summary" style="display: none;">
+                            <div class="details-grid">
+                                <div class="details-item"><strong><i class="fas fa-user me-2 text-muted"></i>Student
+                                        Name</strong><span id="modal-full_name"></span></div>
+                                <div class="details-item"><strong><i class="fas fa-envelope me-2 text-muted"></i>Contact
+                                        Email</strong><span id="modal-email"></span></div>
+                                <div class="details-item"><strong><i class="fas fa-phone-alt me-2 text-muted"></i>Phone
+                                        Number</strong><span id="modal-phone_number"></span></div>
+                                <div class="details-item"><strong><i
+                                            class="fas fa-map-marker-alt me-2 text-muted"></i>Area</strong><span
+                                        id="modal-area"></span></div>
+                                <div class="details-item"><strong><i
+                                            class="fas fa-school me-2 text-muted"></i>Board</strong><span
+                                        id="modal-board"></span></div>
+                                <div class="details-item"><strong><i
+                                            class="fas fa-home me-2 text-muted"></i>Address</strong><span
+                                        id="modal-address"></span></div>
+                                <div class="details-item"><strong><i
+                                            class="fas fa-book me-2 text-muted"></i>Subjects</strong>
+                                    <ul class="subjects-list" id="modal-subjects-list"></ul>
+                                </div>
+                            </div>
+                            <div class="fee-section">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <strong>Original Fee</strong>
+                                        <div class="fee-display" id="modal-total_fee_original"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Deduct Fee (Platform Charges)</strong>
+                                        <input type="number" class="form-control" id="deducted_fee" name="deducted_fee"
+                                            value="0" min="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Final Fee for Tutor</strong>
+                                        <div class="fee-display" id="modal-total_fee_final"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Confirm &
+                            Verify</button>
+                    </div>
+                </form>
             </div>
-
-            <div id="tutorsContent" class="content-section"><div class="main-card"><div class="card-header"><i class="fas fa-chalkboard-teacher text-primary"></i> All Registered Tutors</div><div class="card-body"><table id="allTutorsTable" class="table" style="width:100%"><thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Qualification</th></tr></thead><tbody>{% for tutor in all_tutors %}<tr><td>{{ tutor.username }}</td><td>{{ tutor.full_name }}</td><td>{{ tutor.email }}</td><td>{{ tutor.phone_number }}</td><td>{{ tutor.last_qualification }}</td></tr>{% endfor %}</tbody></table></div></div></div>
-            <div id="studentsContent" class="content-section"><div class="main-card"><div class="card-header"><i class="fas fa-user-graduate text-primary"></i> All Registered Students</div><div class="card-body"><table id="allStudentsTable" class="table" style="width:100%"><thead><tr><th>Full Name</th><th>Email</th><th>Phone</th><th>Area</th><th>Board</th><th>Status</th></tr></thead><tbody>{% for student in all_students %}<tr><td>{{ student.full_name }}</td><td>{{ student.email }}</td><td>{{ student.phone_number }}</td><td>{{ student.area }}</td><td>{{ student.board }}</td><td><span class="badge rounded-pill bg-secondary-light text-secondary">{{ student.status.value }}</span></td></tr>{% endfor %}</tbody></table></div></div></div>
-        </main>
-    </div>
-</div>
-
-<div class="modal fade" id="verifyLeadModal" tabindex="-1" aria-labelledby="verifyLeadModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="header-icon"><i class="fas fa-user-check"></i></div>
-        <h2 class="modal-title" id="verifyLeadModalLabel">Lead Verification Summary</h2>
-      </div>
-      <form id="verify-form" method="POST" action="">
-        <div class="modal-body">
-          <div id="modal-loader" class="text-center p-5"><div class="spinner-border" style="width: 3rem; height: 3rem; color: #5D3FD3;" role="status"><span class="visually-hidden">Loading...</span></div></div>
-          <div id="modal-content-summary" style="display: none;">
-              <div class="details-grid">
-                  <div class="details-item"><strong><i class="fas fa-user me-2 text-muted"></i>Student Name</strong><span id="modal-full_name"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-envelope me-2 text-muted"></i>Contact Email</strong><span id="modal-email"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-phone-alt me-2 text-muted"></i>Phone Number</strong><span id="modal-phone_number"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-map-marker-alt me-2 text-muted"></i>Area</strong><span id="modal-area"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-school me-2 text-muted"></i>Board</strong><span id="modal-board"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-home me-2 text-muted"></i>Address</strong><span id="modal-address"></span></div>
-                  <div class="details-item"><strong><i class="fas fa-book me-2 text-muted"></i>Subjects</strong><ul class="subjects-list" id="modal-subjects-list"></ul></div>
-              </div>
-              <div class="fee-section">
-                  <div class="row align-items-center">
-                      <div class="col-md-4">
-                          <strong>Original Fee</strong>
-                          <div class="fee-display" id="modal-total_fee_original"></div>
-                      </div>
-                      <div class="col-md-4">
-                          <strong>Deduct Fee (Platform Charges)</strong>
-                          <input type="number" class="form-control" id="deducted_fee" name="deducted_fee" value="0" min="0">
-                      </div>
-                      <div class="col-md-4">
-                          <strong>Final Fee for Tutor</strong>
-                          <div class="fee-display" id="modal-total_fee_final"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Confirm & Verify</button>
-        </div>
-      </form>
     </div>
-  </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script>
-$(document).ready(function () {
-    // --- DataTable and Tab Logic (Unchanged) ---
-    const dataTableOptions = {
-        "pagingType": "simple_numbers",
-        "language": { "lengthMenu": "Show _MENU_", "search": "", "searchPlaceholder": "Search...", "paginate": { "previous": "<i class='fas fa-chevron-left'></i>", "next": "<i class='fas fa-chevron-right'></i>" } },
-        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"table-responsive"t><"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-    };
-    $('table').DataTable(dataTableOptions);
-    const tabs = { dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' }, tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'Manage Tutors' }, students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'Manage Students' } };
-    function showTab(tabName) { $.each(tabs, (key, value) => { value.tab.removeClass('active'); value.content.removeClass('active'); }); tabs[tabName].tab.addClass('active'); tabs[tabName].content.addClass('active'); $('#page-title').text(tabs[tabName].title); }
-    $.each(tabs, (name, components) => { components.tab.on('click', (e) => { e.preventDefault(); showTab(name); }); });
-    
-    // --- Final Modal Logic ---
-    var verifyLeadModal = document.getElementById('verifyLeadModal');
-    verifyLeadModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var leadId = button.getAttribute('data-lead-id');
-        var modalLoader = $('#verifyLeadModal #modal-loader');
-        var modalContent = $('#verifyLeadModal #modal-content-summary');
-        var modalBody = $('#verifyLeadModal .modal-body');
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteUserModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the user <strong id="deleteUsernameSpan"></strong>? This
+                    action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteUserForm" action="{{ url_for('delete_user') }}" method="POST">
+                        <input type="hidden" id="deleteUserId" name="user_id">
+                        <button type="submit" class="btn btn-danger">Yes, Delete User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        modalContent.hide();
-        modalBody.removeClass('visible');
-        modalLoader.show();
-        
-        var verifyForm = $('#verify-form');
-        verifyForm.attr('action', "{{ url_for('verify_lead', lead_id='PLACEHOLDER') }}".replace('PLACEHOLDER', leadId));
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 
-        fetch(`/api/lead/${leadId}`)
-            .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
-            .then(data => {
-                $('#modal-full_name').text(data.full_name || 'N/A');
-                $('#modal-email').text(data.email || 'N/A');
-                $('#modal-phone_number').text(data.phone_number || 'N/A');
-                $('#modal-area').text(data.area || 'N/A');
-                $('#modal-address').text(data.address || 'N/A');
-                $('#modal-board').text(data.board || 'N/A');
-
-                // --- DEFINITIVE FIX ---
-                // This regex reliably removes all non-digit characters.
-                const feeString = data.total_fee ? data.total_fee.toString() : "0";
-                const cleanedFee = feeString.replace(/\D/g, ''); // Use \D to match any non-digit
-                const originalFee = parseFloat(cleanedFee) || 0;
-                // --- END FIX ---
-                
-                const formatFee = (fee) => `Rs. ${fee.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
-                
-                $('#modal-total_fee_original').text(formatFee(originalFee));
-                
-                const subjectsContainer = $('#modal-subjects-list');
-                subjectsContainer.empty();
-                if (data.subjects && typeof data.subjects === 'string') {
-                    const subjectsArray = data.subjects.split(',').map(s => s.trim()).filter(Boolean);
-                    if (subjectsArray.length > 0) {
-                        subjectsArray.forEach(subject => subjectsContainer.append($('<li></li>').text(subject)));
-                    } else {
-                         subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
+    <script>
+        $(document).ready(function () {
+            // --- DataTable Initialization ---
+            const dataTableOptions = {
+                "pagingType": "simple_numbers",
+                "language": {
+                    "lengthMenu": "Show _MENU_",
+                    "search": "",
+                    "searchPlaceholder": "Search...",
+                    "paginate": {
+                        "previous": "<i class='fas fa-chevron-left'></i>",
+                        "next": "<i class='fas fa-chevron-right'></i>"
                     }
-                } else {
-                     subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
-                }
+                },
+                "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"table-responsive"t><"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            };
+            $('table').DataTable(dataTableOptions);
 
-                function calculateFinalFee() {
-                    const deductedFee = parseFloat($('#deducted_fee').val()) || 0;
-                    const finalFee = originalFee - deductedFee;
-                    $('#modal-total_fee_final').text(formatFee(finalFee));
-                }
+            // --- Tab Navigation Logic ---
+            const tabs = {
+                dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' },
+                manageTutors: { tab: $('#manageTutorsTab'), content: $('#manageTutorsContent'), title: 'Manage Tutors' },
+                tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'All Tutors' },
+                students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'All Students' }
+            };
 
-                $('#deducted_fee').on('input', calculateFinalFee);
-                calculateFinalFee(); 
+            function showTab(tabName) {
+                $.each(tabs, (key, value) => {
+                    value.tab.removeClass('active');
+                    value.content.removeClass('active');
+                });
+                tabs[tabName].tab.addClass('active');
+                tabs[tabName].content.addClass('active');
+                $('#page-title').text(tabs[tabName].title);
+            }
 
-                modalLoader.hide();
-                modalContent.show();
-                setTimeout(() => modalBody.addClass('visible'), 50);
-
-            })
-            .catch(error => {
-                console.error('Error fetching lead details:', error);
-                modalLoader.html('<div class="alert alert-danger">Failed to load details. Please try again.</div>');
+            $.each(tabs, (name, components) => {
+                components.tab.on('click', (e) => {
+                    e.preventDefault();
+                    showTab(name);
+                });
             });
-    });
-});
-</script>
 
+            // --- Verify Lead Modal Logic ---
+            var verifyLeadModal = document.getElementById('verifyLeadModal');
+            verifyLeadModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var leadId = button.getAttribute('data-lead-id');
+                var modalLoader = $('#verifyLeadModal #modal-loader');
+                var modalContent = $('#verifyLeadModal #modal-content-summary');
+                var modalBody = $('#verifyLeadModal .modal-body');
+
+                modalContent.hide();
+                modalBody.removeClass('visible');
+                modalLoader.show();
+
+                var verifyForm = $('#verify-form');
+                verifyForm.attr('action', "{{ url_for('verify_lead', lead_id='PLACEHOLDER') }}".replace('PLACEHOLDER', leadId));
+
+                fetch(`/api/lead/${leadId}`)
+                    .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
+                    .then(data => {
+                        $('#modal-full_name').text(data.full_name || 'N/A');
+                        $('#modal-email').text(data.email || 'N/A');
+                        $('#modal-phone_number').text(data.phone_number || 'N/A');
+                        $('#modal-area').text(data.area || 'N/A');
+                        $('#modal-address').text(data.address || 'N/A');
+                        $('#modal-board').text(data.board || 'N/A');
+
+                        const feeString = data.total_fee ? data.total_fee.toString() : "0";
+                        const cleanedFee = feeString.replace(/\D/g, '');
+                        const originalFee = parseFloat(cleanedFee) || 0;
+                        const formatFee = (fee) => `Rs. ${fee.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+
+                        $('#modal-total_fee_original').text(formatFee(originalFee));
+
+                        const subjectsContainer = $('#modal-subjects-list');
+                        subjectsContainer.empty();
+                        if (data.subjects && typeof data.subjects === 'string') {
+                            const subjectsArray = data.subjects.split(',').map(s => s.trim()).filter(Boolean);
+                            if (subjectsArray.length > 0) {
+                                subjectsArray.forEach(subject => subjectsContainer.append($('<li></li>').text(subject)));
+                            } else {
+                                subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
+                            }
+                        } else {
+                            subjectsContainer.append($('<li></li>').addClass('text-muted').text('No subjects listed.'));
+                        }
+
+                        function calculateFinalFee() {
+                            const deductedFee = parseFloat($('#deducted_fee').val()) || 0;
+                            const finalFee = originalFee - deductedFee;
+                            $('#modal-total_fee_final').text(formatFee(finalFee));
+                        }
+
+                        $('#deducted_fee').on('input', calculateFinalFee).val(0); // Reset on open
+                        calculateFinalFee();
+
+                        modalLoader.hide();
+                        modalContent.show();
+                        setTimeout(() => modalBody.addClass('visible'), 50);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching lead details:', error);
+                        modalLoader.html('<div class="alert alert-danger">Failed to load details. Please try again.</div>');
+                    });
+            });
+
+            // --- User Management Search and Edit Logic ---
+            $('#searchUserBtn').on('click', function () {
+                const username = $('#searchUsername').val();
+                if (!username) {
+                    alert('Please enter a username.');
+                    return;
+                }
+
+                const editSection = $('#editUserSection');
+                const errorDiv = $('#search-error');
+
+                fetch(`/api/user/${username}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw new Error(err.detail); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        $('#editUserId').val(data.id);
+                        $('#editUsername').val(data.username);
+                        $('#editUserType').val(data.user_type);
+                        $('#editFullName').val(data.full_name);
+                        $('#editEmail').val(data.email);
+                        $('#editPhoneNumber').val(data.phone_number);
+                        $('#editLastQualification').val(data.last_qualification);
+
+                        $('#deleteUserId').val(data.id);
+                        $('#deleteUsernameSpan').text(data.username);
+
+                        errorDiv.hide();
+                        editSection.slideDown();
+                    })
+                    .catch(error => {
+                        errorDiv.text(error.message).show();
+                        editSection.slideUp();
+                    });
+            });
+        });
+    </script>
 </body>
+
 </html>
