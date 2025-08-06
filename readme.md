@@ -1,6 +1,3 @@
-
-  
-
 # 📚 TutEx – Your Premier Tutoring Platform in Karachi
 
   
