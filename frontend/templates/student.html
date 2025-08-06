@@ -477,14 +477,25 @@
 
     // Define area base fees
     const areaBaseFees = {
-      "DHA": 5000,
-      "Gulshan-e-Iqbal": 4000,
-      "PECHS": 4000,
-      "Saddar": 4000,
-      "Gulistan-e-Johar": 3000,
-      "Gulberg": 4000,
-      "North Nazimabad": 3000,
-      "North Karachi": 3000
+        "DHA": 5000,
+        "Gulshan-e-Iqbal": 3000,
+        "PECHS": 4000,
+        "Saddar": 4000,
+        "Bahria Town": 5000,
+        "Clifton": 5000,
+        "Gulistan-e-Johar": 3000,
+        "Gulberg Town": 3000,
+        "North Nazimabad": 3000,
+        "North Karachi": 2000,
+        "Malir": 2000,
+        "Shah Faisal Colony": 2000,
+        "Safoora": 2000,
+        "Nazimabad": 3000,
+        "Scheme-33": 4000,
+        "Garden": 3000,
+        "Jamshed Town": 3000,
+        "Liaquatabad Town": 2000,
+        "Saddar": 3000
     };
 
     // Define board additional fees
@@ -902,21 +913,31 @@
     <form method="post" id="studentForm" action="/student/submit">
       <div id="step1">
         <h3>Select Your Area</h3>
-        <div id="areaCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
+        <div id="areaCarousel" class="carousel slide mx-auto"  data-bs-ride="carousel">
+          <div class="carousel-inner ">
             {% set area_images = {
             "DHA": "images/dha.png",
             "Gulshan-e-Iqbal": "images/gulshan.png",
+            "Clifton": "images/clifton.jpg",
+            "Bahria Town": "images/bahria.jpg",
             "PECHS": "images/pechs.png",
             "Gulistan-e-Johar": "images/johar.png",
-            "Gulberg": "images/gulberg.png",
+            "Gulberg Town": "images/gulberg.png",
             "North Nazimabad": "images/north_nazimabad.jpg",
             "North Karachi": "images/north_karachi.jpg",
+            "Malir": "images/malir.jpg",
+            "Shah Faisal Colony": "images/shahfaisal.jpg",
+            "Safoora": "images/safoora.jpg",
+            "Nazimabad": "images/nazimabad.jpg",
+            "Scheme-33": "images/scheme33.jpg",
+            "Garden": "images/garden.jpg",
+            "Jamshed Town": "images/jamshed.jpg",
+            "Liaquatabad Town": "images/liaquat.jpg",
             "Saddar": "images/sadar.jpg"
             } %}
             {% for area, img in area_images.items() %}
             <div class="carousel-item {% if loop.first %}active{% endif %}" data-area="{{ area }}">
-              <img src="/static/{{ img }}" alt="{{ area }}" class="d-block w-100">
+              <img src="/static/{{ img }}" alt="{{ area }}" class="d-block w-auto">
               <div class="carousel-caption">
                 <h5>{{ area }}</h5>
               </div>
@@ -944,7 +965,8 @@
         <div id="boardCarousel" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner-b">
             {% set board_images = {
-            "Cambridge O'Levels": "images/ciae.png",
+            "Class 1-8": "images/class1-8.jpg",
+              "Cambridge O'Levels": "images/ciae.png",
             "Cambridge A'Levels": "images/ciae.png",
             "Karachi Matric Board": "images/bsek.jpg",
             "Karachi Inter board": "images/biek.png",
@@ -954,7 +976,7 @@
             "ACCA": "images/acca.png",
             "ICMA": "images/icma.jpg",
             "Sindh Technical Board": "images/stb.png",
-            "Class 1-8": "images/class1-8.jpg",
+            
             "Others": "images/others.jpg"
             } %}
             {% for board, img in board_images.items() %}

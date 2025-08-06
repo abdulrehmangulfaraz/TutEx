@@ -1178,5 +1178,8 @@ async def get_how_it_works_page(request: Request):
 async def get_contact_page(request: Request):
     return templates.TemplateResponse("contact.html", {"request": request, "session": request.session})
 
+@app.get("/termandconditions", name="termandconditions")
+async def get_termandconditions_page(request: Request):
+    return templates.TemplateResponse("termandconditions.html", {"request": request, "session": request.session})
 
 

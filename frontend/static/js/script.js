@@ -3,11 +3,27 @@ const premiumSubjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Audi
 
 // Define area base fees
 const areaBaseFees = {
-  "DHA": 5000,
-  "Gulshan-e-Iqbal": 4000,
+  "DHA": 8000,
+  "Gulshan-e-Iqbal": 3000,
   "PECHS": 4000,
-  "Saddar": 4000
+  "Saddar": 4000,
+  "Bahria Town": 5000,
+  "Clifton": 5000,
+  "Gulistan-e-Johar": 3000,
+  "Gulberg Town": 3000,
+  "North Nazimabad": 3000,
+  "North Karachi": 2000,
+  "Malir": 2000,
+  "Shah Faisal Colony": 2000,
+  "Safoora": 2000,
+  "Nazimabad": 3000,
+  "Scheme-33": 4000,
+  "Garden": 3000,
+  "Jamshed Town": 3000,
+  "Liaquatabad Town": 2000,
+  "Saddar": 3000
 };
+
 
 // Define board additional fees
 const boardAdditionalFees = {

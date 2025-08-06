@@ -241,6 +241,21 @@
     .form-group {
         margin-bottom: 1.5rem;
     }
+    .terms-box {
+  height: 350px;
+  overflow-y: scroll;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.terms-box p {
+  margin-bottom: 15px;
+}
 
     .form-group label {
         font-size: 0.95rem;
@@ -494,79 +509,143 @@
     </div>
     
     <div class="registration-container" id="registrationForm" style="display: none;">
-        <div class="form-header">
-            <h2>Tutor Registration</h2>
-            <p>Fill in the details to register as a tutor</p>
+    <div class="form-header">
+        <h2>Tutor Registration</h2>
+        <p>Fill in the details to register as a tutor</p>
+    </div>
+
+    <div id="registrationSteps">
+        <!-- Step 1: Tutor Registration Form -->
+        <div id="tutorFormStep" style="display: block;">
+            <form id="tutorForm">
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <!-- Basic Fields -->
+                        <div class="mb-3">
+                            <label for="tutorUsername" class="form-label required">Username</label>
+                            <input type="text" class="form-control" id="tutorUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorPassword" class="form-label required">Password</label>
+                            <input type="password" class="form-control" id="tutorPassword" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorName" class="form-label required">Full Name</label>
+                            <input type="text" class="form-control" id="tutorName" name="full_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorFatherName" class="form-label required">Father's Name</label>
+                            <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="tutorPhone" class="form-label required">Phone Number</label>
+                            <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorEmail" class="form-label required">Email Address</label>
+                            <input type="email" class="form-control" id="tutorEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorQualification" class="form-label required">Last Qualification</label>
+                            <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorCnicFront" class="form-label required">CNIC Front Image</label>
+                            <div class="file-upload">
+                                <div class="file-upload-btn">
+                                    <i class="fas fa-upload file-upload-icon"></i>
+                                    <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+                                </div>
+                                <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tutorCnicBack" class="form-label required">CNIC Back Image</label>
+                            <div class="file-upload">
+                                <div class="file-upload-btn">
+                                    <i class="fas fa-upload file-upload-icon"></i>
+                                    <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
+                                </div>
+                                <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="user_type" value="Tutor">
+
+                <!-- Terms Box -->
+                <div class="terms-container my-4">
+                    <h5>Terms & Conditions</h5>
+                    <div class="terms-box" style="height: 200px; overflow-y: scroll; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; font-size: 14px;">
+                        <!-- Paste your full terms text here -->
+                        <p><strong>Effective From 1st August 2025</strong></p>
+                        <p><strong>INTRODUCTION:</strong></p>
+                        <p>Terms & Conditions
+Effective From 1st August 2025
+INTRODUCTION:
+1. TutEx.pk having its enlisted office at University Road, Karachi (hereinafter alluded to as “TutEx.pk”, “we”, “us”, or “our”) gives online courses and leads online classes, demo and meetings for the understudies trying to enlist for such courses which Services are open at www.tutex.pk makes the Services accessible.
+2. By getting to or utilizing the Site or Services, by means of the Website, you would demonstrate that you have perused, and that you comprehend and consent to be limited by these terms and get our Services (“Terms of Services” or “Terms”), regardless of whether you have enrolled with the Site or by directly contacting. 
+3. In this manner, if it’s not too much trouble read these Terms of administration before getting to or utilizing the Site or Services cautiously as they contain significant data in regards to your legitimate rights, cures and commitments.
+4. In the event that you don’t consent to these Terms, at that point you reserve no privilege to access or utilize the Site, Services.
+5. In the event that you are utilizing the Site, or Services then these Terms of Service are authoritative among you and TutEx.pk.
+TERMS OF SERVICE (for Tutors):
+These terms and conditions are applicable for all tutors who get assignments through us from any media.
+1) To register as a tutor, you must be at least 18 years of age. Below the age of 18, a parent or legal guardian’s consent is required.
+2) TutEx.pk reserves all rights to reject or refuse any registrations. 
+3) The data you flexibly ought to be as precise as could be expected under the circumstances, and try not to give false or off base data which may delude customers and TutEx.pk organizers. 
+4) TutEx.pk maintains all authority to reject confirmation of any mentors, and the privilege to unverify any recently checked guides, subordinate upon the judgment of TutEx.pk facilitators.
+5) Fee installments will only be collected by the company for each and every month.
+6) The installment to the tutors will be as indicated by the attendance sheet. In the event that any entry is deceiving TutEx.pk has the full option to sack the installment for that class.
+7) If a Tutor continues or discontinues the class without our permission then we are not liable for any kind of payment.
+8) A Tutor is bound to conduct weekly tests (at least 1 test in 2 weeks) and share Monthly Progress Reports and feedback to the TutEx.pk Coordinator & Parents in the given format mandatorily with which the feedback of the student must be attached. Homework is to be assigned following each class within 2-3 hours of class dismissal. And regular evaluations of homework are necessary.
+9) Tutors are expected to not indulge in personal activities like making calls or texting during the classes as the entire focus is required to be on the pupil and teaching. This is to demonstrate the formal and dedicated attributes of our tutors which would influence our brand reputation. The enhanced quality of tutoring recorded by the feedback provided will certainly be recognized and applauded by TutEx.pk.
+10) If anyone is found breaching the contract or involved in direct dealing with our clients unethically, any misconduct with the client, misbehave with the client, any damage to their property or collateral to their property or any person, a penalty of Rs 500,000 or more depending upon the damages will be chargeable & he/she would be responsible for facing legal actions.
+11) In case, due to any reason you wish to discontinue your agreement with TutEx.pk, a notice period of 60 days has to be served without any leaves.
+
+12) Tutors are strictly instructed not to share any personal information of assigned students and parents (name, contact, email, grade or subject) with anyone outside the firm.
+13) Any attempt to directly engage with assigned students or their parents, bypassing TutEx.pk for monetary benefits either during or after employment period with the firm, will be considered a contract breach. Tutors are not allowed to promote their own venture to TutEx.pk’s clients or tutors. TutEx.pk can take legal action as per applicable laws, and any disputes will be resolved through arbitration in Karachi, Pakistan. This will also lead to the cancellation of any outstanding payments owed to the company.
+ 
+14) Enrolling with TutEx.pk doesn’t ensure educational cost task occupations to you, as employments are allocated dependent on educational cost request and how well the tutors coordinate with the client’s prerequisites.
+15) Beginning with the upcoming payment cycle, we will be processing tutor payments by 15th of each month for the previous month’s services rendered.
+16) Tutor is bound to withdraw the accepted fee from the web application, or after deduction.
+
+By registering with TutEx.pk as a tutor, you acknowledge that you must adhere to the provided guidelines. You also agree that if you violate these obligations during your employment, the company will suffer irreparable harm, and monetary damages alone will not be sufficient to address the breach. As a result, TutEx.pk is entitled to seek injunctive relief, along with any other legal or equitable remedies, to enforce these provisions.
+These are a few important rules which need to be adhered to strictly from now onwards for result-driven lesson delivery. Your cooperation, performance & reviews from clients would play a major role in your appraisal & opportunities preference.   We appreciate your passion and contribution to making TutEx.pk a successful endeavor.
+</p>
+                        <!-- Continue your full terms here as needed -->
+                    </div>
+
+                    <!-- Checkbox -->
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="acceptTerms">
+                        <label class="form-check-label" for="acceptTerms">
+                            I have read and agree to the Terms & Conditions
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="button" class="btn btn-primary" id="registerBtn" onclick="submitTutorRegistration()" disabled>Register</button>
+                </div>
+            </form>
         </div>
-        
-        <div id="registrationSteps">
-            <!-- Step 1: Tutor Registration Form -->
-            <div id="tutorFormStep" style="display: block;">
-                <form id="tutorForm">
-                    <div class="row">
-                        <!-- Left Column -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="tutorUsername" class="form-label required">Username</label>
-                                <input type="text" class="form-control" id="tutorUsername" name="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorPassword" class="form-label required">Password</label>
-                                <input type="password" class="form-control" id="tutorPassword" name="password" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorName" class="form-label required">Full Name</label>
-                                <input type="text" class="form-control" id="tutorName" name="full_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorFatherName" class="form-label required">Father's Name</label>
-                                <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
-                            </div>
-                        </div>
+    </div>
+</div>
 
-                        <!-- Right Column -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="tutorPhone" class="form-label required">Phone Number</label>
-                                <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorEmail" class="form-label required">Email Address</label>
-                                <input type="email" class="form-control" id="tutorEmail" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorQualification" class="form-label required">Last Qualification</label>
-                                <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorCnicFront" class="form-label required">CNIC Front Image</label>
-                                <div class="file-upload">
-                                    <div class="file-upload-btn">
-                                        <i class="fas fa-upload file-upload-icon"></i>
-                                        <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
-                                    </div>
-                                    <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tutorCnicBack" class="form-label required">CNIC Back Image</label>
-                                <div class="file-upload">
-                                    <div class="file-upload-btn">
-                                        <i class="fas fa-upload file-upload-icon"></i>
-                                        <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
-                                    </div>
-                                    <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!-- Enable Button on Terms Acceptance -->
+<script>
+    document.getElementById('acceptTerms').addEventListener('change', function () {
+        document.getElementById('registerBtn').disabled = !this.checked;
+    });
+</script>
 
-                    <input type="hidden" name="user_type" value="Tutor">
-                    <div class="d-grid mt-4">
-                        <button type="button" class="btn btn-primary" onclick="submitTutorRegistration()">Register</button>
-                    </div>
-                </form>
-            </div>
 
             <!-- Step 2: OTP Verification -->
             <div id="otpVerificationStep" style="display: none;">
