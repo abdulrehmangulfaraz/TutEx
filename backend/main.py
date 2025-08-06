@@ -70,7 +70,7 @@ app.add_middleware(SlowAPIMiddleware)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
+app.mount("/static", StaticFiles(directory="../backend/static"), name="static")
 
 # Configure templates
 templates = Jinja2Templates(directory="../frontend/templates")
@@ -1209,6 +1209,9 @@ async def get_user_details(
         "email": user.email,
         "phone_number": user.phone_number,
         "last_qualification": user.last_qualification,
+        "fathers_name": user.fathers_name,
+        "cnic_front_path": user.cnic_front_path,
+        "cnic_back_path": user.cnic_back_path
     }
 
 @app.post("/api/user/update", name="update_user_details")

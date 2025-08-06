@@ -647,7 +647,7 @@
                     <div class="main-card">
                         <div class="card-header">
                             <i class="fas fa-users-cog text-primary"></i>
-                            Manage Tutors & Admins
+                            Manage Tutors
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -674,6 +674,11 @@
                                             <label for="editUsername" class="form-label">Username (Read-only)</label>
                                             <input type="text" id="editUsername" class="form-control" readonly>
                                         </div>
+                                         <div class="col-md-6 mb-3">
+                                            <label for="editFathersName" class="form-label">Father's Name</label>
+                                            <input type="text" id="editFathersName" name="fathers_name" class="form-control"
+                                                required>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -698,6 +703,16 @@
                                                 Qualification</label>
                                             <input type="text" id="editLastQualification" name="last_qualification"
                                                 class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">CNIC Front</label>
+                                            <img id="cnicFrontImage" src="" alt="CNIC Front" class="img-fluid rounded">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">CNIC Back</label>
+                                            <img id="cnicBackImage" src="" alt="CNIC Back" class="img-fluid rounded">
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end gap-2 mt-3">
@@ -876,7 +891,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
     <script>
         $(document).ready(function () {
             // --- DataTable Initialization ---
@@ -1006,11 +1020,13 @@
                     .then(data => {
                         $('#editUserId').val(data.id);
                         $('#editUsername').val(data.username);
-                        $('#editUserType').val(data.user_type);
                         $('#editFullName').val(data.full_name);
+                        $('#editFathersName').val(data.fathers_name);
                         $('#editEmail').val(data.email);
                         $('#editPhoneNumber').val(data.phone_number);
                         $('#editLastQualification').val(data.last_qualification);
+                        $('#cnicFrontImage').attr('src', `/static/${data.cnic_front_path}`);
+                        $('#cnicBackImage').attr('src', `/static/${data.cnic_back_path}`);
 
                         $('#deleteUserId').val(data.id);
                         $('#deleteUsernameSpan').text(data.username);
