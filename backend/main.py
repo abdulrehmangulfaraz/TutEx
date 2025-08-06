@@ -1270,3 +1270,101 @@ async def delete_user(
 
     flash(request, f"Successfully deleted tutor: {user_to_delete.username}", "success")
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+# --- NEW: Admin Student Management API Endpoints ---
+
+@app.get("/api/student/{email}", name="get_student_details")
+async def get_student_details(
+    email: str,
+    db: Session = Depends(get_db),
+    request: Request = None
+):
+    """
+    API endpoint to fetch a student's registration details by email.
+    """
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    student = db.query(StudentRegistration).filter(StudentRegistration.email == email).first()
+    if not student:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
+
+    return {
+        "id": student.id,
+        "full_name": student.full_name,
+        "email": student.email,
+        "phone_number": student.phone_number,
+        "address": student.address,
+        "area": student.area,
+        "board": student.board,
+        "subjects": student.subjects,
+        "total_fee": student.total_fee,
+        "status": student.status.value
+    }
+
+@app.post("/api/student/update", name="update_student_details")
+async def update_student_details(
+    request: Request,
+    db: Session = Depends(get_db),
+    student_id: int = Form(...),
+    full_name: str = Form(...),
+    email: str = Form(...),
+    phone_number: str = Form(...),
+    address: str = Form(...),
+    area: str = Form(...),
+    board: str = Form(...),
+    subjects: str = Form(...)
+):
+    """
+    API endpoint for an admin to update a student's details.
+    """
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    student_to_update = db.query(StudentRegistration).filter(StudentRegistration.id == student_id).first()
+    if not student_to_update:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
+
+    if student_to_update.status != LeadStatus.PENDING_ADMIN_VERIFICATION:
+        flash(request, "Error: Only students pending admin verification can be edited.", "danger")
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+    student_to_update.full_name = full_name
+    student_to_update.email = email
+    student_to_update.phone_number = phone_number
+    student_to_update.address = address
+    student_to_update.area = area
+    student_to_update.board = board
+    student_to_update.subjects = subjects
+    db.commit()
+    
+    flash(request, f"Successfully updated details for student: {student_to_update.full_name}", "success")
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/api/student/delete", name="delete_student")
+async def delete_student(
+    request: Request,
+    db: Session = Depends(get_db),
+    student_id: int = Form(...)
+):
+    """
+    API endpoint for an admin to delete a student registration.
+    """
+    if 'user' not in request.session or request.session.get('user', {}).get('user_type') != 'admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+
+    student_to_delete = db.query(StudentRegistration).filter(StudentRegistration.id == student_id).first()
+    if not student_to_delete:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
+
+    # UPDATED LOGIC: Prevent deletion if a tutor is matched OR if a match is pending approval.
+    if student_to_delete.status in [LeadStatus.TUTOR_MATCHED, LeadStatus.PENDING_TUTOR_APPROVAL]:
+        flash(request, f"Error: Cannot delete registration for {student_to_delete.full_name} as it has a pending or confirmed tutor match.", "danger")
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+    db.delete(student_to_delete)
+    db.commit()
+
+    flash(request, f"Successfully deleted registration for student: {student_to_delete.full_name}", "success")
+    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)

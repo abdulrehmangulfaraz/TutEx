@@ -466,8 +466,10 @@
             <ul class="nav flex-column admin-sidebar-nav">
                 <li class="nav-item active" id="dashboardTab"><a class="nav-link" href="#"><i
                             class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li class="nav-item" id="manageTutorsTab"><a class="nav-link" href="#"><i
-                            class="fas fa-users-cog"></i> Manage Tutors</a></li>
+                <li class="nav-item" id="manageTutorsTab"><a class="nav-link" href="#"><i class="fas fa-users-cog"></i>
+                        Manage Tutors</a></li>
+                <li class="nav-item" id="manageStudentsTab"><a class="nav-link" href="#"><i class="fas fa-user-cog"></i>
+                        Manage Students</a></li>
                 <li class="nav-item" id="tutorsTab"><a class="nav-link" href="#"><i
                             class="fas fa-chalkboard-teacher"></i> All Tutors</a></li>
                 <li class="nav-item" id="studentsTab"><a class="nav-link" href="#"><i class="fas fa-user-graduate"></i>
@@ -630,7 +632,8 @@
                                                 <td>
                                                     <span
                                                         class="badge rounded-pill {% if lead.tuition_status == 'completed' %}bg-success-light text-success{% elif lead.tuition_status == 'dropped' %}bg-danger-light text-danger{% elif lead.tuition_status == 'ongoing' %}bg-info-light text-info{% else %}bg-secondary-light text-secondary{% endif %}">
-                                                        {{ lead.tuition_status.capitalize() if lead.tuition_status else 'Ongoing' }}
+                                                        {{ lead.tuition_status.capitalize() if lead.tuition_status else
+                                                        'Ongoing' }}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -661,6 +664,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="search-error" class="alert alert-danger mt-3" style="display: none;"></div>
 
                             <div id="editUserSection" class="mt-4" style="display: none;">
                                 <hr>
@@ -674,10 +678,10 @@
                                             <label for="editUsername" class="form-label">Username (Read-only)</label>
                                             <input type="text" id="editUsername" class="form-control" readonly>
                                         </div>
-                                         <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-3">
                                             <label for="editFathersName" class="form-label">Father's Name</label>
-                                            <input type="text" id="editFathersName" name="fathers_name" class="form-control"
-                                                required>
+                                            <input type="text" id="editFathersName" name="fathers_name"
+                                                class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -795,6 +799,114 @@
                         </div>
                     </div>
                 </div>
+                <div id="manageStudentsContent" class="content-section">
+                    <div class="main-card">
+                        <div class="card-header">
+                            <i class="fas fa-user-cog text-primary"></i>
+                            Manage Student Registrations
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="email" id="searchStudentEmail" class="form-control"
+                                            placeholder="Enter student's email to find and edit...">
+                                        <button class="btn btn-primary" type="button" id="searchStudentBtn">
+                                            <i class="fas fa-search me-1"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="search-student-error" class="alert alert-danger" style="display: none;"></div>
+
+                            <div id="editStudentSection" class="mt-4" style="display: none;">
+                                <hr>
+                                <div id="search-student-error" class="alert alert-danger" style="display: none;"></div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Edit Student Details</h5>
+                                    <div id="studentStatusBadge" class="badge rounded-pill fs-6"></div>
+                                </div>
+
+                                <form id="editStudentForm" method="POST">
+                                    <input type="hidden" id="editStudentId" name="student_id">
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentFullName" class="form-label">Full Name</label>
+                                            <input type="text" id="editStudentFullName" name="full_name"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentEmail" class="form-label">Email</label>
+                                            <input type="email" id="editStudentEmail" name="email" class="form-control"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentPhone" class="form-label">Phone Number</label>
+                                            <input type="tel" id="editStudentPhone" name="phone_number"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentAddress" class="form-label">Address</label>
+                                            <input type="text" id="editStudentAddress" name="address"
+                                                class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentArea" class="form-label">Area</label>
+                                            <input type="text" id="editStudentArea" name="area" class="form-control"
+                                                required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="editStudentBoard" class="form-label">Board</label>
+                                            <input type="text" id="editStudentBoard" name="board" class="form-control"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="editStudentSubjects" class="form-label">Subjects
+                                                (comma-separated)</label>
+                                            <textarea id="editStudentSubjects" name="subjects" class="form-control"
+                                                rows="3" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Total Fee</label>
+                                            <p id="displayStudentFee"
+                                                class="form-control-plaintext fw-bold text-success fs-5"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
+                                        <div id="updateStudentMessage" class="form-text text-muted me-3"
+                                            style="display: none;"></div>
+                                        <div id="deleteStudentMessage" class="form-text text-muted me-3"
+                                            style="display: none;"></div>
+
+                                        <button type="submit" id="updateStudentBtn"
+                                            formaction="{{ url_for('update_student_details') }}"
+                                            class="btn btn-success">
+                                            <i class="fas fa-save me-1"></i> Update Student
+                                        </button>
+                                        <button type="button" id="deleteStudentBtn" class="btn btn-danger"
+                                            data-bs-toggle="modal" data-bs-target="#deleteStudentModal">
+                                            <i class="fas fa-trash-alt me-1"></i> Delete Student
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -886,6 +998,29 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteStudentModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the registration for <strong id="deleteStudentNameSpan"></strong>?
+                    This
+                    action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteStudentForm" action="{{ url_for('delete_student') }}" method="POST">
+                        <input type="hidden" id="deleteStudentId" name="student_id">
+                        <button type="submit" class="btn btn-danger">Yes, Delete Student</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -913,6 +1048,7 @@
             const tabs = {
                 dashboard: { tab: $('#dashboardTab'), content: $('#dashboardContent'), title: 'Dashboard' },
                 manageTutors: { tab: $('#manageTutorsTab'), content: $('#manageTutorsContent'), title: 'Manage Tutors' },
+                manageStudents: { tab: $('#manageStudentsTab'), content: $('#manageStudentsContent'), title: 'Manage Students' },
                 tutors: { tab: $('#tutorsTab'), content: $('#tutorsContent'), title: 'All Tutors' },
                 students: { tab: $('#studentsTab'), content: $('#studentsContent'), title: 'All Students' }
             };
@@ -1000,6 +1136,7 @@
             });
 
             // --- User Management Search and Edit Logic ---
+            // --- User Management Search and Edit Logic ---
             $('#searchUserBtn').on('click', function () {
                 const username = $('#searchUsername').val();
                 if (!username) {
@@ -1010,10 +1147,15 @@
                 const editSection = $('#editUserSection');
                 const errorDiv = $('#search-error');
 
+                // Hide previous results and errors on new search
+                editSection.slideUp();
+                errorDiv.hide();
+
                 fetch(`/api/user/${username}`)
                     .then(response => {
                         if (!response.ok) {
-                            return response.json().then(err => { throw new Error(err.detail); });
+                            // Throw an error to be caught by the .catch block
+                            throw new Error(`No tutor found with the username "${username}". Please check and try again.`);
                         }
                         return response.json();
                     })
@@ -1031,14 +1173,93 @@
                         $('#deleteUserId').val(data.id);
                         $('#deleteUsernameSpan').text(data.username);
 
-                        errorDiv.hide();
                         editSection.slideDown();
                     })
                     .catch(error => {
+                        // Display a friendly error message
                         errorDiv.text(error.message).show();
-                        editSection.slideUp();
                     });
             });
+        });
+        // --- Student Management Search and Edit Logic ---
+        $('#searchStudentBtn').on('click', function () {
+            const email = $('#searchStudentEmail').val();
+            if (!email) {
+                alert('Please enter a student email.');
+                return;
+            }
+
+            const editSection = $('#editStudentSection');
+            const errorDiv = $('#search-student-error');
+            const updateBtn = $('#updateStudentBtn');
+            const deleteBtn = $('#deleteStudentBtn');
+            const statusBadge = $('#studentStatusBadge');
+            const updateMsg = $('#updateStudentMessage');
+            const deleteMsg = $('#deleteStudentMessage');
+
+            // Hide previous results and messages on new search
+            editSection.slideUp();
+            errorDiv.hide();
+            updateMsg.hide();
+            deleteMsg.hide();
+
+            fetch(`/api/student/${email}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`No student found with the email "${email}". Please check and try again.`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate form fields
+                    $('#editStudentId').val(data.id);
+                    $('#editStudentFullName').val(data.full_name);
+                    $('#editStudentEmail').val(data.email);
+                    $('#editStudentPhone').val(data.phone_number);
+                    $('#editStudentAddress').val(data.address);
+                    $('#editStudentArea').val(data.area);
+                    $('#editStudentBoard').val(data.board);
+                    $('#editStudentSubjects').val(data.subjects);
+                    $('#displayStudentFee').text(`Rs. ${data.total_fee.toFixed(0)}`);
+
+                    // Handle status badge and conditional logic for buttons and messages
+                    statusBadge.text(data.status.replace(/_/g, ' '));
+
+                    // Logic for Update Button
+                    if (data.status === 'PENDING_ADMIN_VERIFICATION') {
+                        statusBadge.attr('class', 'badge rounded-pill fs-6 bg-warning text-dark');
+                        updateBtn.prop('disabled', false);
+                        updateMsg.hide();
+                    } else {
+                        updateBtn.prop('disabled', true);
+                        updateMsg.text('Editing is only allowed for students with a "Pending Admin Verification" status.').show();
+                    }
+
+                    // Logic for Delete Button
+                    if (data.status === 'TUTOR_MATCHED' || data.status === 'PENDING_TUTOR_APPROVAL') {
+                        statusBadge.attr('class', 'badge rounded-pill fs-6 bg-success');
+                        deleteBtn.prop('disabled', true);
+                        deleteMsg.text('Cannot delete a student with a pending or matched tutor.').show();
+                    } else {
+                        deleteBtn.prop('disabled', false);
+                        deleteMsg.hide();
+                    }
+
+                    // Set badge color for other states
+                    if (data.status === 'VERIFIED_AVAILABLE') {
+                        statusBadge.attr('class', 'badge rounded-pill fs-6 bg-info text-dark');
+                    }
+
+
+                    // Populate delete modal
+                    $('#deleteStudentId').val(data.id);
+                    $('#deleteStudentNameSpan').text(data.full_name);
+
+                    editSection.slideDown();
+                })
+                .catch(error => {
+                    errorDiv.text(error.message).show();
+                });
         });
     </script>
 </body>
