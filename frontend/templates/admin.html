@@ -47,6 +47,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease-in-out;
         }
 
         .sidebar-header {
@@ -107,6 +108,7 @@
         .admin-content {
             width: calc(100% - 260px);
             margin-left: 260px;
+            transition: all 0.3s ease-in-out;
         }
 
         .top-navbar {
@@ -117,11 +119,22 @@
             position: sticky;
             top: 0;
             z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .top-navbar h1 {
             font-size: 1.5rem;
             font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        #menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
             color: var(--text-primary);
         }
 
@@ -453,6 +466,34 @@
         #verifyLeadModal .modal-footer .btn-primary:hover {
             background-color: #4c2db3;
         }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .admin-sidebar {
+                transform: translateX(-260px);
+                z-index: 1000;
+            }
+            body.sidebar-open .admin-sidebar {
+                transform: translateX(0);
+            }
+            .admin-content {
+                width: 100%;
+                margin-left: 0;
+            }
+            #menu-toggle {
+                display: block;
+            }
+            main {
+                padding: 1.5rem;
+            }
+            .top-navbar {
+                padding: 1rem;
+            }
+            .dataTables_wrapper .row:first-of-type > div {
+                margin-bottom: 1rem;
+            }
+        }
+        
     </style>
 </head>
 
@@ -481,7 +522,9 @@
 
         <div class="admin-content">
             <header class="top-navbar">
+                <button id="menu-toggle"><i class="fas fa-bars"></i></button>
                 <h1 id="page-title">Dashboard</h1>
+                <div></div>
             </header>
 
             <main>
@@ -1043,6 +1086,11 @@
                 "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"table-responsive"t><"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             };
             $('table').DataTable(dataTableOptions);
+            
+            // --- Sidebar Toggle for Mobile ---
+            $('#menu-toggle').on('click', function() {
+                $('body').toggleClass('sidebar-open');
+            });
 
             // --- Tab Navigation Logic ---
             const tabs = {
@@ -1061,6 +1109,10 @@
                 tabs[tabName].tab.addClass('active');
                 tabs[tabName].content.addClass('active');
                 $('#page-title').text(tabs[tabName].title);
+                
+                if (window.innerWidth < 992) {
+                    $('body').removeClass('sidebar-open');
+                }
             }
 
             $.each(tabs, (name, components) => {
