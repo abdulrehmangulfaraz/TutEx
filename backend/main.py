@@ -1368,3 +1368,94 @@ async def delete_student(
 
     flash(request, f"Successfully deleted registration for student: {student_to_delete.full_name}", "success")
     return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+
+# --- PASSWORD RESET ENDPOINTS ---
+
+@app.post("/forgot-password")
+async def forgot_password(
+    email: EmailStr = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email does not exist."
+        )
+
+    # Generate OTP and set expiration
+    otp = str(random.randint(100000, 999999))
+    otp_created_at = datetime.now(timezone.utc)
+    
+    user.otp = otp
+    user.otp_created_at = otp_created_at
+    db.commit()
+
+    # Send OTP email
+    try:
+        await send_otp_email(email, otp)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": "An OTP has been sent to your email address."}
+        )
+    except Exception as e:
+        logger.error(f"Failed to send password reset OTP email: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send OTP email. Please try again later."
+        )
+
+@app.post("/reset-password")
+async def reset_password(
+    email: EmailStr = Form(...),
+    otp: str = Form(...),
+    new_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid request. User not found."
+        )
+
+    # Verify OTP
+    if not user.otp or user.otp != otp:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or incorrect OTP."
+        )
+
+    # --- CORRECTED SECTION FOR TIMEZONE-SAFE CHECK ---
+    # Verify OTP expiration
+    if not user.otp_created_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Could not verify OTP time. Please request a new one."
+        )
+
+    # Make the stored time aware of its UTC timezone before comparing
+    otp_creation_time_utc = user.otp_created_at.replace(tzinfo=timezone.utc)
+    current_time_utc = datetime.now(timezone.utc)
+
+    if (current_time_utc - otp_creation_time_utc) > timedelta(minutes=5):
+        # Clear the expired OTP from the database
+        user.otp = None
+        user.otp_created_at = None
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="OTP has expired. Please request a new one."
+        )
+    # --- END OF CORRECTION ---
+
+    # Update password
+    user.hashed_password = pwd_context.hash(new_password)
+    user.otp = None  # Clear OTP after use
+    user.otp_created_at = None
+    db.commit()
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"message": "Your password has been reset successfully. You can now log in."}
+    )

@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .registration-btn {
             background: linear-gradient(45deg, #6a11cb, #2575fc);
             color: white;
@@ -26,7 +26,7 @@
             overflow: hidden;
             z-index: 1;
         }
-        
+
         .registration-btn:before {
             content: '';
             position: absolute;
@@ -40,17 +40,17 @@
             transform: scaleX(0);
             transform-origin: right;
         }
-        
+
         .registration-btn:hover:before {
             transform: scaleX(1);
             transform-origin: left;
         }
-        
+
         .registration-btn:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             transform: translateY(-3px);
         }
-        
+
         .registration-container {
             max-width: 800px;
             margin: 2rem auto;
@@ -60,44 +60,44 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
-        
+
         .registration-container:hover {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
-        
+
         .form-header {
             text-align: center;
             margin-bottom: 2rem;
             color: #333;
         }
-        
+
         .form-header h2 {
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-        
+
         .form-header p {
             color: #666;
         }
-        
+
         .form-control {
             border-radius: 8px;
             padding: 12px 15px;
             border: 1px solid #e0e0e0;
             transition: all 0.3s ease;
         }
-        
+
         .form-control:focus {
             border-color: #6a11cb;
             box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
         }
-        
+
         .form-label {
             font-weight: 600;
             color: #444;
             margin-bottom: 0.5rem;
         }
-        
+
         .btn-primary {
             background: linear-gradient(45deg, #6a11cb, #2575fc);
             border: none;
@@ -106,23 +106,23 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary:hover {
             background: linear-gradient(45deg, #5a0cb6, #1565e6);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
         }
-        
+
         .form-check-input:checked {
             background-color: #6a11cb;
             border-color: #6a11cb;
         }
-        
+
         .nav-tabs {
             border-bottom: 2px solid #e0e0e0;
             margin-bottom: 2rem;
         }
-        
+
         .nav-tabs .nav-link {
             border: none;
             color: #666;
@@ -131,23 +131,23 @@
             margin-right: 10px;
             transition: all 0.3s ease;
         }
-        
+
         .nav-tabs .nav-link:hover {
             color: #6a11cb;
         }
-        
+
         .nav-tabs .nav-link.active {
             color: #6a11cb;
             background: transparent;
             border-bottom: 3px solid #6a11cb;
         }
-        
+
         .file-upload {
             position: relative;
             display: inline-block;
             width: 100%;
         }
-        
+
         .file-upload-input {
             position: absolute;
             left: 0;
@@ -157,7 +157,7 @@
             height: 100%;
             cursor: pointer;
         }
-        
+
         .file-upload-btn {
             display: flex;
             align-items: center;
@@ -170,24 +170,24 @@
             color: #666;
             transition: all 0.3s ease;
         }
-        
+
         .file-upload-btn:hover {
             background-color: #f0f0f0;
             border-color: #6a11cb;
             color: #6a11cb;
         }
-        
+
         .file-upload-icon {
             margin-right: 10px;
         }
-        
+
         .otp-container {
             display: flex;
             gap: 10px;
             justify-content: center;
             margin: 1rem 0;
         }
-        
+
         .otp-input {
             width: 50px;
             height: 50px;
@@ -196,12 +196,12 @@
             border-radius: 8px;
             border: 1px solid #e0e0e0;
         }
-        
+
         .otp-input:focus {
             border-color: #6a11cb;
             box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
         }
-        
+
         .toast-container {
             position: fixed;
             top: 20px;
@@ -210,652 +210,784 @@
         }
     </style>
 </head>
+
 <body>
     {% extends "base.html" %}
-{% block title %}Login{% endblock %}
-{% block content %}
-<style>
-    /* Custom styles for a simple, professional, and user-friendly login form */
-    .login-container {
-        max-width: 400px;
-        margin: 3rem auto;
-        padding: 2rem;
-        background: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
+    {% block title %}Login{% endblock %}
+    {% block content %}
+    <style>
+        /* Custom styles for a simple, professional, and user-friendly login form */
+        .login-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
 
-    .login-container:hover {
-        transform: translateY(-5px);
-    }
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
 
-    .login-title {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #333;
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    .terms-box {
-  height: 350px;
-  overflow-y: scroll;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #333;
-}
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
 
-.terms-box p {
-  margin-bottom: 15px;
-}
+        .terms-box {
+            height: 350px;
+            overflow-y: scroll;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+        }
 
-    .form-group label {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: #555;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
+        .terms-box p {
+            margin-bottom: 15px;
+        }
 
-    .form-control {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 0.75rem;
-        font-size: 1rem;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
+        .form-group label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
 
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-        outline: none;
-    }
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .form-control::placeholder {
-        color: #aaa;
-    }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
 
-    .login-btn {
-        width: 100%;
-        padding: 0.75rem;
-        font-size: 1.1rem;
-        font-weight: 500;
-        border-radius: 8px;
-        background-color: #007bff;
-        border: none;
-        color: #fff;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
+        .form-control::placeholder {
+            color: #aaa;
+        }
 
-    .login-btn:hover {
-        background-color: #0056b3;
-        transform: scale(1.02);
-    }
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-    .login-btn:active {
-        transform: scale(0.98);
-    }
+        .login-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.02);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
 
 
-    /* Form container enhancements */
-    .registration-container {
-        background: #ffffff;
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .registration-container:hover {
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    /* Form header improvements */
-    .form-header h2 {
-        color: #2c3e50;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-        position: relative;
-        padding-bottom: 10px;
-    }
-
-    .form-header h2:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 3px;
-        background: linear-gradient(45deg, #6a11cb, #2575fc);
-        border-radius: 3px;
-    }
-
-    .form-header p {
-        color: #7f8c8d;
-        font-size: 0.95rem;
-    }
-
-    /* Form input enhancements */
-    .form-control {
-        border: 1px solid #dfe6e9;
-        border-radius: 8px;
-        padding: 12px 15px;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-    }
-
-    .form-control:focus {
-        border-color: #6a11cb;
-        box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
-        background-color: #fff;
-    }
-
-    /* Label styling */
-    .form-label {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    /* Required field indicators */
-    .form-label.required:after {
-        content: " *";
-        color: #e74c3c;
-    }
-
-    /* File upload improvements */
-    .file-upload-btn {
-        border: 1px dashed #bdc3c7;
-        background-color: #f8f9fa;
-        transition: all 0.3s ease;
-        border-radius: 8px;
-    }
-
-    .file-upload-btn:hover {
-        border-color: #6a11cb;
-        background-color: #f1f1f1;
-    }
-
-    /* Radio button styling */
-    .form-check-input {
-        margin-top: 0.2rem;
-    }
-
-    .form-check-label {
-        margin-left: 0.3rem;
-        color: #34495e;
-    }
-
-    /* Button enhancements */
-    .btn-outline-secondary {
-        border-color: #bdc3c7;
-        color: #7f8c8d;
-        padding: 10px 25px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        border-color: #95a5a6;
-        color: #2c3e50;
-    }
-
-    /* Tab navigation improvements */
-    .nav-tabs {
-        border-bottom: 2px solid #f1f1f1;
-    }
-
-    .nav-tabs .nav-link {
-        color: #7f8c8d;
-        font-weight: 600;
-        border: none;
-        padding: 12px 20px;
-        position: relative;
-    }
-
-    .nav-tabs .nav-link.active {
-        color: #6a11cb;
-        background: transparent;
-    }
-
-    .nav-tabs .nav-link.active:after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: linear-gradient(45deg, #6a11cb, #2575fc);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
+        /* Form container enhancements */
         .registration-container {
-            padding: 1.5rem;
-            margin: 1rem;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        
+
+        .registration-container:hover {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Form header improvements */
         .form-header h2 {
-            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            position: relative;
+            padding-bottom: 10px;
         }
-        
+
+        .form-header h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            border-radius: 3px;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        /* Form input enhancements */
+        .form-control {
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.15);
+            background-color: #fff;
+        }
+
+        /* Label styling */
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Required field indicators */
+        .form-label.required:after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        /* File upload improvements */
+        .file-upload-btn {
+            border: 1px dashed #bdc3c7;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .file-upload-btn:hover {
+            border-color: #6a11cb;
+            background-color: #f1f1f1;
+        }
+
+        /* Radio button styling */
+        .form-check-input {
+            margin-top: 0.2rem;
+        }
+
+        .form-check-label {
+            margin-left: 0.3rem;
+            color: #34495e;
+        }
+
+        /* Button enhancements */
+        .btn-outline-secondary {
+            border-color: #bdc3c7;
+            color: #7f8c8d;
+            padding: 10px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            border-color: #95a5a6;
+            color: #2c3e50;
+        }
+
+        /* Tab navigation improvements */
+        .nav-tabs {
+            border-bottom: 2px solid #f1f1f1;
+        }
+
         .nav-tabs .nav-link {
-            padding: 10px 15px;
-            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 600;
+            border: none;
+            padding: 12px 20px;
+            position: relative;
         }
-    }
 
-    /* Form section spacing */
-    .tab-pane {
-        padding: 1.5rem 0 0 0;
-    }
+        .nav-tabs .nav-link.active {
+            color: #6a11cb;
+            background: transparent;
+        }
 
-    /* Input group spacing */
-    .mb-3 {
-        margin-bottom: 1.25rem !important;
-}
+        .nav-tabs .nav-link.active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+        }
 
-</style>
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .registration-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
 
-<div class="login-container">
-    <h2 class="login-title">Login</h2>
+            .form-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Form section spacing */
+        .tab-pane {
+            padding: 1.5rem 0 0 0;
+        }
+
+        /* Input group spacing */
+        .mb-3 {
+            margin-bottom: 1.25rem !important;
+        }
+    </style>
+
+    <div class="login-container">
+        <h2 class="login-title">Login</h2>
         {% if error %}
-         <p style="color: red;">{{ error }}</p>
+        <p style="color: red;">{{ error }}</p>
         {% endif %}
-    <form method="post">
-        <div class="form-group"> 
-            <label for="username">Username</label>
-            <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
-        </div>
-        <div class="form-group">
-    <label for="password">Password</label>
-    <div class="input-group">
-         <div class="input-group-append"></div>
-        <input name="password" type="password" class="form-control" id="password" placeholder="Enter password" required>
-       
-            <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
-                <i class="fa fa-eye"></i>
-            </span>
-        </div>
-    </div>
-       <div class="form-group">
-            <label for="user_type">I am a</label>
-            <select name="user_type" id="user_type" class="form-control">
-                <option value="tutor">Tutor</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-        <button type="submit" class="login-btn">Login</button>
-    </form>
-    
-</div>
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input name="username" type="text" class="form-control" id="username" placeholder="Enter username"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-group">
+                    <div class="input-group-append"></div>
+                    <input name="password" type="password" class="form-control" id="password"
+                        placeholder="Enter password" required>
 
-<div class="container">
-    <div class="text-center my-5">
-        <h7 class="text-muted">Want to become a tutor?</h7>
-        <button class="registration-btn" onclick="showRegistrationForm()">Register Now</button>
-    </div>
-    
-    <div class="registration-container" id="registrationForm" style="display: none;">
-    <div class="form-header">
-        <h2>Tutor Registration</h2>
-        <p>Fill in the details to register as a tutor</p>
+                    <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+                        <i class="fa fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_type">I am a</label>
+                <select name="user_type" id="user_type" class="form-control">
+                    <option value="tutor">Tutor</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+            <div class="text-center mt-3">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+            </div>
+        </form>
+
     </div>
 
-    <div id="registrationSteps">
-        <!-- Step 1: Tutor Registration Form -->
-        <div id="tutorFormStep" style="display: block;">
-            <form id="tutorForm">
-                <div class="row">
-                    <!-- Left Column -->
-                    <div class="col-md-6">
-                        <!-- Basic Fields -->
-                        <div class="mb-3">
-                            <label for="tutorUsername" class="form-label required">Username</label>
-                            <input type="text" class="form-control" id="tutorUsername" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorPassword" class="form-label required">Password</label>
-                            <input type="password" class="form-control" id="tutorPassword" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorName" class="form-label required">Full Name</label>
-                            <input type="text" class="form-control" id="tutorName" name="full_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorFatherName" class="form-label required">Father's Name</label>
-                            <input type="text" class="form-control" id="tutorFatherName" name="fathers_name" required>
-                        </div>
-                    </div>
+    <div class="container">
+        <div class="text-center my-5">
+            <h7 class="text-muted">Want to become a tutor?</h7>
+            <button class="registration-btn" onclick="showRegistrationForm()">Register Now</button>
+        </div>
 
-                    <!-- Right Column -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="tutorPhone" class="form-label required">Phone Number</label>
-                            <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorEmail" class="form-label required">Email Address</label>
-                            <input type="email" class="form-control" id="tutorEmail" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorQualification" class="form-label required">Last Qualification</label>
-                            <input type="text" class="form-control" id="tutorQualification" name="last_qualification" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tutorCnicFront" class="form-label required">CNIC Front Image</label>
-                            <div class="file-upload">
-                                <div class="file-upload-btn">
-                                    <i class="fas fa-upload file-upload-icon"></i>
-                                    <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+        <div class="registration-container" id="registrationForm" style="display: none;">
+            <div class="form-header">
+                <h2>Tutor Registration</h2>
+                <p>Fill in the details to register as a tutor</p>
+            </div>
+
+            <div id="registrationSteps">
+                <!-- Step 1: Tutor Registration Form -->
+                <div id="tutorFormStep" style="display: block;">
+                    <form id="tutorForm">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <!-- Basic Fields -->
+                                <div class="mb-3">
+                                    <label for="tutorUsername" class="form-label required">Username</label>
+                                    <input type="text" class="form-control" id="tutorUsername" name="username" required>
                                 </div>
-                                <input type="file" class="file-upload-input" id="tutorCnicFront" name="cnic_front" accept="image/*" onchange="updateFileName('tutorCnicFront')" required>
+                                <div class="mb-3">
+                                    <label for="tutorPassword" class="form-label required">Password</label>
+                                    <input type="password" class="form-control" id="tutorPassword" name="password"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorName" class="form-label required">Full Name</label>
+                                    <input type="text" class="form-control" id="tutorName" name="full_name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorFatherName" class="form-label required">Father's Name</label>
+                                    <input type="text" class="form-control" id="tutorFatherName" name="fathers_name"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tutorPhone" class="form-label required">Phone Number</label>
+                                    <input type="tel" class="form-control" id="tutorPhone" name="phone_number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorEmail" class="form-label required">Email Address</label>
+                                    <input type="email" class="form-control" id="tutorEmail" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorQualification" class="form-label required">Last
+                                        Qualification</label>
+                                    <input type="text" class="form-control" id="tutorQualification"
+                                        name="last_qualification" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorCnicFront" class="form-label required">CNIC Front Image</label>
+                                    <div class="file-upload">
+                                        <div class="file-upload-btn">
+                                            <i class="fas fa-upload file-upload-icon"></i>
+                                            <span id="tutorCnicFrontLabel">Upload CNIC Front Image</span>
+                                        </div>
+                                        <input type="file" class="file-upload-input" id="tutorCnicFront"
+                                            name="cnic_front" accept="image/*"
+                                            onchange="updateFileName('tutorCnicFront')" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tutorCnicBack" class="form-label required">CNIC Back Image</label>
+                                    <div class="file-upload">
+                                        <div class="file-upload-btn">
+                                            <i class="fas fa-upload file-upload-icon"></i>
+                                            <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
+                                        </div>
+                                        <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back"
+                                            accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="tutorCnicBack" class="form-label required">CNIC Back Image</label>
-                            <div class="file-upload">
-                                <div class="file-upload-btn">
-                                    <i class="fas fa-upload file-upload-icon"></i>
-                                    <span id="tutorCnicBackLabel">Upload CNIC Back Image</span>
-                                </div>
-                                <input type="file" class="file-upload-input" id="tutorCnicBack" name="cnic_back" accept="image/*" onchange="updateFileName('tutorCnicBack')" required>
+
+                        <input type="hidden" name="user_type" value="Tutor">
+
+                        <!-- Terms Box -->
+                        <div class="terms-container my-4">
+                            <h5>Terms & Conditions</h5>
+                            <div class="terms-box"
+                                style="height: 200px; overflow-y: scroll; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; font-size: 14px;">
+                                <!-- Paste your full terms text here -->
+                                <p><strong>Effective From 1st August 2025</strong></p>
+                                <p><strong>INTRODUCTION:</strong></p>
+                                <p>Terms & Conditions
+                                    Effective From 1st August 2025
+                                    INTRODUCTION:
+                                    1. TutEx.pk having its enlisted office at University Road, Karachi (hereinafter
+                                    alluded to as “TutEx.pk”, “we”, “us”, or “our”) gives online courses and leads
+                                    online classes, demo and meetings for the understudies trying to enlist for such
+                                    courses which Services are open at www.tutex.pk makes the Services accessible.
+                                    2. By getting to or utilizing the Site or Services, by means of the Website, you
+                                    would demonstrate that you have perused, and that you comprehend and consent to be
+                                    limited by these terms and get our Services (“Terms of Services” or “Terms”),
+                                    regardless of whether you have enrolled with the Site or by directly contacting.
+                                    3. In this manner, if it’s not too much trouble read these Terms of administration
+                                    before getting to or utilizing the Site or Services cautiously as they contain
+                                    significant data in regards to your legitimate rights, cures and commitments.
+                                    4. In the event that you don’t consent to these Terms, at that point you reserve no
+                                    privilege to access or utilize the Site, Services.
+                                    5. In the event that you are utilizing the Site, or Services then these Terms of
+                                    Service are authoritative among you and TutEx.pk.
+                                    TERMS OF SERVICE (for Tutors):
+                                    These terms and conditions are applicable for all tutors who get assignments through
+                                    us from any media.
+                                    1) To register as a tutor, you must be at least 18 years of age. Below the age of
+                                    18, a parent or legal guardian’s consent is required.
+                                    2) TutEx.pk reserves all rights to reject or refuse any registrations.
+                                    3) The data you flexibly ought to be as precise as could be expected under the
+                                    circumstances, and try not to give false or off base data which may delude customers
+                                    and TutEx.pk organizers.
+                                    4) TutEx.pk maintains all authority to reject confirmation of any mentors, and the
+                                    privilege to unverify any recently checked guides, subordinate upon the judgment of
+                                    TutEx.pk facilitators.
+                                    5) Fee installments will only be collected by the company for each and every month.
+                                    6) The installment to the tutors will be as indicated by the attendance sheet. In
+                                    the event that any entry is deceiving TutEx.pk has the full option to sack the
+                                    installment for that class.
+                                    7) If a Tutor continues or discontinues the class without our permission then we are
+                                    not liable for any kind of payment.
+                                    8) A Tutor is bound to conduct weekly tests (at least 1 test in 2 weeks) and share
+                                    Monthly Progress Reports and feedback to the TutEx.pk Coordinator & Parents in the
+                                    given format mandatorily with which the feedback of the student must be attached.
+                                    Homework is to be assigned following each class within 2-3 hours of class dismissal.
+                                    And regular evaluations of homework are necessary.
+                                    9) Tutors are expected to not indulge in personal activities like making calls or
+                                    texting during the classes as the entire focus is required to be on the pupil and
+                                    teaching. This is to demonstrate the formal and dedicated attributes of our tutors
+                                    which would influence our brand reputation. The enhanced quality of tutoring
+                                    recorded by the feedback provided will certainly be recognized and applauded by
+                                    TutEx.pk.
+                                    10) If anyone is found breaching the contract or involved in direct dealing with our
+                                    clients unethically, any misconduct with the client, misbehave with the client, any
+                                    damage to their property or collateral to their property or any person, a penalty of
+                                    Rs 500,000 or more depending upon the damages will be chargeable & he/she would be
+                                    responsible for facing legal actions.
+                                    11) In case, due to any reason you wish to discontinue your agreement with TutEx.pk,
+                                    a notice period of 60 days has to be served without any leaves.
+
+                                    12) Tutors are strictly instructed not to share any personal information of assigned
+                                    students and parents (name, contact, email, grade or subject) with anyone outside
+                                    the firm.
+                                    13) Any attempt to directly engage with assigned students or their parents,
+                                    bypassing TutEx.pk for monetary benefits either during or after employment period
+                                    with the firm, will be considered a contract breach. Tutors are not allowed to
+                                    promote their own venture to TutEx.pk’s clients or tutors. TutEx.pk can take legal
+                                    action as per applicable laws, and any disputes will be resolved through arbitration
+                                    in Karachi, Pakistan. This will also lead to the cancellation of any outstanding
+                                    payments owed to the company.
+
+                                    14) Enrolling with TutEx.pk doesn’t ensure educational cost task occupations to you,
+                                    as employments are allocated dependent on educational cost request and how well the
+                                    tutors coordinate with the client’s prerequisites.
+                                    15) Beginning with the upcoming payment cycle, we will be processing tutor payments
+                                    by 15th of each month for the previous month’s services rendered.
+                                    16) Tutor is bound to withdraw the accepted fee from the web application, or after
+                                    deduction.
+
+                                    By registering with TutEx.pk as a tutor, you acknowledge that you must adhere to the
+                                    provided guidelines. You also agree that if you violate these obligations during
+                                    your employment, the company will suffer irreparable harm, and monetary damages
+                                    alone will not be sufficient to address the breach. As a result, TutEx.pk is
+                                    entitled to seek injunctive relief, along with any other legal or equitable
+                                    remedies, to enforce these provisions.
+                                    These are a few important rules which need to be adhered to strictly from now
+                                    onwards for result-driven lesson delivery. Your cooperation, performance & reviews
+                                    from clients would play a major role in your appraisal & opportunities preference.
+                                    We appreciate your passion and contribution to making TutEx.pk a successful
+                                    endeavor.
+                                </p>
+                                <!-- Continue your full terms here as needed -->
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="acceptTerms">
+                                <label class="form-check-label" for="acceptTerms">
+                                    I have read and agree to the Terms & Conditions
+                                </label>
                             </div>
                         </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-primary" id="registerBtn"
+                                onclick="submitTutorRegistration()" disabled>Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enable Button on Terms Acceptance -->
+        <script>
+            document.getElementById('acceptTerms').addEventListener('change', function () {
+                document.getElementById('registerBtn').disabled = !this.checked;
+            });
+        </script>
+
+
+        <!-- Step 2: OTP Verification -->
+        <div id="otpVerificationStep" style="display: none;">
+            <div class="text-center mb-4">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Please enter the 6-digit OTP sent to your email address.
+                </div>
+            </div>
+
+            <form id="verificationForm">
+                <div class="mb-4">
+                    <label class="form-label text-center d-block">Enter OTP</label>
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" id="otp1" onkeyup="moveToNext(this, 'otp2')">
+                        <input type="text" class="otp-input" maxlength="1" id="otp2" onkeyup="moveToNext(this, 'otp3')"
+                            onkeydown="moveToPrev(this, 'otp1', event)">
+                        <input type="text" class="otp-input" maxlength="1" id="otp3" onkeyup="moveToNext(this, 'otp4')"
+                            onkeydown="moveToPrev(this, 'otp2', event)">
+                        <input type="text" class="otp-input" maxlength="1" id="otp4" onkeyup="moveToNext(this, 'otp5')"
+                            onkeydown="moveToPrev(this, 'otp3', event)">
+                        <input type="text" class="otp-input" maxlength="1" id="otp5" onkeyup="moveToNext(this, 'otp6')"
+                            onkeydown="moveToPrev(this, 'otp4', event)">
+                        <input type="text" class="otp-input" maxlength="1" id="otp6"
+                            onkeydown="moveToPrev(this, 'otp5', event)">
                     </div>
+                    <!-- <div class="text-center mt-3">
+                            <a href="#" onclick="resendOTP(event)">Resend OTP</a>
+                        </div> -->
                 </div>
 
-                <input type="hidden" name="user_type" value="Tutor">
-
-                <!-- Terms Box -->
-                <div class="terms-container my-4">
-                    <h5>Terms & Conditions</h5>
-                    <div class="terms-box" style="height: 200px; overflow-y: scroll; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; font-size: 14px;">
-                        <!-- Paste your full terms text here -->
-                        <p><strong>Effective From 1st August 2025</strong></p>
-                        <p><strong>INTRODUCTION:</strong></p>
-                        <p>Terms & Conditions
-Effective From 1st August 2025
-INTRODUCTION:
-1. TutEx.pk having its enlisted office at University Road, Karachi (hereinafter alluded to as “TutEx.pk”, “we”, “us”, or “our”) gives online courses and leads online classes, demo and meetings for the understudies trying to enlist for such courses which Services are open at www.tutex.pk makes the Services accessible.
-2. By getting to or utilizing the Site or Services, by means of the Website, you would demonstrate that you have perused, and that you comprehend and consent to be limited by these terms and get our Services (“Terms of Services” or “Terms”), regardless of whether you have enrolled with the Site or by directly contacting. 
-3. In this manner, if it’s not too much trouble read these Terms of administration before getting to or utilizing the Site or Services cautiously as they contain significant data in regards to your legitimate rights, cures and commitments.
-4. In the event that you don’t consent to these Terms, at that point you reserve no privilege to access or utilize the Site, Services.
-5. In the event that you are utilizing the Site, or Services then these Terms of Service are authoritative among you and TutEx.pk.
-TERMS OF SERVICE (for Tutors):
-These terms and conditions are applicable for all tutors who get assignments through us from any media.
-1) To register as a tutor, you must be at least 18 years of age. Below the age of 18, a parent or legal guardian’s consent is required.
-2) TutEx.pk reserves all rights to reject or refuse any registrations. 
-3) The data you flexibly ought to be as precise as could be expected under the circumstances, and try not to give false or off base data which may delude customers and TutEx.pk organizers. 
-4) TutEx.pk maintains all authority to reject confirmation of any mentors, and the privilege to unverify any recently checked guides, subordinate upon the judgment of TutEx.pk facilitators.
-5) Fee installments will only be collected by the company for each and every month.
-6) The installment to the tutors will be as indicated by the attendance sheet. In the event that any entry is deceiving TutEx.pk has the full option to sack the installment for that class.
-7) If a Tutor continues or discontinues the class without our permission then we are not liable for any kind of payment.
-8) A Tutor is bound to conduct weekly tests (at least 1 test in 2 weeks) and share Monthly Progress Reports and feedback to the TutEx.pk Coordinator & Parents in the given format mandatorily with which the feedback of the student must be attached. Homework is to be assigned following each class within 2-3 hours of class dismissal. And regular evaluations of homework are necessary.
-9) Tutors are expected to not indulge in personal activities like making calls or texting during the classes as the entire focus is required to be on the pupil and teaching. This is to demonstrate the formal and dedicated attributes of our tutors which would influence our brand reputation. The enhanced quality of tutoring recorded by the feedback provided will certainly be recognized and applauded by TutEx.pk.
-10) If anyone is found breaching the contract or involved in direct dealing with our clients unethically, any misconduct with the client, misbehave with the client, any damage to their property or collateral to their property or any person, a penalty of Rs 500,000 or more depending upon the damages will be chargeable & he/she would be responsible for facing legal actions.
-11) In case, due to any reason you wish to discontinue your agreement with TutEx.pk, a notice period of 60 days has to be served without any leaves.
-
-12) Tutors are strictly instructed not to share any personal information of assigned students and parents (name, contact, email, grade or subject) with anyone outside the firm.
-13) Any attempt to directly engage with assigned students or their parents, bypassing TutEx.pk for monetary benefits either during or after employment period with the firm, will be considered a contract breach. Tutors are not allowed to promote their own venture to TutEx.pk’s clients or tutors. TutEx.pk can take legal action as per applicable laws, and any disputes will be resolved through arbitration in Karachi, Pakistan. This will also lead to the cancellation of any outstanding payments owed to the company.
- 
-14) Enrolling with TutEx.pk doesn’t ensure educational cost task occupations to you, as employments are allocated dependent on educational cost request and how well the tutors coordinate with the client’s prerequisites.
-15) Beginning with the upcoming payment cycle, we will be processing tutor payments by 15th of each month for the previous month’s services rendered.
-16) Tutor is bound to withdraw the accepted fee from the web application, or after deduction.
-
-By registering with TutEx.pk as a tutor, you acknowledge that you must adhere to the provided guidelines. You also agree that if you violate these obligations during your employment, the company will suffer irreparable harm, and monetary damages alone will not be sufficient to address the breach. As a result, TutEx.pk is entitled to seek injunctive relief, along with any other legal or equitable remedies, to enforce these provisions.
-These are a few important rules which need to be adhered to strictly from now onwards for result-driven lesson delivery. Your cooperation, performance & reviews from clients would play a major role in your appraisal & opportunities preference.   We appreciate your passion and contribution to making TutEx.pk a successful endeavor.
-</p>
-                        <!-- Continue your full terms here as needed -->
-                    </div>
-
-                    <!-- Checkbox -->
-                    <div class="form-check mt-3">
-                        <input class="form-check-input" type="checkbox" id="acceptTerms">
-                        <label class="form-check-label" for="acceptTerms">
-                            I have read and agree to the Terms & Conditions
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
                 <div class="d-grid">
-                    <button type="button" class="btn btn-primary" id="registerBtn" onclick="submitTutorRegistration()" disabled>Register</button>
+                    <button type="button" class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
                 </div>
             </form>
         </div>
-    </div>
-</div>
 
-<!-- Enable Button on Terms Acceptance -->
-<script>
-    document.getElementById('acceptTerms').addEventListener('change', function () {
-        document.getElementById('registerBtn').disabled = !this.checked;
-    });
-</script>
-
-
-            <!-- Step 2: OTP Verification -->
-            <div id="otpVerificationStep" style="display: none;">
-                <div class="text-center mb-4">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Please enter the 6-digit OTP sent to your email address.
-                    </div>
-                </div>
-                
-                <form id="verificationForm">
-                    <div class="mb-4">
-                        <label class="form-label text-center d-block">Enter OTP</label>
-                        <div class="otp-container">
-                            <input type="text" class="otp-input" maxlength="1" id="otp1" onkeyup="moveToNext(this, 'otp2')">
-                            <input type="text" class="otp-input" maxlength="1" id="otp2" onkeyup="moveToNext(this, 'otp3')" onkeydown="moveToPrev(this, 'otp1', event)">
-                            <input type="text" class="otp-input" maxlength="1" id="otp3" onkeyup="moveToNext(this, 'otp4')" onkeydown="moveToPrev(this, 'otp2', event)">
-                            <input type="text" class="otp-input" maxlength="1" id="otp4" onkeyup="moveToNext(this, 'otp5')" onkeydown="moveToPrev(this, 'otp3', event)">
-                            <input type="text" class="otp-input" maxlength="1" id="otp5" onkeyup="moveToNext(this, 'otp6')" onkeydown="moveToPrev(this, 'otp4', event)">
-                            <input type="text" class="otp-input" maxlength="1" id="otp6" onkeydown="moveToPrev(this, 'otp5', event)">
-                        </div>
-                        <!-- <div class="text-center mt-3">
-                            <a href="#" onclick="resendOTP(event)">Resend OTP</a>
-                        </div> -->
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="button" class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
-                    </div>
-                </form>
+        <!-- Step 3: Success Message -->
+        <div id="successStep" class="text-center" style="display: none;">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <h4>Registration Successful!</h4>
+                <p>Your account has been verified and created successfully.</p>
+                <p>You can now login with your credentials.</p>
             </div>
-
-            <!-- Step 3: Success Message -->
-            <div id="successStep" class="text-center" style="display: none;">
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <h4>Registration Successful!</h4>
-                    <p>Your account has been verified and created successfully.</p>
-                    <p>You can now login with your credentials.</p>
-                </div>
-                <a href="/login" class="btn btn-primary">Go to Login</a>
-            </div>
+            <a href="/login" class="btn btn-primary">Go to Login</a>
         </div>
     </div>
-</div>
+    </div>
+    </div>
 
-<script>
-    let currentEmail = '';
-    
-    function showRegistrationForm() {
-        document.getElementById('registrationForm').style.display = 'block';
-        document.getElementById('registrationForm').scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    function updateFileName(inputId) {
-        const input = document.getElementById(inputId);
-        const label = document.getElementById(inputId + 'Label');
-        
-        if (input.files && input.files[0]) {
-            label.textContent = input.files[0].name;
-        } else {
-            label.textContent = 'Upload ' + inputId.replace('tutor', '').replace(/([A-Z])/g, ' $1').trim();
-        }
-    }
-    
-// Store email in sessionStorage when registration succeeds
-async function submitTutorRegistration() {
-    const form = document.getElementById('tutorForm');
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
+    <script>
+        let currentEmail = '';
 
-    try {
-        const response = await fetch('/signup', {
-            method: 'POST',
-            body: new FormData(form)
-        });
-        
-        const data = await response.json();
-        if (response.ok) {
-            // Store email for verification steps
-            currentEmail = data.email;
-            sessionStorage.setItem('otpEmail', currentEmail);
-            
-            // Show OTP step
-            document.getElementById('tutorFormStep').style.display = 'none';
-            document.getElementById('otpVerificationStep').style.display = 'block';
-            document.getElementById('otp1').focus();
-        } else {
-            throw new Error(data.detail || 'Registration failed');
-        }
-    } catch (error) {
-        showToast('error', error.message);
-    }
-}
-
-// Improved verifyOTP function
-async function verifyOTP() {
-    // Get all OTP digits
-    const otp = Array.from({length: 6}, (_, i) => 
-        document.getElementById(`otp${i+1}`).value
-    ).join('');
-
-    if (otp.length !== 6) {
-        showToast('error', 'Please enter complete 6-digit OTP');
-        return;
-    }
-
-    try {
-        const response = await fetch('/verify-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                email: currentEmail || sessionStorage.getItem('otpEmail'),
-                otp: otp
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Verification failed');
+        function showRegistrationForm() {
+            document.getElementById('registrationForm').style.display = 'block';
+            document.getElementById('registrationForm').scrollIntoView({ behavior: 'smooth' });
         }
 
-        const data = await response.json();
-        if (data.status === 'verified') {
-            document.getElementById('otpVerificationStep').style.display = 'none';
-            document.getElementById('successStep').style.display = 'block';
-            sessionStorage.removeItem('otpEmail');
-        }
-    } catch (error) {
-        showToast('error', error.message);
-        // Clear OTP fields
-        for (let i = 1; i <= 6; i++) {
-            document.getElementById(`otp${i}`).value = '';
-        }
-        document.getElementById('otp1').focus();
-    }
-}
+        function updateFileName(inputId) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(inputId + 'Label');
 
-// Improved resendOTP function
-async function resendOTP(event) {
-    event.preventDefault();
-    const email = currentEmail || sessionStorage.getItem('otpEmail');
-    
-    if (!email) {
-        showToast('error', 'No email address found');
-        return;
-    }
-
-    try {
-        const response = await fetch('/resend-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({ email })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Failed to resend OTP');
+            if (input.files && input.files[0]) {
+                label.textContent = input.files[0].name;
+            } else {
+                label.textContent = 'Upload ' + inputId.replace('tutor', '').replace(/([A-Z])/g, ' $1').trim();
+            }
         }
 
-        showToast('success', 'New OTP sent to your email');
-    } catch (error) {
-        showToast('error', error.message);
-    }
-}
+        // Store email in sessionStorage when registration succeeds
+        async function submitTutorRegistration() {
+            const form = document.getElementById('tutorForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
 
-    function showToast(type, message) {
-        const toast = type === 'success' 
-            ? new bootstrap.Toast(document.getElementById('successToast'))
-            : new bootstrap.Toast(document.getElementById('errorToast'));
-            
-        if (type === 'success') {
-            document.getElementById('successToastMessage').textContent = message;
-        } else {
-            document.getElementById('errorToastMessage').textContent = message;
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    // Store email for verification steps
+                    currentEmail = data.email;
+                    sessionStorage.setItem('otpEmail', currentEmail);
+
+                    // Show OTP step
+                    document.getElementById('tutorFormStep').style.display = 'none';
+                    document.getElementById('otpVerificationStep').style.display = 'block';
+                    document.getElementById('otp1').focus();
+                } else {
+                    throw new Error(data.detail || 'Registration failed');
+                }
+            } catch (error) {
+                showToast('error', error.message);
+            }
         }
-        
-        toast.show();
-    }
-</script>
-    
+
+        // Improved verifyOTP function
+        async function verifyOTP() {
+            // Get all OTP digits
+            const otp = Array.from({ length: 6 }, (_, i) =>
+                document.getElementById(`otp${i + 1}`).value
+            ).join('');
+
+            if (otp.length !== 6) {
+                showToast('error', 'Please enter complete 6-digit OTP');
+                return;
+            }
+
+            try {
+                const response = await fetch('/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        email: currentEmail || sessionStorage.getItem('otpEmail'),
+                        otp: otp
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Verification failed');
+                }
+
+                const data = await response.json();
+                if (data.status === 'verified') {
+                    document.getElementById('otpVerificationStep').style.display = 'none';
+                    document.getElementById('successStep').style.display = 'block';
+                    sessionStorage.removeItem('otpEmail');
+                }
+            } catch (error) {
+                showToast('error', error.message);
+                // Clear OTP fields
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`otp${i}`).value = '';
+                }
+                document.getElementById('otp1').focus();
+            }
+        }
+
+        // Improved resendOTP function
+        async function resendOTP(event) {
+            event.preventDefault();
+            const email = currentEmail || sessionStorage.getItem('otpEmail');
+
+            if (!email) {
+                showToast('error', 'No email address found');
+                return;
+            }
+
+            try {
+                const response = await fetch('/resend-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ email })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to resend OTP');
+                }
+
+                showToast('success', 'New OTP sent to your email');
+            } catch (error) {
+                showToast('error', error.message);
+            }
+        }
+
+        function showToast(type, message) {
+            const toast = type === 'success'
+                ? new bootstrap.Toast(document.getElementById('successToast'))
+                : new bootstrap.Toast(document.getElementById('errorToast'));
+
+            if (type === 'success') {
+                document.getElementById('successToastMessage').textContent = message;
+            } else {
+                document.getElementById('errorToastMessage').textContent = message;
+            }
+
+            toast.show();
+        }
+    </script>
+
     <!-- Toast Notifications -->
     <div class="toast-container">
-        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
+            aria-atomic="true" id="successToast">
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas fa-check-circle me-2"></i>
                     <span id="successToastMessage">Registration successful!</span>
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
             </div>
         </div>
-        
-        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
+
+        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive"
+            aria-atomic="true" id="errorToast">
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <span id="errorToastMessage">An error occurred.</span>
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
             </div>
         </div>
     </div>
-    
+
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="forgotPasswordMessage" class="mb-3"></div>
+                <form id="forgotPasswordForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Enter your account's email, and we'll send you a password reset code.</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="sendOtpBtn">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        Send OTP
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="resetPasswordMessage" class="mb-3"></div>
+                <form id="resetPasswordForm">
+                    <div class="mb-3">
+                        <label for="otp" class="form-label">OTP</label>
+                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter the code from your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    </div>
+                    <input type="hidden" id="reset_email" name="email">
+                    <button type="submit" class="btn btn-primary w-100" id="resetPasswordBtn">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        Reset Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Global variables to store form data
@@ -864,32 +996,32 @@ async function resendOTP(event) {
             tutor: {},
             verification: {}
         };
-        
+
         // Show registration form
         function showRegistrationForm() {
             document.getElementById('registrationForm').style.display = 'block';
             // Scroll to the form
             document.getElementById('registrationForm').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // Select registration type
         function selectType(type) {
             registrationData.type = type;
         }
-        
+
         // Proceed to registration form based on selected type
         function proceedToRegistration() {
             // Programmatically switch to the tutor tab
             const tutorTab = new bootstrap.Tab(document.getElementById('tutor-tab'));
             tutorTab.show();
         }
-        
+
         // Go back to type selection
         function goBackToTypeSelection() {
             const selectTypeTab = new bootstrap.Tab(document.getElementById('select-type-tab'));
             selectTypeTab.show();
         }
-        
+
         // Proceed to verification
         function proceedToVerification(type) {
             const formId = 'tutorForm';
@@ -898,65 +1030,65 @@ async function resendOTP(event) {
                 form.reportValidity();
                 return;
             }
-        
+
             const formData = new FormData(form);
             fetch('/signup', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('registrationError').style.display = 'none';
-                if (data.error) {
-                    showToast('error', data.error);
-                    document.getElementById('registrationError').innerText = data.error;
-                    document.getElementById('registrationError').style.display = 'block';
-                } else {
-                    // Store email for verification
-                    registrationData.email = data.email;
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('registrationError').style.display = 'none';
+                    if (data.error) {
+                        showToast('error', data.error);
+                        document.getElementById('registrationError').innerText = data.error;
+                        document.getElementById('registrationError').style.display = 'block';
+                    } else {
+                        // Store email for verification
+                        registrationData.email = data.email;
 
-                    // Only proceed to verification if backend indicates to
-                    if (data.next_step === 'verify') {
-                        showToast('success', 'OTP sent to ' + data.email);
-                        // Programmatically switch to verification tab
-                        const verificationTab = new bootstrap.Tab(document.getElementById('verification-tab'));
-                        verificationTab.show();
+                        // Only proceed to verification if backend indicates to
+                        if (data.next_step === 'verify') {
+                            showToast('success', 'OTP sent to ' + data.email);
+                            // Programmatically switch to verification tab
+                            const verificationTab = new bootstrap.Tab(document.getElementById('verification-tab'));
+                            verificationTab.show();
+                        }
                     }
-                }
-            })
-            .catch(error => {
-                showToast('error', 'An error occurred: ' + error.message);
-                document.getElementById('registrationError').innerText = 'An error occurred: ' + error.message;
-                document.getElementById('registrationError').style.display = 'block';
-            });
-        }     
-        
+                })
+                .catch(error => {
+                    showToast('error', 'An error occurred: ' + error.message);
+                    document.getElementById('registrationError').innerText = 'An error occurred: ' + error.message;
+                    document.getElementById('registrationError').style.display = 'block';
+                });
+        }
+
         // Update file name display
         function updateFileName(inputId) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(inputId + 'Label');
-            
+
             if (input.files && input.files[0]) {
                 label.textContent = input.files[0].name;
             } else {
                 label.textContent = 'Upload ' + inputId.replace('tutor', '').replace(/([A-Z])/g, ' $1').trim();
             }
         }
-        
+
         // Move to next OTP input
         function moveToNext(currentInput, nextInputId) {
             if (currentInput.value.length === 1) {
                 document.getElementById(nextInputId).focus();
             }
         }
-        
+
         // Move to previous OTP input
         function moveToPrev(currentInput, prevInputId, event) {
             if (event.key === 'Backspace' && currentInput.value.length === 0) {
                 document.getElementById(prevInputId).focus();
             }
         }
-        
+
         // Resend OTP
         function resendOTP(event) {
             event.preventDefault();
@@ -967,19 +1099,19 @@ async function resendOTP(event) {
                 },
                 body: `email=${encodeURIComponent(registrationData.email)}`
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showToast('success', data.message);
-                } else {
-                    showToast('error', data.detail || 'Failed to resend OTP');
-                }
-            })
-            .catch(error => {
-                showToast('error', 'Failed to resend OTP');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showToast('success', data.message);
+                    } else {
+                        showToast('error', data.detail || 'Failed to resend OTP');
+                    }
+                })
+                .catch(error => {
+                    showToast('error', 'Failed to resend OTP');
+                });
         }
-        
+
         // Submit registration
         function submitRegistration() {
             let otp = '';
@@ -999,22 +1131,22 @@ async function resendOTP(event) {
                 },
                 body: `email=${encodeURIComponent(registrationData.email)}&otp=${otp}`
             })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw err; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                showToast('success', data.message);
-                setTimeout(() => {
-                    resetRegistrationForm();
-                    window.location.href = '/login';
-                }, 2000);
-            })
-            .catch(error => {
-                showToast('error', error.detail || 'Verification failed');
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showToast('success', data.message);
+                    setTimeout(() => {
+                        resetRegistrationForm();
+                        window.location.href = '/login';
+                    }, 2000);
+                })
+                .catch(error => {
+                    showToast('error', error.detail || 'Verification failed');
+                });
         }
         // Helper function to reset form
         function resetRegistrationForm() {
@@ -1043,23 +1175,23 @@ async function resendOTP(event) {
                 email: ''
             };
         }
-        
+
         // Show toast notification
         function showToast(type, message) {
-            const toast = type === 'success' 
+            const toast = type === 'success'
                 ? new bootstrap.Toast(document.getElementById('successToast'))
                 : new bootstrap.Toast(document.getElementById('errorToast'));
-                
+
             if (type === 'success') {
                 document.getElementById('successToastMessage').textContent = message;
             } else {
                 document.getElementById('errorToastMessage').textContent = message;
             }
-            
+
             toast.show();
         }
         // Add this script to handle tab navigation
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Disable all tab links completely
             const tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
             tabLinks.forEach(link => {
@@ -1086,26 +1218,153 @@ async function resendOTP(event) {
 
 
 
-//   for eyeicon fuction to change the form type to see or not!
-document.getElementById('togglePassword').addEventListener('click', function() {
-    const passwordInput = document.getElementById('password');
-    const icon = this.querySelector('i');
-    
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        //   for eyeicon fuction to change the form type to see or not!
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+
+
+    </script>
+<script>
+    // Helper function to display messages inside the modals
+    function showModalMessage(containerId, message, isError = false) {
+        const messageContainer = document.getElementById(containerId);
+        messageContainer.innerHTML = `
+            <div class="alert ${isError ? 'alert-danger' : 'alert-success'}" role="alert">
+                ${message}
+            </div>
+        `;
     }
-});
 
+    // --- Forgot Password Form Logic ---
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const spinner = sendOtpBtn.querySelector('.spinner-border');
+        const email = document.getElementById('email').value;
 
+        // Show spinner and disable button
+        spinner.style.display = 'inline-block';
+        sendOtpBtn.disabled = true;
+        document.getElementById('forgotPasswordMessage').innerHTML = ''; // Clear previous messages
 
+        try {
+            const response = await fetch('/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `email=${encodeURIComponent(email)}`
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'An unknown error occurred.');
+            }
+
+            // On success, show success message and switch modals after a delay
+            showModalMessage('forgotPasswordMessage', data.message);
+            document.getElementById('reset_email').value = email;
+
+            setTimeout(() => {
+                const forgotModal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
+                forgotModal.hide();
+                const resetModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+                resetModal.show();
+            }, 2000); // Wait 2 seconds before switching
+
+        } catch (error) {
+            showModalMessage('forgotPasswordMessage', error.message, true);
+        } finally {
+            // Hide spinner and re-enable button
+            spinner.style.display = 'none';
+            sendOtpBtn.disabled = false;
+        }
+    });
+
+    // --- Reset Password Form Logic ---
+    document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+        const spinner = resetPasswordBtn.querySelector('.spinner-border');
+
+        // Show spinner and disable button
+        spinner.style.display = 'inline-block';
+        resetPasswordBtn.disabled = true;
+        document.getElementById('resetPasswordMessage').innerHTML = ''; // Clear previous messages
+
+        const email = document.getElementById('reset_email').value;
+        const otp = document.getElementById('otp').value;
+        const new_password = document.getElementById('new_password').value;
+
+        try {
+            const response = await fetch('/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}&new_password=${encodeURIComponent(new_password)}`
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'An unknown error occurred.');
+            }
+
+            // On success, show success message and redirect after a delay
+            showModalMessage('resetPasswordMessage', data.message);
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000); // Wait 2 seconds before redirecting
+
+        } catch (error) {
+            showModalMessage('resetPasswordMessage', error.message, true);
+        } finally {
+            // Hide spinner and re-enable button
+            spinner.style.display = 'none';
+            resetPasswordBtn.disabled = false;
+        }
+    });
+
+    // --- Clear messages when modals are managed ---
+    ['forgotPasswordModal', 'resetPasswordModal'].forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        modal.addEventListener('hidden.bs.modal', function () {
+            // Clear any error or success messages
+            document.getElementById(modalId.replace('Modal', 'Message')).innerHTML = '';
+            // Reset the form fields inside the modal
+            const form = this.querySelector('form');
+            if (form) {
+                form.reset();
+            }
+        });
+    });
+
+    // --- Existing password visibility toggle ---
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
 </script>
-        
 </body>
+
 </html>
 {% endblock %}
