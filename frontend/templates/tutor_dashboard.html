@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TutEx Tutor Dashboard</title>
     
-    <!-- Poppins Font from admin.html -->
+    <!-- Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap CSS from admin.html -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons from admin.html -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <!-- DataTables CSS for table styling from admin.html -->
+    <!-- DataTables CSS for table styling -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
     <style>
         /* ================================================================== */
-        /* === GENERAL STYLES & VARIABLES (from admin.html) === */
+        /* === GENERAL STYLES & VARIABLES === */
         /* ================================================================== */
         :root {
             --primary-color: #6366f1; /* Indigo */
@@ -43,61 +43,65 @@
             background-color: var(--content-bg);
             font-family: var(--font-family);
             color: var(--text-secondary);
-            margin: 0; /* Ensure no default body margin */
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            margin: 0;
+            overflow-x: hidden;
         }
 
         /* === Admin Wrapper: Main layout container === */
         .admin-wrapper { 
             display: flex; 
+            flex-direction: column;
             min-height: 100vh; 
-            width: 100%; /* Ensure it takes full width */
+            width: 100%;
         }
 
         /* === Sidebar === */
         .admin-sidebar { 
-            width: 260px; 
+            width: 100%;
             background: var(--sidebar-bg); 
-            position: fixed; 
-            height: 100vh; 
+            position: relative;
             display: flex; 
-            flex-direction: column; 
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Add shadow for depth */
+            flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
         .sidebar-header { 
-            padding: 1.75rem 1.5rem; 
+            padding: 1rem; 
             text-align: center; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); /* Separator */
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .sidebar-header h3 { 
             color: #fff; 
             margin: 0; 
             font-weight: 700; 
-            font-size: 1.5rem; 
+            font-size: 1.25rem; 
         }
         .sidebar-header .fa-chalkboard-teacher { 
-            color: var(--primary-color); /* Icon color for tutor */
+            color: var(--primary-color);
             margin-right: 0.5rem;
         }
         .admin-sidebar-nav { 
             flex-grow: 1; 
-            padding: 1rem 0; 
-            overflow-y: auto; /* Enable scrolling for many items */
+            padding: 0.5rem; 
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .admin-sidebar-nav a { 
-            padding: 1rem 1.75rem; 
-            font-size: 0.95rem; 
+            padding: 0.75rem 1rem; 
+            font-size: 0.9rem; 
             display: flex; 
             align-items: center; 
             color: #cbd5e1; 
             text-decoration: none; 
             transition: all 0.2s; 
-            margin: 0.25rem 0.75rem; 
+            margin: 0.25rem; 
             border-radius: 8px; 
             font-weight: 500; 
         }
         .admin-sidebar-nav a .fas { 
-            margin-right: 1rem; 
+            margin-right: 0.5rem; 
             width: 20px; 
             text-align: center; 
         }
@@ -109,46 +113,43 @@
             background: var(--primary-color); 
             color: #ffffff; 
             font-weight: 600; 
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3); /* Add shadow to active tab */
         }
         .sidebar-footer { 
-            padding: 1.5rem; 
-            border-top: 1px solid rgba(255,255,255,0.1); /* Separator */
+            padding: 1rem; 
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
         }
 
         /* === Main Content & Top Bar === */
         .admin-content { 
             flex-grow: 1; 
-            margin-left: 260px; /* Offset for sidebar */
-            width: calc(100% - 260px); /* Fill remaining width */
+            width: 100%;
         }
         .top-navbar { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(10px); 
+            background: rgba(255, 255, 255, 0.95); 
             border-bottom: 1px solid var(--border-color); 
-            padding: 1rem 2.5rem; 
+            padding: 1rem; 
             position: sticky; 
             top: 0; 
             z-index: 999; 
-            display: flex; /* Use flex for alignment */
-            align-items: center;
-            justify-content: space-between; /* Space out title and messages */
-            flex-wrap: wrap; /* Allow wrapping on small screens */
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
         .top-navbar h1 { 
-            font-size: 1.5rem; 
+            font-size: 1.2rem; 
             font-weight: 600; 
             color: var(--text-primary); 
-            margin: 0; /* Remove default margin */
+            margin: 0 0 0.5rem 0;
+            text-align: center;
         }
         .top-navbar .alert {
-            margin-bottom: 0; /* Remove bottom margin for alerts in navbar */
-            margin-left: 1rem; /* Space from title */
-            flex-grow: 1; /* Allow alert to take available space */
+            margin: 0.5rem 0 0 0;
+            width: 100%;
         }
         main { 
-            padding: 2.5rem; 
-            min-height: calc(100vh - 70px); /* Adjust based on top-navbar height */
+            padding: 1.5rem; 
+            min-height: calc(100vh - 70px);
         }
         
         /* === Stat Cards & Main Cards === */
@@ -157,28 +158,31 @@
             border-radius: 1rem; 
             border: 1px solid var(--border-color); 
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); 
-            overflow: hidden; /* Ensure content stays within rounded corners */
+            overflow: hidden;
         }
         .stat-card { 
             display: flex; 
+            flex-direction: column;
             align-items: center; 
-            padding: 1.5rem; 
+            text-align: center;
+            padding: 1rem; 
             transition: all 0.3s ease; 
+            margin-bottom: 1rem;
         }
         .stat-card:hover { 
             transform: translateY(-5px); 
             box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
         }
         .stat-icon { 
-            font-size: 1.75rem; 
-            width: 60px; 
-            height: 60px; 
+            font-size: 1.5rem; 
+            width: 50px; 
+            height: 50px; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: #fff; 
-            margin-right: 1.5rem; 
+            margin: 0 0 0.75rem 0; 
         }
         .bg-warning-gradient { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
         .bg-info-gradient { background: linear-gradient(45deg, #38bdf8, #0ea5e9); }
@@ -186,41 +190,48 @@
         .bg-success-gradient { background: linear-gradient(45deg, #4ade80, #22c55e); }
         .stat-info h5 { 
             margin: 0; 
-            font-size: 1.75rem; 
+            font-size: 1.5rem; 
             font-weight: 700; 
             color: var(--text-primary); 
         }
         .stat-info p { 
             margin: 0; 
             color: var(--text-secondary); 
+            font-size: 0.9rem;
         }
         .main-card .card-header { 
             background-color: #f8fafc; 
             border-bottom: 1px solid var(--border-color); 
             font-weight: 600; 
-            padding: 1rem 1.5rem; 
+            padding: 1rem; 
             color: var(--text-primary); 
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
         }
         .card-header .fas { 
-            margin-right: 0.75rem; 
+            margin-right: 0.5rem; 
         }
         .main-card .card-body { 
-            padding: 1.5rem; 
+            padding: 1rem; 
         }
         
         /* === DataTables & Action Buttons === */
-        .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1.5rem 0; }
-        .dataTables_length, .dataTables_filter { display: flex; align-items: center; }
+        .dataTables_wrapper .row:first-of-type { padding: 0.5rem 0 1rem 0; }
+        .dataTables_length, .dataTables_filter { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 0.5rem;
+        }
         .dataTables_length label { 
             display: flex; 
             align-items: center; 
             background-color: #f8fafc; 
             border: 1px solid var(--border-color); 
             border-radius: 0.5rem; 
-            padding: 0 0.75rem; 
+            padding: 0 0.5rem; 
             font-weight: 500; 
+            font-size: 0.9rem;
         }
         .dataTables_length select { 
             -webkit-appearance: none; 
@@ -228,31 +239,34 @@
             appearance: none; 
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); 
             background-repeat: no-repeat; 
-            background-position: right 0.75rem center; 
+            background-position: right 0.5rem center; 
             background-size: 16px 12px; 
-            padding: 0.6rem 2.5rem 0.6rem 0.5rem !important; 
+            padding: 0.5rem 2rem 0.5rem 0.5rem !important; 
             font-weight: 500; 
             border: none !important; 
             background-color: transparent !important; 
             margin: 0 0.5rem; 
+            font-size: 0.9rem;
         }
         .dataTables_filter input { 
             border: 1px solid var(--border-color); 
             border-radius: 0.5rem; 
-            padding: 0.6rem 1rem; 
+            padding: 0.5rem 0.75rem; 
             background-color: #f8fafc; 
             transition: all 0.2s ease; 
+            font-size: 0.9rem;
         }
         .dataTables_wrapper .paginate_button { 
             border-radius: 0.5rem !important; 
             margin: 0 0.25rem !important; 
-            min-width: 40px; 
-            height: 40px; 
+            min-width: 30px; 
+            height: 30px; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
             border: 1px solid var(--border-color) !important; 
             box-shadow: none !important; 
+            font-size: 0.8rem;
         }
         table.dataTable tbody tr:hover { 
             background-color: #f8fafc; 
@@ -260,15 +274,17 @@
         }
         table.dataTable tbody td { 
             vertical-align: middle; 
-            padding: 0.9rem 1rem; 
+            padding: 0.75rem; 
+            font-size: 0.9rem;
         }
         .btn-action { 
-            padding: 0.35rem 0.9rem; 
+            padding: 0.3rem 0.75rem; 
             border-radius: 50rem; 
             font-size: 0.8rem; 
             font-weight: 600; 
             border: none; 
             transition: all 0.2s ease; 
+            white-space: nowrap;
         }
         .btn-action .fas { 
             margin-right: 5px; 
@@ -304,34 +320,26 @@
         .badge.bg-warning-light {
             background-color: var(--warning-light);
             color: var(--warning-color);
+            font-size: 0.8rem;
         }
 
-        /* === Responsive Adjustments for smaller screens === */
-        @media (max-width: 768px) {
-            .admin-sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            .admin-content {
-                margin-left: 0;
-                width: 100%;
-            }
-            .sidebar-header { padding: 1rem; }
-            .admin-sidebar-nav { padding: 0.5rem; flex-direction: row; flex-wrap: wrap; justify-content: center;}
-            .admin-sidebar-nav a { margin: 0.25rem; padding: 0.75rem 1rem; }
-            .admin-sidebar-nav a .fas { margin-right: 0.5rem; }
-            .sidebar-footer { padding: 1rem; text-align: center; }
-            .top-navbar { padding: 1rem; text-align: center; flex-direction: column; align-items: stretch;}
-            .top-navbar h1 { font-size: 1.2rem; margin-bottom: 0.5rem; }
-            .top-navbar .alert { margin-left: 0; margin-top: 0.5rem; }
-            main { padding: 1.5rem; }
-            .stat-card { padding: 1rem; flex-direction: column; text-align: center; }
-            .stat-icon { margin-right: 0; margin-bottom: 0.75rem; }
-            .stat-info h5 { font-size: 1.5rem; }
-            .stat-info p { font-size: 0.9rem; }
-            .main-card .card-body { padding: 1rem; }
+        /* === Tables === */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table.dataTable {
+            width: 100% !important;
+        }
+
+        /* === Forms === */
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+        }
+        .form-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
         }
 
         /* Additional styles for content sections to hide/show */
@@ -343,42 +351,44 @@
         .profile-card .profile-header {
             background: linear-gradient(135deg, var(--primary-color), #4f46e5);
             color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-top-left-radius: 1rem;
             border-top-right-radius: 1rem;
             text-align: center;
         }
         .profile-card .profile-avatar {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background-color: #fff;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 2rem;
             color: var(--primary-color);
-            border: 5px solid rgba(255,255,255,0.3);
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.3);
+            margin-bottom: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .profile-card .profile-header h2 {
             margin-bottom: 0.5rem;
             font-weight: 600;
+            font-size: 1.25rem;
         }
         .profile-card .profile-header p {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.9;
         }
         .profile-info {
-            padding: 2rem;
+            padding: 1.5rem;
         }
         .profile-info-item {
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
         }
         .profile-info-item:last-child {
             margin-bottom: 0;
@@ -386,21 +396,22 @@
             border-bottom: none;
         }
         .profile-info-item .icon {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--primary-color);
-            margin-right: 1rem;
-            width: 25px;
+            margin-right: 0.75rem;
+            width: 20px;
             text-align: center;
         }
         .profile-info-item .label {
             font-weight: 500;
             color: var(--text-primary);
-            width: 120px; /* Fixed width for labels */
+            width: 100px;
             flex-shrink: 0;
         }
         .profile-info-item .value {
             color: var(--text-secondary);
             flex-grow: 1;
+            word-break: break-word;
         }
         .profile-info-item ul {
             padding-left: 0;
@@ -410,27 +421,28 @@
         .profile-info-item ul li {
             background-color: var(--primary-light);
             color: var(--primary-color);
-            padding: 0.2rem 0.6rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 0.5rem;
-            margin-right: 0.5rem;
+            margin-right: 0.3rem;
             margin-bottom: 0.3rem;
             display: inline-block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
         /* New styles for pending request limitation */
         .pending-limit-notice {
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             border-radius: 0.5rem;
             display: flex;
             align-items: center;
             border-left: 4px solid;
+            font-size: 0.9rem;
         }
         .pending-limit-notice i {
-            margin-right: 0.75rem;
-            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            font-size: 1.25rem;
         }
         .pending-limit-notice p {
             margin: 0;
@@ -457,51 +469,204 @@
             display: inline-block;
         }
 
-                .profile-header {
+        /* Profile header */
+        .profile-header {
             background: linear-gradient(135deg, var(--primary-color), #4f46e5);
             color: white;
-            padding: 2.5rem;
+            padding: 1.5rem;
             border-radius: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-align: center;
         }
         .profile-avatar {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 4px solid white;
-            margin: -6rem auto 1rem;
+            border: 3px solid white;
+            margin: -4rem auto 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--primary-light);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .profile-avatar .fas {
-            font-size: 4rem;
+            font-size: 2.5rem;
             color: var(--primary-color);
         }
         .profile-info-card {
-            padding: 2rem;
+            padding: 1.5rem;
         }
         .info-item {
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
         }
         .info-item .icon {
             color: var(--primary-color);
-            margin-right: 1rem;
-            width: 20px;
+            margin-right: 0.75rem;
+            width: 18px;
         }
         .info-item .label {
             font-weight: 600;
             color: var(--text-primary);
-            width: 150px;
+            width: 100px;
         }
         .info-item .value {
             color: var(--text-secondary);
+            word-break: break-word;
+        }
+
+        /* Stats cards for profile */
+        .stat-card-v2 {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e9ecef;
+            margin-bottom: 1rem;
+        }
+        .stat-icon-v2 {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
+        .text-success { color: #198754 !important; }
+        .bg-info-light { background-color: rgba(13, 202, 240, 0.1); }
+        .text-info { color: #0dcaf0 !important; }
+
+        /* Section titles */
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            margin-top: 1.25rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        .section-title span { background-color: white; padding-right: 10px; }
+
+        /* Responsive adjustments for larger screens */
+        @media (min-width: 768px) {
+            .admin-wrapper {
+                flex-direction: row;
+            }
+            .admin-sidebar {
+                width: 260px;
+                position: fixed;
+                height: 100vh;
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            }
+            .admin-content {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
+            .sidebar-header {
+                padding: 1.75rem 1.5rem;
+            }
+            .sidebar-header h3 {
+                font-size: 1.5rem;
+            }
+            .admin-sidebar-nav {
+                padding: 1rem 0;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+            }
+            .admin-sidebar-nav a {
+                margin: 0.25rem 0.75rem;
+                padding: 1rem 1.75rem;
+                font-size: 0.95rem;
+            }
+            .admin-sidebar-nav a .fas {
+                margin-right: 1rem;
+            }
+            .sidebar-footer {
+                padding: 1.5rem;
+            }
+            .top-navbar {
+                padding: 1rem 2.5rem;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .top-navbar h1 {
+                font-size: 1.5rem;
+                margin: 0;
+                text-align: left;
+            }
+            .top-navbar .alert {
+                margin: 0 0 0 1rem;
+                width: auto;
+            }
+            main {
+                padding: 2.5rem;
+            }
+            .stat-card {
+                flex-direction: row;
+                text-align: left;
+                padding: 1.5rem;
+                margin-bottom: 0;
+            }
+            .stat-icon {
+                margin: 0 1.5rem 0 0;
+                font-size: 1.75rem;
+                width: 60px;
+                height: 60px;
+            }
+            .stat-info h5 {
+                font-size: 1.75rem;
+            }
+            .stat-info p {
+                font-size: 1rem;
+            }
+            .main-card .card-header {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+            .main-card .card-body {
+                padding: 1.5rem;
+            }
+            .profile-card .profile-header {
+                padding: 2rem;
+            }
+            .profile-card .profile-avatar {
+                width: 120px;
+                height: 120px;
+                margin: -6rem auto 1rem;
+            }
+            .profile-card .profile-avatar .fas {
+                font-size: 4rem;
+            }
+            .profile-card .profile-header h2 {
+                font-size: 1.5rem;
+            }
+            .profile-info {
+                padding: 2rem;
+            }
+            .profile-info-item {
+                font-size: 1rem;
+            }
+            .profile-info-item .label {
+                width: 120px;
+            }
+            .stat-card-v2 {
+                padding: 1.5rem;
+            }
+            .stat-icon-v2 {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -660,36 +825,38 @@
                                 </form>
 
                                 {% if available_leads %}
-                                    <table id="availableLeadsTable" class="table" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Student Name</th>
-                                                <th>Area</th>
-                                                <th>Board</th>
-                                                <th>Subjects</th>
-                                                <th>Fee</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for lead in available_leads %}
-                                            <tr>
-                                                <td>{{ lead.full_name }}</td>
-                                                <td>{{ lead.area }}</td>
-                                                <td>{{ lead.board }}</td>
-                                                <td>{{ lead.subjects }}</td>
-                                                <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
-                                                <td>
-                                                    <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}">
-                                                        <button type="submit" class="btn-action btn-approve" {% if pending_leads|length > 0 %}disabled title="You can only have one pending request at a time"{% endif %}>
-                                                            <i class="fas fa-check"></i> Accept Lead
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table id="availableLeadsTable" class="table" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Student Name</th>
+                                                    <th>Area</th>
+                                                    <th>Board</th>
+                                                    <th>Subjects</th>
+                                                    <th>Fee</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for lead in available_leads %}
+                                                <tr>
+                                                    <td>{{ lead.full_name }}</td>
+                                                    <td>{{ lead.area }}</td>
+                                                    <td>{{ lead.board }}</td>
+                                                    <td>{{ lead.subjects }}</td>
+                                                    <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
+                                                    <td>
+                                                        <form class="accept-lead-form" method="POST" action="{{ url_for('accept_lead', lead_id=lead.id) }}">
+                                                            <button type="submit" class="btn-action btn-approve" {% if pending_leads|length > 0 %}disabled title="You can only have one pending request at a time"{% endif %}>
+                                                                <i class="fas fa-check"></i> Accept Lead
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 {% else %}
                                     <p>No available leads match your filter criteria.</p>
                                 {% endif %}
@@ -705,28 +872,30 @@
                             </div>
                             <div class="card-body">
                                 {% if pending_leads %}
-                                    <table id="pendingRequestsTable" class="table" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Student Name</th>
-                                                <th>Area</th>
-                                                <th>Board</th>
-                                                <th>Fee</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for lead in pending_leads %}
-                                            <tr>
-                                                <td>{{ lead.full_name }}</td>
-                                                <td>{{ lead.area }}</td>
-                                                <td>{{ lead.board }}</td>
-                                                <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
-                                                <td><span class="badge rounded-pill bg-warning-light text-warning">Pending Admin Approval</span></td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table id="pendingRequestsTable" class="table" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Student Name</th>
+                                                    <th>Area</th>
+                                                    <th>Board</th>
+                                                    <th>Fee</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for lead in pending_leads %}
+                                                <tr>
+                                                    <td>{{ lead.full_name }}</td>
+                                                    <td>{{ lead.area }}</td>
+                                                    <td>{{ lead.board }}</td>
+                                                    <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
+                                                    <td><span class="badge rounded-pill bg-warning-light text-warning">Pending Admin Approval</span></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 {% else %}
                                     <p>You have no pending requests.</p>
                                 {% endif %}
@@ -742,57 +911,61 @@
                             </div>
                             <div class="card-body">
                                 {% if assigned_leads %}
-                                    <table id="assignedTuitionsTable" class="table" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Student Name</th>
-                                                <th>Area</th>
-                                                <th>Board</th>
-                                                <th>Subjects</th>
-                                                <th>Address</th>
-                                                <th>Fee</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for lead in assigned_leads %}
-                                            <tr>
-                                                <td>{{ lead.full_name }}</td>
-                                                <td>{{ lead.area }}</td>
-                                                <td>{{ lead.board }}</td>
-                                                <td>{{ lead.subjects }}</td>
-                                                <td>{{ lead.address }}</td>
-                                                <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
-                                                <td>
-                                                    {% if lead.tuition_status == 'ongoing' %}
-                                                    <form action="/update_tuition_status/{{ lead.id }}?status=completed" method="post" style="display: inline;" >
-                                                        <button type="submit" class="btn-action btn-approve">
-                                                            <i class="fas fa-check-circle"></i> Completed
-                                                        </button>
-                                                    </form>
-                                                    <form action="/update_tuition_status/{{ lead.id }}?status=dropped" method="post" style=" margin-left: 4px; margin-top: 10px;">
-                                                        <button type="submit" class="btn-action btn-reject">
-                                                            <i class="fas fa-times-circle"></i> Dropped
-                                                        </button>
-                                                    </form>
-                                                    {% else %}
-                                                    <span class="badge 
-                                                        {% if lead.tuition_status == 'completed' %}bg-success
-                                                        {% elif lead.tuition_status == 'dropped' %}bg-danger
-                                                        {% else %}bg-secondary{% endif %}">
-
-                                                        {% if lead.tuition_status %}
-                                                            {{ lead.tuition_status.capitalize() }}
+                                    <div class="table-responsive">
+                                        <table id="assignedTuitionsTable" class="table" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Student Name</th>
+                                                    <th>Area</th>
+                                                    <th>Board</th>
+                                                    <th>Subjects</th>
+                                                    <th>Address</th>
+                                                    <th>Fee</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for lead in assigned_leads %}
+                                                <tr>
+                                                    <td>{{ lead.full_name }}</td>
+                                                    <td>{{ lead.area }}</td>
+                                                    <td>{{ lead.board }}</td>
+                                                    <td>{{ lead.subjects }}</td>
+                                                    <td>{{ lead.address }}</td>
+                                                    <td>Rs. {{ "%.0f"|format(lead.total_fee) }}</td>
+                                                    <td>
+                                                        {% if lead.tuition_status == 'ongoing' %}
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <form action="/update_tuition_status/{{ lead.id }}?status=completed" method="post">
+                                                                <button type="submit" class="btn-action btn-approve">
+                                                                    <i class="fas fa-check-circle"></i> Completed
+                                                                </button>
+                                                            </form>
+                                                            <form action="/update_tuition_status/{{ lead.id }}?status=dropped" method="post">
+                                                                <button type="submit" class="btn-action btn-reject">
+                                                                    <i class="fas fa-times-circle"></i> Dropped
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                         {% else %}
-                                                            Not Set
+                                                        <span class="badge 
+                                                            {% if lead.tuition_status == 'completed' %}bg-success
+                                                            {% elif lead.tuition_status == 'dropped' %}bg-danger
+                                                            {% else %}bg-secondary{% endif %}">
+
+                                                            {% if lead.tuition_status %}
+                                                                {{ lead.tuition_status.capitalize() }}
+                                                            {% else %}
+                                                                Not Set
+                                                            {% endif %}
+                                                        </span>
                                                         {% endif %}
-                                                    </span>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 {% else %}
                                     <p>You have no assigned tuitions yet.</p>
                                 {% endif %}
@@ -803,143 +976,105 @@
             </div>
 
             <!-- Profile Content Section -->
-             <div id="profileContent" class="content-section">
-    <div class="row">
-        <div class="col-lg-5 col-xl-4">
-            <div class="main-card p-4 h-100">
-                <div class="text-center mb-4">
-                    <div class="profile-avatar-lg mx-auto mb-3">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h2 class="h5 mb-0">{{ tutor.full_name }}</h2>
-                    <p class="text-muted small">@{{ tutor.username }}</p>
-                </div>
+            <div id="profileContent" class="content-section">
+                <div class="row">
+                    <div class="col-lg-5 col-xl-4">
+                        <div class="main-card p-4 h-100">
+                            <div class="text-center mb-4">
+                                <div class="profile-avatar-lg mx-auto mb-3">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <h2 class="h5 mb-0">{{ tutor.full_name }}</h2>
+                                <p class="text-muted small">@{{ tutor.username }}</p>
+                            </div>
 
-                <h5 class="section-title"><span>Personal Details</span></h5>
-                <ul class="list-unstyled profile-details">
-                    <li><i class="fas fa-user-shield icon"></i> <span>Name: {{ tutor.full_name }}</span></li>
-                    <li><i class="fas fa-user-shield icon"></i> <span>Father: {{ tutor.fathers_name }}</span></li>
-                    
-                </ul>
+                            <h5 class="section-title"><span>Personal Details</span></h5>
+                            <ul class="list-unstyled profile-details">
+                                <li><i class="fas fa-user-shield icon"></i> <span>Name: {{ tutor.full_name }}</span></li>
+                                <li><i class="fas fa-user-shield icon"></i> <span>Father: {{ tutor.fathers_name }}</span></li>
+                                
+                            </ul>
 
-                <h5 class="section-title"><span>Contact Information</span></h5>
-                <ul class="list-unstyled profile-details">
-                    <li><i class="fas fa-envelope-open-text icon"></i> <span>{{ tutor.email }}</span></li>
-                    <li><i class="fas fa-phone-alt icon"></i> <span>{{ tutor.phone_number }}</span></li>
-                </ul>
+                            <h5 class="section-title"><span>Contact Information</span></h5>
+                            <ul class="list-unstyled profile-details">
+                                <li><i class="fas fa-envelope-open-text icon"></i> <span>{{ tutor.email }}</span></li>
+                                <li><i class="fas fa-phone-alt icon"></i> <span>{{ tutor.phone_number }}</span></li>
+                            </ul>
 
-                <h5 class="section-title"><span>Academic Profile</span></h5>
-                <ul class="list-unstyled profile-details">
-                    <li><i class="fas fa-graduation-cap icon"></i> <span>{{ tutor.last_qualification }}</span></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-lg-7 col-xl-8">
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="stat-card-v2 h-100">
-                        <div class="stat-icon-v2 bg-success-light">
-                            <i class="fas fa-wallet text-success"></i>
-                        </div>
-                        <div class="stat-info-v2">
-                            <p class="text-muted mb-1">Total Earnings</p>
-                            <h4 class="mb-0">Rs. {{ "%.0f"|format(total_earnings) }}</h4>
+                            <h5 class="section-title"><span>Academic Profile</span></h5>
+                            <ul class="list-unstyled profile-details">
+                                <li><i class="fas fa-graduation-cap icon"></i> <span>{{ tutor.last_qualification }}</span></li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="stat-card-v2 h-100">
-                        <div class="stat-icon-v2 bg-info-light">
-                            <i class="fas fa-chalkboard-teacher text-info"></i>
+
+                    <div class="col-lg-7 col-xl-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="stat-card-v2 h-100">
+                                    <div class="stat-icon-v2 bg-success-light">
+                                        <i class="fas fa-wallet text-success"></i>
+                                    </div>
+                                    <div class="stat-info-v2">
+                                        <p class="text-muted mb-1">Total Earnings</p>
+                                        <h4 class="mb-0">Rs. {{ "%.0f"|format(total_earnings) }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="stat-card-v2 h-100">
+                                    <div class="stat-icon-v2 bg-info-light">
+                                        <i class="fas fa-chalkboard-teacher text-info"></i>
+                                    </div>
+                                    <div class="stat-info-v2">
+                                        <p class="text-muted mb-1">Assigned Tuitions</p>
+                                        <h4 class="mb-0">{{ assigned_leads|length }}</h4>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-info-v2">
-                            <p class="text-muted mb-1">Assigned Tuitions</p>
-                            <h4 class="mb-0">{{ assigned_leads|length }}</h4>
+
+                        <div class="main-card p-4">
+                            <h5 class="card-title mb-3">Monthly Income Overview</h5>
+                            <canvas id="monthlyIncomeChart" 
+                                data-labels='{{ chart_labels|tojson }}' 
+                                data-values='{{ chart_data|tojson }}'
+                                style="min-height: 250px; max-height: 320px;">
+                            </canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="main-card p-4">
-                 <h5 class="card-title mb-3">Monthly Income Overview</h5>
-                 <canvas id="monthlyIncomeChart" 
-                    data-labels='{{ chart_labels|tojson }}' 
-                    data-values='{{ chart_data|tojson }}'
-                    style="min-height: 250px; max-height: 320px;">
-                 </canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* ... (your existing styles) ... */
-
-    .profile-avatar-lg {
-        width: 100px; height: 100px; border-radius: 50%;
-        background-color: var(--primary-light); display: flex;
-        align-items: center; justify-content: center;
-        border: 4px solid var(--primary-color);
-    }
-    .profile-avatar-lg .fas { font-size: 3rem; color: var(--primary-color); }
-
-    .section-title {
-        font-size: 1rem; font-weight: 600; color: var(--text-primary);
-        margin-bottom: 1rem; margin-top: 1.5rem; border-bottom: 1px solid #eee;
-        padding-bottom: 0.5rem;
-    }
-    .section-title span { background-color: white; padding-right: 10px; }
-
-    .profile-details li { display: flex; align-items: center; margin-bottom: 0.8rem; font-size: 0.9rem; }
-    .profile-details .icon {
-        color: var(--primary-color); width: 28px; text-align: center;
-        font-size: 1rem; margin-right: 10px;
-    }
-
-    .stat-card-v2 {
-        display: flex; align-items: center; background-color: #fff;
-        padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e9ecef;
-    }
-    .stat-icon-v2 {
-        width: 50px; height: 50px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        margin-right: 1rem; font-size: 1.5rem;
-    }
-    .bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
-    .text-success { color: #198754 !important; }
-    .bg-info-light { background-color: rgba(13, 202, 240, 0.1); }
-    .text-info { color: #0dcaf0 !important; }
-</style>
         </main>
     </div>
 </div>
 
-<!-- jQuery, Bootstrap JS, DataTables JS -->
+<!-- jQuery, Bootstrap JS, DataTables JS, Chart.js -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 $(document).ready(function () {
     // DataTables options for consistent styling and functionality
     const dataTableOptions = {
-        "pagingType": "simple_numbers", // Simple pagination with previous/next buttons
+        "pagingType": "simple_numbers",
         "language": {
-            "lengthMenu": "Show _MENU_", // Custom text for length menu
-            "search": "", // Remove default "Search:" label
-            "searchPlaceholder": "Search...", // Add placeholder to search input
+            "lengthMenu": "Show _MENU_",
+            "search": "",
+            "searchPlaceholder": "Search...",
             "paginate": {
-                "previous": "<i class='fas fa-chevron-left'></i>", // Custom icon for previous button
-                "next": "<i class='fas fa-chevron-right'></i>" // Custom icon for next button
+                "previous": "<i class='fas fa-chevron-left'></i>",
+                "next": "<i class='fas fa-chevron-right'></i>"
             }
         },
-        // Custom DOM structure for DataTables elements (l: length, f: filter, t: table, i: info, p: pagination)
         "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"table-responsive"t><"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        "responsive": true
     };
 
     // Initialize DataTables for each table present on the dashboard
-    // This ensures search, sort, and pagination are applied
     $('#availableLeadsTable').DataTable(dataTableOptions);
     $('#pendingRequestsTable').DataTable(dataTableOptions);
     $('#assignedTuitionsTable').DataTable(dataTableOptions);
@@ -967,8 +1102,8 @@ $(document).ready(function () {
     // Attach click event listeners to each sidebar navigation item
     $.each(tabs, (name, components) => {
         components.tab.on('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior (page reload)
-            showTab(name); // Call showTab function with the clicked tab's name
+            e.preventDefault();
+            showTab(name);
         });
     });
 
@@ -979,30 +1114,9 @@ $(document).ready(function () {
     $('.accept-lead-form').on('submit', function(e) {
         if ($(this).find('button').is(':disabled')) {
             e.preventDefault();
-            // Show a more prominent alert if needed
             alert('You already have pending requests. Please wait for admin approval before accepting new leads.');
         }
     });
-});
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-$(document).ready(function () {
-    
-    // ===================================================================
-    // YOUR EXISTING DATATABLE AND SIDEBAR TAB LOGIC SHOULD GO HERE
-    // For example:
-    // $('#availableLeadsTable').DataTable();
-    // $('#pendingLeadsTable').DataTable();
-    // etc.
-    // ===================================================================
-
 
     // --- Logic for the Monthly Income Chart ---
     const chartCanvas = document.getElementById('monthlyIncomeChart');
